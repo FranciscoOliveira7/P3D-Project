@@ -157,8 +157,8 @@ void init(void) {
 
 
     ShaderInfo shaders[] = {
-        { GL_VERTEX_SHADER,   "triangles.vert" },
-        { GL_FRAGMENT_SHADER, "triangles.frag" },
+        { GL_VERTEX_SHADER,   "shaders/triangles.vert" },
+        { GL_FRAGMENT_SHADER, "shaders/triangles.frag" },
         { GL_NONE, NULL }
     };
 

@@ -3,12 +3,14 @@
   <ItemGroup>
     <ClCompile Include="source.cpp" />
     <ClCompile Include="shader_util.cpp" />
+    <ClCompile Include="camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader_util.h" />
+    <ClInclude Include="camera.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="triangles.vert" />
-    <None Include="triangles.frag" />
+    <None Include="shaders\triangles.vert" />
+    <None Include="shaders\triangles.frag" />
   </ItemGroup>
 </Project>
