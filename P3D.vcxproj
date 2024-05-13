@@ -130,10 +130,12 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="shader_util.cpp" />
     <ClCompile Include="source.cpp" />
+    <ClCompile Include="vao.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="shader_util.h" />
+    <ClInclude Include="vao.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\triangles.frag" />

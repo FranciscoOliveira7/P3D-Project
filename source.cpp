@@ -19,6 +19,7 @@
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 
 #include "shader_util.h"
+#include "camera.h"
 
 #pragma endregion
 
@@ -38,16 +39,40 @@ GLuint Buffers[NumBuffers];
 const GLuint NumVertices = 8; // 6 faces * 4 vértices
 const GLuint NumIndices = 6 * 2 * 3; // 6 faces * 2 triângulos/face * 3 vértices/triângulo
 
-GLfloat rotation = 0.0f;
-
 GLfloat zoom = 20.0f;
 
+Camera camera(20.0f, 45.0f);
+
 void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
+    if (yoffset == 1) camera.zoom_ -= fabs(camera.zoom_) * 0.1f;
+    else if (yoffset == -1) camera.zoom_ += fabs(camera.zoom_) * 0.1f;
+}
 
-    if (yoffset == 1) zoom -= fabs(zoom) * 0.1f;
-    else if (yoffset == -1) zoom += fabs(zoom) * 0.1f;
+GLfloat rotation = 0.0f;
+bool isPressing = false;
+double prevXpos = 0.0;
+double prevYpos = 0.0;
 
-    std::cout << "Zoom = " << zoom << std::endl;
+float mouse_sensitivity = 3.0f;
+
+void cursorCallBack(GLFWwindow* window, double xpos, double ypos) {
+    if (isPressing) {
+        double deltaX = xpos - prevXpos;
+        rotation += static_cast<float>(deltaX);
+        prevXpos = xpos;
+    }
+}
+
+void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+            isPressing = true;
+            glfwGetCursorPos(window, &prevXpos, &prevYpos);
+        }
+        else if (action == GLFW_RELEASE) {
+            isPressing = false;
+        }
+    }
 }
 
 int main(void) {
@@ -69,22 +94,21 @@ int main(void) {
     glewExperimental = GL_TRUE;
     glewInit();
 
+    //TODO Input Manager
     glfwSetScrollCallback(window, scrollCallBack);
+    glfwSetCursorPosCallback(window, cursorCallBack);
+    glfwSetMouseButtonCallback(window, mouseCallBack);
 
     init();
 
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+    glm::mat4 projection = camera.UpdateProjectionMatrix((float)(WIDTH / HEIGHT));
 
     while (!glfwWindowShouldClose(window)) {
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, rotation += 0.005f, glm::vec3(0, 1, 0));
+        model = glm::rotate(model, rotation / WIDTH * mouse_sensitivity, glm::vec3(0, 1, 0));
         model = glm::translate(model, glm::vec3(0, -2, 0));
-        glm::mat4 view = lookAt(
-            glm::vec3(0, 0, zoom),
-            glm::vec3(0, 0, -1),
-            glm::vec3(0, 1, 0)
-        );
+        glm::mat4 view = camera.UpdateViewMatrix();
 
         glm::mat4 mvp = projection * view * model;
 
@@ -116,15 +140,14 @@ void init(void) {
     };
 
     GLfloat cores[NumVertices][3] = {
-        { 0.4f, 0.8f, 0.5f }, { 0.4f, 0.8f, 0.5f },
-        { 0.4f, 0.8f, 0.5f }, { 0.4f, 0.8f, 0.5f },
+        { 0.5f, 0.85f, 0.6f }, { 0.35f, 0.7f, 0.45f },
+        { 0.3f, 0.6f, 0.4f }, { 0.4f, 0.8f, 0.5f },
 
-        { 0.4f, 0.8f, 0.5f }, { 0.4f, 0.8f, 0.5f },
-        { 0.4f, 0.8f, 0.5f }, { 0.4f, 0.8f, 0.5f },
+        { 0.5f, 0.85f, 0.6f }, { 0.4f, 0.8f, 0.5f },
+        { 0.4f, 0.8f, 0.5f }, { 0.2f, 0.4f, 0.3f },
     };
 
     GLuint indices[NumIndices] = {
-
         // Frente
         0, 1, 2, 1, 3, 2,
         // Direita
@@ -132,11 +155,11 @@ void init(void) {
         // Baixo
         2, 3, 6, 3, 6, 7,
         // Esquerda
-        0, 2, 4, 2, 4, 6,
+        0, 2, 4, 2, 6, 4,
         // Trás
-        4, 5, 6, 5, 6, 7,
+        4, 5, 6, 5, 7, 6,
         // Cima
-        0, 1, 4, 1, 4, 5
+        0, 4, 1, 4, 5, 1
     };
 
     // VAO

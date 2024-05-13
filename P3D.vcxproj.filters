@@ -4,10 +4,12 @@
     <ClCompile Include="source.cpp" />
     <ClCompile Include="shader_util.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="vao.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader_util.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="vao.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\triangles.vert" />
