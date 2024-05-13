@@ -9,13 +9,9 @@ mat4 Camera::UpdateProjectionMatrix(float ratio) const {
 	return perspective(radians(fov_), ratio, 0.1f, 100.0f);
 }
 
-mat4 Camera::UpdateViewMatrix() const
-{
-	return lookAt(
-		glm::vec3(0, 0, zoom_),
-		glm::vec3(0, 0, -1),
-		glm::vec3(0, 1, 0)
-    );
+mat4 Camera::UpdateViewMatrix(vec3 eye, vec3 center, vec3 up) const {
+
+	return lookAt(eye, center, up);
 }
 
 Camera::~Camera() {}
