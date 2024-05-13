@@ -12,10 +12,10 @@ class Camera {
 public:
 	Camera(GLfloat zoom, GLfloat fov);
 	Camera(GLfloat zoom, GLfloat fov, GLfloat far, GLfloat near);
+	~Camera();
 
 	mat4 UpdateProjectionMatrix(float ratio) const;
-	mat4 UpdateViewMatrix() const;
-	~Camera();
+	mat4 UpdateViewMatrix(vec3 eye, vec3 center, vec3 up) const;
 	GLfloat zoom_;
 
 private:

@@ -20,6 +20,7 @@
 
 #include "shader_util.h"
 #include "camera.h"
+#include "model.h"
 
 #pragma endregion
 
@@ -38,6 +39,11 @@ GLuint VAO;
 GLuint Buffers[NumBuffers];
 const GLuint NumVertices = 8; // 6 faces * 4 vértices
 const GLuint NumIndices = 6 * 2 * 3; // 6 faces * 2 triângulos/face * 3 vértices/triângulo
+
+// Models
+Model goofy_table;
+
+// ------
 
 GLfloat zoom = 20.0f;
 
@@ -99,6 +105,8 @@ int main(void) {
     glfwSetCursorPosCallback(window, cursorCallBack);
     glfwSetMouseButtonCallback(window, mouseCallBack);
 
+    Model goofy_table(3);
+
     init();
 
     glm::mat4 projection = camera.UpdateProjectionMatrix((float)(WIDTH / HEIGHT));
@@ -108,7 +116,7 @@ int main(void) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, rotation / WIDTH * mouse_sensitivity, glm::vec3(0, 1, 0));
         model = glm::translate(model, glm::vec3(0, -2, 0));
-        glm::mat4 view = camera.UpdateViewMatrix();
+        glm::mat4 view = camera.UpdateViewMatrix(glm::vec3(0, 0, camera.zoom_), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 
         glm::mat4 mvp = projection * view * model;
 
@@ -162,21 +170,27 @@ void init(void) {
         0, 4, 1, 4, 5, 1
     };
 
-    // VAO
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    goofy_table.InitializeComponents(3);
 
-    // VBOs
-    glGenBuffers(NumBuffers, Buffers);
+    goofy_table.BufferStorage(GL_ARRAY_BUFFER, 0, vertices, sizeof(vertices));
+    goofy_table.BufferStorage(GL_ARRAY_BUFFER, 1, cores, sizeof(cores));
+    goofy_table.BufferStorage(GL_ELEMENT_ARRAY_BUFFER, 2, indices, sizeof(indices));
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[0]);
-    glBufferStorage(GL_ARRAY_BUFFER, sizeof(vertices) /*2 * 6 * sizeof(float)*/, vertices, 0);
+    //// VAO
+    //glGenVertexArrays(1, &VAO);
+    //glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[1]);
-    glBufferStorage(GL_ARRAY_BUFFER, sizeof(cores) /*3 * 6 * sizeof(float)*/, cores, 0);
+    //// VBOs
+    //glGenBuffers(NumBuffers, Buffers);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffers[2]);
-    glBufferStorage(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, 0);
+    //glBindBuffer(GL_ARRAY_BUFFER, Buffers[0]);
+    //glBufferStorage(GL_ARRAY_BUFFER, sizeof(vertices), vertices, 0);
+
+    //glBindBuffer(GL_ARRAY_BUFFER, Buffers[1]);
+    //glBufferStorage(GL_ARRAY_BUFFER, sizeof(cores), cores, 0);
+
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffers[2]);
+    //glBufferStorage(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, 0);
 
 
     ShaderInfo shaders[] = {
@@ -190,20 +204,26 @@ void init(void) {
     glUseProgram(program);
 
 
-    // Ligar os atributos aos shaders
+    //// Ligar os atributos aos shaders
 
-    // Obtém a localização do atributo 'vPosition' no 'programa'.
-    GLint coordsId = glGetProgramResourceLocation(program, GL_PROGRAM_INPUT, "vPosition");
-    GLint coresId = glGetProgramResourceLocation(program, GL_PROGRAM_INPUT, "vColors");
+    GLint coordsId = goofy_table.GetInputLocation(program, "vPosition");
+    GLint coresId  = goofy_table.GetInputLocation(program, "vColors");
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[0]);
-    glVertexAttribPointer(coordsId, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    goofy_table.AttribPointer(coordsId, 3);
+    goofy_table.AttribPointer(coresId, 3);
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[1]);
-    glVertexAttribPointer(coresId, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    //// Obtém a localização do atributo 'vPosition' no 'programa'.
+    //GLint coordsId = glGetProgramResourceLocation(program, GL_PROGRAM_INPUT, "vPosition");
+    //GLint coresId =  glGetProgramResourceLocation(program, GL_PROGRAM_INPUT, "vColors");
 
-    glEnableVertexAttribArray(coordsId);
-    glEnableVertexAttribArray(coresId);
+    //glBindBuffer(GL_ARRAY_BUFFER, Buffers[0]);
+    //glVertexAttribPointer(coordsId, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    //glBindBuffer(GL_ARRAY_BUFFER, Buffers[1]);
+    //glVertexAttribPointer(coresId, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    //glEnableVertexAttribArray(coordsId);
+    //glEnableVertexAttribArray(coresId);
 }
 
 void display(void) {
@@ -214,9 +234,11 @@ void display(void) {
     //glClearBufferfv(GL_COLOR, 0, black);
 
     // Vincula (torna ativo) o VAO
-    glBindVertexArray(VAO);
+    //glBindVertexArray(VAO);
 
-    glDrawElements(GL_TRIANGLES, NumIndices, GL_UNSIGNED_INT, (void *)0);
+    //glDrawElements(GL_TRIANGLES, NumIndices, GL_UNSIGNED_INT, (void *)0);
+
+    goofy_table.Draw();
 }
 
 void print_error(int error, const char* description) {

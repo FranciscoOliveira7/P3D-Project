@@ -36,9 +36,9 @@ Em caso de erro, será retornado o valor zero (0).
 #define _DEBUG
 
 typedef struct {
-	GLenum       type;
+	GLenum      type;
 	const char* filename;
-	GLuint       shader;
+	GLuint      shader;
 } ShaderInfo;
 
 GLuint LoadShaders(ShaderInfo*);

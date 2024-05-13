@@ -52,13 +52,7 @@ GLuint LoadShaders(ShaderInfo* shaders) {
 		const GLchar* source = ReadShader(shaders[i].filename);
 		// Se não conseguir ler o código
 		if (source == NULL) {
-			// Destrói os shaders que tinham criados
-			for (int j = 0; shaders[j].type != GL_NONE; j++) {
-				// Se tem um shader válido (i.e., != 0)
-				if (shaders[j].shader != 0)
-					glDeleteShader(shaders[j].shader);
-				shaders[j].shader = 0;
-			}
+			DestroyShaders(shaders);
 
 			return 0;
 		}
@@ -85,13 +79,7 @@ GLuint LoadShaders(ShaderInfo* shaders) {
 			delete[] log;
 #endif /* DEBUG */
 
-			// Destrói os shaders que tinham criados
-			for (int j = 0; shaders[j].type != GL_NONE; j++) {
-				// Se tem um shader válido (i.e., != 0)
-				if (shaders[j].shader != 0)
-					glDeleteShader(shaders[j].shader);
-				shaders[j].shader = 0;
-			}
+			DestroyShaders(shaders);
 
 			return 0;
 		}
@@ -118,16 +106,20 @@ GLuint LoadShaders(ShaderInfo* shaders) {
 		delete[] log;
 #endif /* DEBUG */
 
-		// Destrói os shaders que tinham criados
-		for (int j = 0; shaders[j].type != GL_NONE; j++) {
-			// Se tem um shader válido (i.e., != 0)
-			if (shaders[j].shader != 0)
-				glDeleteShader(shaders[j].shader);
-			shaders[j].shader = 0;
-		}
+		DestroyShaders(shaders);
 
 		return 0;
 	}
 
 	return program;
+}
+
+void DestroyShaders(ShaderInfo *shaders) {
+	// Destrói os shaders que tinham criados
+	for (int j = 0; shaders[j].type != GL_NONE; j++) {
+		// Se tem um shader válido (i.e., != 0)
+		if (shaders[j].shader != 0)
+			glDeleteShader(shaders[j].shader);
+		shaders[j].shader = 0;
+	}
 }
