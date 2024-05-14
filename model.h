@@ -4,13 +4,12 @@
 #include <GL\glew.h>
 #include <string>
 
-typedef struct {
-	GLenum type;
-	GLuint shader;
-} BufferInfo;
+#include "world_transform.h"
 
 class Model {
 public:
+	WorldTrans transform;
+
 	Model(void);
 	Model(int num_vbos);
 	~Model();
@@ -19,12 +18,14 @@ public:
 
 	bool BufferStorage(GLenum type, int buffer, const void* data, GLsizeiptr size);
 	unsigned int GetInputLocation(int program, const std::string& name);
-	void AttribPointer(int buffer, unsigned int location, int size);
+	void AttribPointer(int buffer, int size, unsigned int location);
 
 	void Draw(void);
 
 private:
 	GLuint vao_ = 0;
 	int num_buffers_ = 0;
-	GLuint *buffers_ = nullptr; // Array dos VBOs / EBOs
+	GLuint* buffers_ = nullptr; // Array dos VBOs / EBOs
+
+	GLuint index_size_ = 0; // Numero de Indices
 };

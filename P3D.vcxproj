@@ -128,14 +128,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="input.cpp" />
     <ClCompile Include="shader_util.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="world_transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="shader_util.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="table.h" />
+    <ClInclude Include="world_transform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\triangles.frag" />

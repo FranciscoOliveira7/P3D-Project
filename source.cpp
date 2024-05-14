@@ -1,5 +1,7 @@
 #pragma region includes
 
+// Libraries
+
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "opengl32.lib")
@@ -18,9 +20,12 @@
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 
+// Others
+
 #include "shader_util.h"
 #include "camera.h"
 #include "model.h"
+#include "table.h"
 
 #pragma endregion
 
@@ -31,27 +36,32 @@ void print_error(int error, const char* description);
 void init(void);
 void display(void);
 
-#define NumBuffers 3 // Vértices, Cores, EBO
-
+// Porgram
 GLuint program;
 
-GLuint VAO;
-GLuint Buffers[NumBuffers];
-const GLuint NumVertices = 8; // 6 faces * 4 vértices
-const GLuint NumIndices = 6 * 2 * 3; // 6 faces * 2 triângulos/face * 3 vértices/triângulo
-
 // Models
-//Model models;
 Model goofy_table;
 
-// ------
+// Camera
+Camera camera;
 
-Camera camera(20.0f, 45.0f);
+// Projection
+float FOV = 45.0f;
+float zNear = 1.0f;
+float zFar = 100.0f;
+
+float zoom = 10.0f;
+
+glm::mat4 projection = perspective(glm::radians(FOV), (float)(WIDTH / HEIGHT), zNear, zFar);
+
+// Camera zoom behaviour
 
 void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
-    if (yoffset == 1) camera.zoom_ -= fabs(camera.zoom_) * 0.1f;
-    else if (yoffset == -1) camera.zoom_ += fabs(camera.zoom_) * 0.1f;
+    if (yoffset == 1) zoom -= fabs(zoom) * 0.1f;
+    else if (yoffset == -1) zoom += fabs(zoom) * 0.1f;
 }
+
+// Table rotation behaviour
 
 GLfloat rotation = 0.0f;
 bool isPressing = false;
@@ -80,6 +90,8 @@ void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
     }
 }
 
+//void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 int main(void) {
     GLFWwindow* window;
 
@@ -103,26 +115,11 @@ int main(void) {
     glfwSetScrollCallback(window, scrollCallBack);
     glfwSetCursorPosCallback(window, cursorCallBack);
     glfwSetMouseButtonCallback(window, mouseCallBack);
-
-    Model goofy_table(3);
+    //glfwSetKeyCallback(window, keyCallBack);
 
     init();
 
-    glm::mat4 projection = camera.UpdateProjectionMatrix((float)(WIDTH / HEIGHT));
-
     while (!glfwWindowShouldClose(window)) {
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, rotation, glm::vec3(0, 1, 0));
-        model = glm::translate(model, glm::vec3(0, -2, 0));
-        glm::mat4 view = camera.UpdateViewMatrix(glm::vec3(0, 0, camera.zoom_), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
-
-        glm::mat4 mvp = projection * view * model;
-
-        GLint mpvId = glGetProgramResourceLocation(program, GL_UNIFORM, "MVP");
-        glProgramUniformMatrix4fv(program, mpvId, 1, GL_FALSE, glm::value_ptr(mvp));
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         display();
 
@@ -137,64 +134,48 @@ int main(void) {
 void init(void) {
     glEnable(GL_DEPTH_TEST);
 
-    // Mesa de Bilhar (fiz isto manualmente (not fun)) - Zes
-    GLfloat vertices[NumVertices][3] = {
-        {-9.0f,  0.5f,  5.5f }, { 9.0f,  0.5f,  5.5f },
-        {-9.0f, -0.5f,  5.5f }, { 9.0f, -0.5f,  5.5f },
-
-        {-9.0f,  0.5f, -5.5f }, { 9.0f,  0.5f, -5.5f },
-        {-9.0f, -0.5f, -5.5f }, { 9.0f, -0.5f, -5.5f },
-    };
-
-    GLfloat cores[NumVertices][3] = {
-        { 0.5f, 0.85f, 0.6f }, { 0.35f, 0.7f, 0.45f },
-        { 0.3f, 0.6f, 0.4f }, { 0.4f, 0.8f, 0.5f },
-
-        { 0.45f, 0.8f, 0.55f }, { 0.4f, 0.8f, 0.5f },
-        { 0.4f, 0.8f, 0.5f }, { 0.2f, 0.4f, 0.3f },
-    };
-
-    GLuint indices[NumIndices] = {
-        // Frente
-        0, 1, 2, 1, 3, 2,
-        // Direita
-        1, 3, 7, 1, 5, 7,
-        // Baixo
-        2, 3, 6, 3, 6, 7,
-        // Esquerda
-        0, 2, 4, 2, 6, 4,
-        // Trás
-        4, 5, 6, 5, 7, 6,
-        // Cima
-        0, 4, 1, 4, 5, 1
-    };
-
+    // Criar o VAO e os BOs
     goofy_table.InitializeComponents(3);
 
+    // Mandar a informação para os VBOs / EBO
     goofy_table.BufferStorage(GL_ARRAY_BUFFER, 0, vertices, sizeof(vertices));
     goofy_table.BufferStorage(GL_ARRAY_BUFFER, 1, cores, sizeof(cores));
     goofy_table.BufferStorage(GL_ELEMENT_ARRAY_BUFFER, 2, indices, sizeof(indices));
 
+    // Shaders type and locations
     ShaderInfo shaders[] = {
         { GL_VERTEX_SHADER,   "shaders/triangles.vert" },
         { GL_FRAGMENT_SHADER, "shaders/triangles.frag" },
         { GL_NONE, NULL }
     };
 
+    // Load to program (código feito pelo stor)
     program = LoadShaders(shaders);
     if (!program) exit(EXIT_FAILURE);
     glUseProgram(program);
 
-    //// Ligar os atributos aos shaders
+    // Ligar os atributos aos shaders
 
     GLint coordsId = goofy_table.GetInputLocation(program, "vPosition");
     GLint coresId  = goofy_table.GetInputLocation(program, "vColors");
 
-    goofy_table.AttribPointer(0, coordsId, 3);
-    goofy_table.AttribPointer(1, coresId, 3);
+    goofy_table.AttribPointer(0, 3, coordsId);
+    goofy_table.AttribPointer(1, 3, coresId);
 }
 
 void display(void) {
+
+    camera.SetPosition(0.0f, 0.0f, zoom);
+
+    goofy_table.transform.SetPosition(0.0f, -2.0f, 0.0f);
+    goofy_table.transform.SetRotation(0.0f, rotation, 0.0f);
+
+    glm::mat4 mvp = projection * camera.GetViewMatrix() * goofy_table.transform.GetMatrix();
+
+    GLint mpvId = glGetProgramResourceLocation(program, GL_UNIFORM, "MVP");
+    glProgramUniformMatrix4fv(program, mpvId, 1, GL_FALSE, glm::value_ptr(mvp));
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     goofy_table.Draw();
 }
 

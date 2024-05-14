@@ -48,7 +48,9 @@ bool Model::BufferStorage(GLenum type, int buffer, const void* data, GLsizeiptr 
 	if (buffer < 0 || buffer > num_buffers_) return false;
 
 	glBindBuffer(type, buffers_[buffer]);
-	glBufferStorage(type, buffer==0 || buffer==1 ? sizeof(float) * 24 : sizeof(int) * 36, data, 0);
+	glBufferStorage(type, size, data, 0);
+
+	if (type == GL_ELEMENT_ARRAY_BUFFER) index_size_ = static_cast<int>(size / sizeof(int));
 
 	return true;
 }
@@ -58,7 +60,7 @@ unsigned int Model::GetInputLocation(int program, const std::string& name) {
 	return glGetProgramResourceLocation(program, GL_PROGRAM_INPUT, name.c_str());
 }
 
-void Model::AttribPointer(int buffer, unsigned int location, int size) {
+void Model::AttribPointer(int buffer, int size, unsigned int location) {
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffers_[buffer]);
 	glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -68,5 +70,5 @@ void Model::AttribPointer(int buffer, unsigned int location, int size) {
 void Model::Draw(void) {
 	glBindVertexArray(vao_);
 
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, index_size_, GL_UNSIGNED_INT, (void*)0);
 }

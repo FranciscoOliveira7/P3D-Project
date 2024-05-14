@@ -5,11 +5,16 @@
     <ClCompile Include="shader_util.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="world_transform.cpp" />
+    <ClCompile Include="input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader_util.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="table.h" />
+    <ClInclude Include="world_transform.h" />
+    <ClInclude Include="input.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\triangles.vert" />

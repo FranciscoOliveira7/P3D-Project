@@ -10,18 +10,19 @@ using namespace glm;
 
 class Camera {
 public:
-	Camera(GLfloat zoom, GLfloat fov);
-	Camera(GLfloat zoom, GLfloat fov, GLfloat far, GLfloat near);
-	~Camera();
 
-	mat4 UpdateProjectionMatrix(float ratio) const;
-	mat4 UpdateViewMatrix(vec3 eye, vec3 center, vec3 up) const;
-	GLfloat zoom_;
+    Camera();
+
+    void SetPosition(float x, float y, float z);
+
+    void OnKeyboard(unsigned char key);
+
+    mat4 GetViewMatrix();
 
 private:
-	float fov_;
 
-	float far_, near_;
-
-	mat4 projection, view;
+    vec3 eye_;
+    vec3 center_;
+    vec3 up_;
+    float m_speed = 1.0f;
 };
