@@ -41,11 +41,10 @@ const GLuint NumVertices = 8; // 6 faces * 4 vértices
 const GLuint NumIndices = 6 * 2 * 3; // 6 faces * 2 triângulos/face * 3 vértices/triângulo
 
 // Models
+//Model models;
 Model goofy_table;
 
 // ------
-
-GLfloat zoom = 20.0f;
 
 Camera camera(20.0f, 45.0f);
 
@@ -58,13 +57,15 @@ GLfloat rotation = 0.0f;
 bool isPressing = false;
 double prevXpos = 0.0;
 double prevYpos = 0.0;
+double xPos = 0.0;
 
 float mouse_sensitivity = 3.0f;
 
 void cursorCallBack(GLFWwindow* window, double xpos, double ypos) {
+    xPos = xpos;
     if (isPressing) {
         double deltaX = xpos - prevXpos;
-        rotation += static_cast<float>(deltaX);
+        rotation += static_cast<float>(deltaX) / WIDTH * mouse_sensitivity;
         prevXpos = xpos;
     }
 }
@@ -73,11 +74,9 @@ void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT) {
         if (action == GLFW_PRESS) {
             isPressing = true;
-            glfwGetCursorPos(window, &prevXpos, &prevYpos);
+            prevXpos = xPos;
         }
-        else if (action == GLFW_RELEASE) {
-            isPressing = false;
-        }
+        else if (action == GLFW_RELEASE) isPressing = false;
     }
 }
 
@@ -114,7 +113,7 @@ int main(void) {
     while (!glfwWindowShouldClose(window)) {
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, rotation / WIDTH * mouse_sensitivity, glm::vec3(0, 1, 0));
+        model = glm::rotate(model, rotation, glm::vec3(0, 1, 0));
         model = glm::translate(model, glm::vec3(0, -2, 0));
         glm::mat4 view = camera.UpdateViewMatrix(glm::vec3(0, 0, camera.zoom_), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 
@@ -176,23 +175,6 @@ void init(void) {
     goofy_table.BufferStorage(GL_ARRAY_BUFFER, 1, cores, sizeof(cores));
     goofy_table.BufferStorage(GL_ELEMENT_ARRAY_BUFFER, 2, indices, sizeof(indices));
 
-    //// VAO
-    //glGenVertexArrays(1, &VAO);
-    //glBindVertexArray(VAO);
-
-    //// VBOs
-    //glGenBuffers(NumBuffers, Buffers);
-
-    //glBindBuffer(GL_ARRAY_BUFFER, Buffers[0]);
-    //glBufferStorage(GL_ARRAY_BUFFER, sizeof(vertices), vertices, 0);
-
-    //glBindBuffer(GL_ARRAY_BUFFER, Buffers[1]);
-    //glBufferStorage(GL_ARRAY_BUFFER, sizeof(cores), cores, 0);
-
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffers[2]);
-    //glBufferStorage(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, 0);
-
-
     ShaderInfo shaders[] = {
         { GL_VERTEX_SHADER,   "shaders/triangles.vert" },
         { GL_FRAGMENT_SHADER, "shaders/triangles.frag" },
@@ -203,41 +185,16 @@ void init(void) {
     if (!program) exit(EXIT_FAILURE);
     glUseProgram(program);
 
-
     //// Ligar os atributos aos shaders
 
     GLint coordsId = goofy_table.GetInputLocation(program, "vPosition");
     GLint coresId  = goofy_table.GetInputLocation(program, "vColors");
 
-    goofy_table.AttribPointer(coordsId, 3);
-    goofy_table.AttribPointer(coresId, 3);
-
-    //// Obtém a localização do atributo 'vPosition' no 'programa'.
-    //GLint coordsId = glGetProgramResourceLocation(program, GL_PROGRAM_INPUT, "vPosition");
-    //GLint coresId =  glGetProgramResourceLocation(program, GL_PROGRAM_INPUT, "vColors");
-
-    //glBindBuffer(GL_ARRAY_BUFFER, Buffers[0]);
-    //glVertexAttribPointer(coordsId, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    //glBindBuffer(GL_ARRAY_BUFFER, Buffers[1]);
-    //glVertexAttribPointer(coresId, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    //glEnableVertexAttribArray(coordsId);
-    //glEnableVertexAttribArray(coresId);
+    goofy_table.AttribPointer(0, coordsId, 3);
+    goofy_table.AttribPointer(1, coresId, 3);
 }
 
 void display(void) {
-    //static const float black[] = {
-    //    0.0f, 0.0f, 0.0f, 0.0f
-    //};
-
-    //glClearBufferfv(GL_COLOR, 0, black);
-
-    // Vincula (torna ativo) o VAO
-    //glBindVertexArray(VAO);
-
-    //glDrawElements(GL_TRIANGLES, NumIndices, GL_UNSIGNED_INT, (void *)0);
-
     goofy_table.Draw();
 }
 

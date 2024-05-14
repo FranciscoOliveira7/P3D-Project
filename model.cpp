@@ -47,14 +47,8 @@ bool Model::BufferStorage(GLenum type, int buffer, const void* data, GLsizeiptr 
 	// Check if the index is valid
 	if (buffer < 0 || buffer > num_buffers_) return false;
 
-	if (buffer == 0) {
-		glBindBuffer(type, buffers_[0]);
-		glBufferStorage(type, sizeof(vertices), vertices, 0);
-	}
-	else {
-		glBindBuffer(type, buffers_[buffer]);
-		glBufferStorage(type, size, data, 0);
-	}
+	glBindBuffer(type, buffers_[buffer]);
+	glBufferStorage(type, buffer==0 || buffer==1 ? sizeof(float) * 24 : sizeof(int) * 36, data, 0);
 
 	return true;
 }
@@ -64,9 +58,10 @@ unsigned int Model::GetInputLocation(int program, const std::string& name) {
 	return glGetProgramResourceLocation(program, GL_PROGRAM_INPUT, name.c_str());
 }
 
-void Model::AttribPointer(unsigned int location, int size) {
+void Model::AttribPointer(int buffer, unsigned int location, int size) {
 
-	glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers_[buffer]);
+	glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(location);
 }
 

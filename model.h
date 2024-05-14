@@ -4,14 +4,6 @@
 #include <GL\glew.h>
 #include <string>
 
-const GLfloat vertices[8 * 3] = {
-	-9.0f,  0.5f,  5.5f,  9.0f,  0.5f,  5.5f,
-	-9.0f, -0.5f,  5.5f,  9.0f, -0.5f,  5.5f,
-
-	-9.0f,  0.5f, -5.5f,  9.0f,  0.5f, -5.5f,
-	-9.0f, -0.5f, -5.5f,  9.0f, -0.5f, -5.5f
-};
-
 typedef struct {
 	GLenum type;
 	GLuint shader;
@@ -27,7 +19,7 @@ public:
 
 	bool BufferStorage(GLenum type, int buffer, const void* data, GLsizeiptr size);
 	unsigned int GetInputLocation(int program, const std::string& name);
-	void AttribPointer(unsigned int location, int size);
+	void AttribPointer(int buffer, unsigned int location, int size);
 
 	void Draw(void);
 
