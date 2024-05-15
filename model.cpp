@@ -72,3 +72,7 @@ void Model::Draw(void) {
 
 	glDrawElements(GL_TRIANGLES, index_size_, GL_UNSIGNED_INT, (void*)0);
 }
+
+void Model::BindProgram(GLuint program) {
+	program_ = program;
+}

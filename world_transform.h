@@ -11,14 +11,14 @@ public:
 
     void SetScale(float scale);
     void SetRotation(float x, float y, float z);
-    void SetPosition(float x, float y, float z);
+    void SetPosition(vec3 position);
 
     void Rotate(float x, float y, float z);
 
     mat4 GetMatrix();
 
 private:
-    float scale_ = 1.0f;
-    vec3 rotation_ = vec3(0.0f, 0.0f, 0.0f);
-    vec3 pos_ = vec3(0.0f, 0.0f, 0.0f);
+    vec3 scale_    = vec3(1.0f);
+    vec3 rotation_ = vec3(0.0f);
+    vec3 pos_      = vec3(0.0f);
 };

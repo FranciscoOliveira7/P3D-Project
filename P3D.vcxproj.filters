@@ -7,6 +7,7 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="world_transform.cpp" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader_util.h" />
@@ -15,6 +16,7 @@
     <ClInclude Include="table.h" />
     <ClInclude Include="world_transform.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\triangles.vert" />

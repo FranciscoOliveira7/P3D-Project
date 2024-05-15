@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="renderer.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="shader_util.cpp" />
     <ClCompile Include="source.cpp" />
@@ -136,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="shader_util.h" />
     <ClInclude Include="model.h" />

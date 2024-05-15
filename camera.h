@@ -15,8 +15,6 @@ public:
 
     void SetPosition(float x, float y, float z);
 
-    void OnKeyboard(unsigned char key);
-
     mat4 GetViewMatrix();
 
 private:

@@ -6,10 +6,16 @@
 
 #include "world_transform.h"
 
+struct {
+	glm::vec3 emissive;
+	glm::vec3 ambient; // Ka
+	glm::vec3 diffuse; // kd
+	glm::vec3 specular; // ke
+	float shininess; // Expoente de reflexão especular
+} typedef Material;
+
 class Model {
 public:
-	WorldTrans transform;
-
 	Model(void);
 	Model(int num_vbos);
 	~Model();
@@ -22,10 +28,16 @@ public:
 
 	void Draw(void);
 
+	void BindProgram(GLuint program);
+
+	GLuint program_;
+
 private:
-	GLuint vao_ = 0;
+	GLuint vao_;
 	int num_buffers_ = 0;
 	GLuint* buffers_ = nullptr; // Array dos VBOs / EBOs
 
 	GLuint index_size_ = 0; // Numero de Indices
+
+	WorldTrans transform;
 };

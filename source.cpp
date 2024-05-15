@@ -23,9 +23,8 @@
 // Others
 
 #include "shader_util.h"
-#include "camera.h"
-#include "model.h"
 #include "table.h"
+#include "renderer.h"
 
 #pragma endregion
 
@@ -42,6 +41,9 @@ GLuint program;
 // Models
 Model goofy_table;
 
+// Renderer
+Renderer renderer;
+
 // Camera
 Camera camera;
 
@@ -51,8 +53,6 @@ float zNear = 1.0f;
 float zFar = 100.0f;
 
 float zoom = 10.0f;
-
-glm::mat4 projection = perspective(glm::radians(FOV), (float)(WIDTH / HEIGHT), zNear, zFar);
 
 // Camera zoom behaviour
 
@@ -134,6 +134,8 @@ int main(void) {
 void init(void) {
     glEnable(GL_DEPTH_TEST);
 
+    renderer.BindModel(&goofy_table);
+
     // Criar o VAO e os BOs
     goofy_table.InitializeComponents(3);
 
@@ -154,6 +156,8 @@ void init(void) {
     if (!program) exit(EXIT_FAILURE);
     glUseProgram(program);
 
+    goofy_table.program_ = program;
+
     // Ligar os atributos aos shaders
 
     GLint coordsId = goofy_table.GetInputLocation(program, "vPosition");
@@ -164,19 +168,18 @@ void init(void) {
 }
 
 void display(void) {
-
-    camera.SetPosition(0.0f, 0.0f, zoom);
-
-    goofy_table.transform.SetPosition(0.0f, -2.0f, 0.0f);
-    goofy_table.transform.SetRotation(0.0f, rotation, 0.0f);
-
-    glm::mat4 mvp = projection * camera.GetViewMatrix() * goofy_table.transform.GetMatrix();
-
-    GLint mpvId = glGetProgramResourceLocation(program, GL_UNIFORM, "MVP");
-    glProgramUniformMatrix4fv(program, mpvId, 1, GL_FALSE, glm::value_ptr(mvp));
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    goofy_table.Draw();
+
+    renderer.Render(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, rotation, 0.0f));
+
+    //camera.SetPosition(0.0f, 0.0f, zoom);
+
+    //glm::mat4 mvp = projection * camera.GetViewMatrix() * goofy_table.transform.GetMatrix();
+
+    //GLint mpvId = glGetProgramResourceLocation(program, GL_UNIFORM, "MVP");
+    //glProgramUniformMatrix4fv(program, mpvId, 1, GL_FALSE, glm::value_ptr(mvp));
+
+    //goofy_table.Draw();
 }
 
 void print_error(int error, const char* description) {
