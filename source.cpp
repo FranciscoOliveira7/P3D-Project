@@ -17,8 +17,6 @@
 #include <GLFW\glfw3.h>
 
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
-#include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
-#include <glm/gtc/type_ptr.hpp> // value_ptr
 
 // Others
 
@@ -137,7 +135,7 @@ void init(void) {
         { GL_NONE, NULL }
     };
 
-    // Load to program (código feito pelo stor)
+    // Compile and Load shaders to program (código feito pelo stor)
     program = LoadShaders(shaders);
     if (!program) exit(EXIT_FAILURE);
     glUseProgram(program);

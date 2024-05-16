@@ -10,6 +10,7 @@
 
 #include "model.h"
 #include "camera.h"
+#include "world_transform.h"
 
 using namespace glm;
 
@@ -23,12 +24,8 @@ public:
 
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 
-	VertexBuffer* vertexBuffer = nullptr;
-	VertexBuffer* colorBuffer = nullptr;
-	IndexBuffer* ib = nullptr;
-
 private:
-	Model* model_;
+	Model* model_ = nullptr;
 	Camera camera_;
 
 	mat4 projection = perspective(radians(45.0f), (float)(640 / 480), 1.0f, 100.0f);

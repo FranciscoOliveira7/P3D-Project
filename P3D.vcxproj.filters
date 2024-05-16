@@ -6,7 +6,6 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="world_transform.cpp" />
-    <ClCompile Include="input.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="vertex_buffer.cpp" />
     <ClCompile Include="index_buffer.cpp" />
@@ -17,7 +16,6 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="table.h" />
     <ClInclude Include="world_transform.h" />
-    <ClInclude Include="input.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="vertex_buffer.h" />
     <ClInclude Include="index_buffer.h" />

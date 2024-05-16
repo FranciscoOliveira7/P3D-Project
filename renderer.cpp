@@ -19,22 +19,19 @@ void Renderer::Render(vec3 position, vec3 orientation)
 
     glBindVertexArray(model_->vao_);
 
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(GL_TRIANGLES, model_->index_buffer_->Count(), GL_UNSIGNED_INT, (void*)0);
 }
 
 void Renderer::Install(void) {
 
-    vertexBuffer = new VertexBuffer(vertices, sizeof(vertices));
-    colorBuffer  = new VertexBuffer(cores, sizeof(cores));
-    ib           = new IndexBuffer(indices, 36);
+    model_->vertex_buffer_ = new VertexBuffer(vertices, sizeof(vertices));
+    model_->color_buffer_  = new VertexBuffer(cores, sizeof(cores));
+    model_->index_buffer_  = new IndexBuffer(indices, 36);
 
-    GLint coordsId = model_->GetInputLocation(model_->program_, "vPosition");
-    GLint coresId = model_->GetInputLocation(model_->program_, "vColors");
-
-    vertexBuffer->Bind();
-    model_->AttribPointer(0, 3, coordsId);
-    colorBuffer->Bind();
-    model_->AttribPointer(1, 3, coresId);
+    model_->vertex_buffer_->Bind();
+    model_->AttribPointer(0, 3, 0);
+    model_->color_buffer_->Bind();
+    model_->AttribPointer(1, 3, 1);
 }
 
 void Renderer::Load(const std::string obj_model_filepath)
