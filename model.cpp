@@ -48,15 +48,12 @@ unsigned int Model::GetInputLocation(int program, const std::string& name) {
 
 void Model::AttribPointer(int buffer, int size, unsigned int location) {
 
-	glBindBuffer(GL_ARRAY_BUFFER, buffers_[buffer]);
+	//glBindBuffer(GL_ARRAY_BUFFER, buffers_[buffer]);
 	glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(location);
 }
 
 void Model::Draw(void) {
-	glBindVertexArray(vao_);
-
-	glDrawElements(GL_TRIANGLES, index_size_, GL_UNSIGNED_INT, (void*)0);
 }
 
 void Model::BindProgram(GLuint program) {

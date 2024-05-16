@@ -17,21 +17,23 @@ void Renderer::Render(vec3 position, vec3 orientation)
     GLint mpvId = glGetProgramResourceLocation(model_->program_, GL_UNIFORM, "MVP");
     glProgramUniformMatrix4fv(model_->program_, mpvId, 1, GL_FALSE, value_ptr(mvp));
 
-    model_->Draw();
+    glBindVertexArray(model_->vao_);
+
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);
 }
 
 void Renderer::Install(void) {
 
-    model_->InitializeComponents(3); // Vertices, UVs/ Colors and Normals
-
-    model_->BufferStorage(GL_ARRAY_BUFFER, 0, vertices, sizeof(vertices));
-    model_->BufferStorage(GL_ARRAY_BUFFER, 1, cores, sizeof(cores));
-    model_->BufferStorage(GL_ELEMENT_ARRAY_BUFFER, 2, indices, sizeof(indices));
+    vertexBuffer = new VertexBuffer(vertices, sizeof(vertices));
+    colorBuffer  = new VertexBuffer(cores, sizeof(cores));
+    ib           = new IndexBuffer(indices, 36);
 
     GLint coordsId = model_->GetInputLocation(model_->program_, "vPosition");
     GLint coresId = model_->GetInputLocation(model_->program_, "vColors");
 
+    vertexBuffer->Bind();
     model_->AttribPointer(0, 3, coordsId);
+    colorBuffer->Bind();
     model_->AttribPointer(1, 3, coresId);
 }
 

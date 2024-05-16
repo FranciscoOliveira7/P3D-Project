@@ -8,6 +8,8 @@
     <ClCompile Include="world_transform.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="vertex_buffer.cpp" />
+    <ClCompile Include="index_buffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader_util.h" />
@@ -17,6 +19,8 @@
     <ClInclude Include="world_transform.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="vertex_buffer.h" />
+    <ClInclude Include="index_buffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\triangles.vert" />

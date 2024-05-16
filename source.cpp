@@ -23,7 +23,6 @@
 // Others
 
 #include "shader_util.h"
-//#include "table.h"
 #include "renderer.h"
 
 #pragma endregion
@@ -90,8 +89,6 @@ void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
     else if (yoffset == -1) zoom += fabs(zoom) * 0.1f;
 }
 
-//void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
-
 int main(void) {
     GLFWwindow* window;
 
@@ -115,7 +112,6 @@ int main(void) {
     glfwSetScrollCallback(window, scrollCallBack);
     glfwSetCursorPosCallback(window, cursorCallBack);
     glfwSetMouseButtonCallback(window, mouseCallBack);
-    //glfwSetKeyCallback(window, keyCallBack);
 
     init();
 

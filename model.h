@@ -3,15 +3,18 @@
 #define GLEW_STATIC
 #include <GL\glew.h>
 #include <string>
+#include <vector>
 
 #include "world_transform.h"
+#include "vertex_buffer.h"
+#include "index_buffer.h"
 
 struct {
 	glm::vec3 emissive;
-	glm::vec3 ambient; // Ka
-	glm::vec3 diffuse; // kd
+	glm::vec3 ambient;  // Ka
+	glm::vec3 diffuse;  // kd
 	glm::vec3 specular; // ke
-	float shininess; // Expoente de reflexão especular
+	float shininess;    // Expoente de reflexão especular
 } typedef Material;
 
 class Model {
@@ -29,11 +32,11 @@ public:
 	void BindProgram(GLuint program);
 
 	GLuint program_ = 0;
-	GLuint vao_;         // Vertex array object
+	GLuint vao_;            // Vertex array object
+	GLuint index_size_ = 0; // Numero de Indices
 
 private:
 	int num_buffers_ = 0;
 	GLuint* buffers_ = nullptr; // Array dos VBOs / EBOs
 
-	GLuint index_size_ = 0; // Numero de Indices
 };
