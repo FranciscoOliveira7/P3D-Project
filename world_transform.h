@@ -15,7 +15,7 @@ public:
 
     void Rotate(float x, float y, float z);
 
-    mat4 GetMatrix();
+    mat4 GetMatrix(void);
 
 private:
     vec3 scale_    = vec3(1.0f);

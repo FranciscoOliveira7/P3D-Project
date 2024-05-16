@@ -15,12 +15,12 @@ public:
 
     void SetPosition(float x, float y, float z);
 
-    mat4 GetViewMatrix();
+    mat4 GetViewMatrix(void) { return view_mat; }
 
 private:
 
-    vec3 eye_;
     vec3 center_;
     vec3 up_;
-    float m_speed = 1.0f;
+
+    mat4 view_mat;
 };

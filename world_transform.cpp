@@ -28,7 +28,7 @@ void WorldTrans::Rotate(float x, float y, float z)
 }
 
 
-mat4 WorldTrans::GetMatrix()
+mat4 WorldTrans::GetMatrix(void)
 {
     mat4 model = mat4(1.0f);
 

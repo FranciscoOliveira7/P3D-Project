@@ -16,8 +16,6 @@ struct {
 
 class Model {
 public:
-	Model(void);
-	Model(int num_vbos);
 	~Model();
 
 	void InitializeComponents(int num_buffers);
@@ -30,14 +28,12 @@ public:
 
 	void BindProgram(GLuint program);
 
-	GLuint program_;
+	GLuint program_ = 0;
+	GLuint vao_;         // Vertex array object
 
 private:
-	GLuint vao_;
 	int num_buffers_ = 0;
 	GLuint* buffers_ = nullptr; // Array dos VBOs / EBOs
 
 	GLuint index_size_ = 0; // Numero de Indices
-
-	WorldTrans transform;
 };

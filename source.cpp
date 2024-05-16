@@ -23,7 +23,7 @@
 // Others
 
 #include "shader_util.h"
-#include "table.h"
+//#include "table.h"
 #include "renderer.h"
 
 #pragma endregion
@@ -54,13 +54,6 @@ float zFar = 100.0f;
 
 float zoom = 10.0f;
 
-// Camera zoom behaviour
-
-void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
-    if (yoffset == 1) zoom -= fabs(zoom) * 0.1f;
-    else if (yoffset == -1) zoom += fabs(zoom) * 0.1f;
-}
-
 // Table rotation behaviour
 
 GLfloat rotation = 0.0f;
@@ -88,6 +81,13 @@ void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
         }
         else if (action == GLFW_RELEASE) isPressing = false;
     }
+}
+
+// Camera zoom behaviour
+
+void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
+    if (yoffset == 1) zoom -= fabs(zoom) * 0.1f;
+    else if (yoffset == -1) zoom += fabs(zoom) * 0.1f;
 }
 
 //void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -134,16 +134,6 @@ int main(void) {
 void init(void) {
     glEnable(GL_DEPTH_TEST);
 
-    renderer.BindModel(&goofy_table);
-
-    // Criar o VAO e os BOs
-    goofy_table.InitializeComponents(3);
-
-    // Mandar a informação para os VBOs / EBO
-    goofy_table.BufferStorage(GL_ARRAY_BUFFER, 0, vertices, sizeof(vertices));
-    goofy_table.BufferStorage(GL_ARRAY_BUFFER, 1, cores, sizeof(cores));
-    goofy_table.BufferStorage(GL_ELEMENT_ARRAY_BUFFER, 2, indices, sizeof(indices));
-
     // Shaders type and locations
     ShaderInfo shaders[] = {
         { GL_VERTEX_SHADER,   "shaders/triangles.vert" },
@@ -156,30 +146,18 @@ void init(void) {
     if (!program) exit(EXIT_FAILURE);
     glUseProgram(program);
 
+    renderer.BindModel(&goofy_table);
     goofy_table.program_ = program;
 
-    // Ligar os atributos aos shaders
-
-    GLint coordsId = goofy_table.GetInputLocation(program, "vPosition");
-    GLint coresId  = goofy_table.GetInputLocation(program, "vColors");
-
-    goofy_table.AttribPointer(0, 3, coordsId);
-    goofy_table.AttribPointer(1, 3, coresId);
+    renderer.Install();
 }
 
 void display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    renderer.Render(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, rotation, 0.0f));
+    renderer.SetCameraPosition(0.0f, 0.0f, zoom);
 
-    //camera.SetPosition(0.0f, 0.0f, zoom);
-
-    //glm::mat4 mvp = projection * camera.GetViewMatrix() * goofy_table.transform.GetMatrix();
-
-    //GLint mpvId = glGetProgramResourceLocation(program, GL_UNIFORM, "MVP");
-    //glProgramUniformMatrix4fv(program, mpvId, 1, GL_FALSE, glm::value_ptr(mvp));
-
-    //goofy_table.Draw();
+    renderer.Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation, 0.0f));
 }
 
 void print_error(int error, const char* description) {

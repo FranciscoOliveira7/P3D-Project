@@ -1,19 +1,5 @@
 #include "model.h"
 
-Model::Model(void) { }
-Model::Model(int num_vbos) : num_buffers_{ num_vbos } {
-
-	// Creates vao for the Model
-	glGenVertexArrays(1, &vao_);
-	glBindVertexArray(vao_);
-
-	// Alocate space to store Buffer Object's names
-	buffers_ = new GLuint[num_buffers_];
-
-	// Generate Buffer Object names
-	glGenBuffers(num_buffers_, buffers_);
-}
-
 Model::~Model() {
 	delete[] buffers_;
 }
@@ -50,7 +36,7 @@ bool Model::BufferStorage(GLenum type, int buffer, const void* data, GLsizeiptr 
 	glBindBuffer(type, buffers_[buffer]);
 	glBufferStorage(type, size, data, 0);
 
-	if (type == GL_ELEMENT_ARRAY_BUFFER) index_size_ = static_cast<int>(size / sizeof(int));
+	if (type == GL_ELEMENT_ARRAY_BUFFER) index_size_ = static_cast<int>(size / sizeof(GLuint));
 
 	return true;
 }
