@@ -83,16 +83,6 @@ GLuint Shader::LoadShaders(ShaderInfo* shaders) {
 		glGetShaderiv(shaders[i].shader, GL_COMPILE_STATUS, &compiled);
 		// Em caso de erro na compilação
 		if (!compiled) {
-#ifdef _DEBUG
-			GLsizei len;
-			glGetShaderiv(shaders[i].shader, GL_INFO_LOG_LENGTH, &len);
-
-			GLchar* log = new GLchar[len + 1];
-			glGetShaderInfoLog(shaders[i].shader, len, &len, log);
-			std::cerr << "Shader compilation failed: " << log << std::endl;
-			delete[] log;
-#endif /* DEBUG */
-
 			DestroyShaders(shaders);
 
 			return 0;
@@ -110,16 +100,6 @@ GLuint Shader::LoadShaders(ShaderInfo* shaders) {
 	glGetProgramiv(program, GL_LINK_STATUS, &linked);
 	// Em caso de erro na linkagem
 	if (!linked) {
-#ifdef _DEBUG
-		GLsizei len;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
-
-		GLchar* log = new GLchar[len + 1];
-		glGetProgramInfoLog(program, len, &len, log);
-		std::cerr << "Shader linking failed: " << log << std::endl;
-		delete[] log;
-#endif /* DEBUG */
-
 		DestroyShaders(shaders);
 
 		return 0;

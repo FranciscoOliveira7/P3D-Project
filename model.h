@@ -19,11 +19,7 @@ typedef struct {
 
 class Model {
 public:
-	~Model();
-
-	void InitializeComponents(int num_buffers);
-
-	void AttribPointer(int buffer, int size, unsigned int location);
+	void AttribPointer(int size, unsigned int location);
 
 	GLuint vao_ = 0; // Vertex array object
 
@@ -33,7 +29,5 @@ public:
 	IndexBuffer* index_buffer_ = nullptr;
 
 private:
-	int num_buffers_ = 0;
-	GLuint* buffers_ = nullptr; // Array dos VBOs / EBOs
 
 };

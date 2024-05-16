@@ -23,9 +23,9 @@ void Renderer::Install(void) {
     model_->index_buffer_  = new IndexBuffer(indices, 36);
 
     model_->vertex_buffer_->Bind();
-    model_->AttribPointer(0, 3, 0); // Location 0: vPositions
+    model_->AttribPointer(3, 0); // Location 0: vPositions
     model_->color_buffer_->Bind();
-    model_->AttribPointer(1, 3, 1); // Location 1: vColors
+    model_->AttribPointer(3, 1); // Location 1: vColors
 }
 
 void Renderer::Load(const std::string obj_model_filepath)
