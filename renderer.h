@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 
+#include "shader.h"
 #include "model.h"
 #include "camera.h"
 #include "world_transform.h"
@@ -16,7 +17,8 @@ using namespace glm;
 
 class Renderer {
 public:
-	void BindModel(Model* model);
+	void BindShader(Shader* shader) { shader_ = shader; }
+	void BindModel(Model* model) { model_ = model; }
 
 	void Render(vec3 position, vec3 orientation);
 	void Install(void);
@@ -25,6 +27,7 @@ public:
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 
 private:
+	Shader* shader_ = nullptr;
 	Model* model_ = nullptr;
 	Camera camera_;
 

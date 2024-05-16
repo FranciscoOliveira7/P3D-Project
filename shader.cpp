@@ -1,14 +1,28 @@
-#pragma once
+#include "shader.h"
 
-#include <iostream>
-#include <fstream>
+Shader::Shader(ShaderInfo* shaders)
+{
+    // Compile and Load shaders to program (código feito pelo stor)
+    program_ = LoadShaders(shaders);
+    if (!program_) exit(EXIT_FAILURE);
+    glUseProgram(program_);
+}
 
-#define GLEW_STATIC
-#include <GL\glew.h>
+void Shader::SetUniformMatrix4fv(const std::string& name, glm::mat4 mat)
+{
+    GLint location = GetUniformLocation(name);
+    glProgramUniformMatrix4fv(program_, location, 1, GL_FALSE, value_ptr(mat));
+}
 
-#include "shader_util.h"
+unsigned int Shader::GetUniformLocation(const std::string& name)
+{
+    GLint location = glGetProgramResourceLocation(program_, GL_UNIFORM, name.c_str());
+    if (location == -1) std::cout << "Warning: uniform '" << name << "' doesn't exist" << std::endl;
+    return location;
+}
 
-static const GLchar* ReadShader(const char* filename) {
+
+GLchar* Shader::ReadShader(const char* filename) {
 	// Abre o ficheiro 'filename' em binário, e coloca-se na última posição do ficheiro.
 	std::ifstream ficheiro(filename, std::ifstream::ate | std::ifstream::binary);
 	// Se o ficheiro foi aberto.
@@ -29,7 +43,7 @@ static const GLchar* ReadShader(const char* filename) {
 		ficheiro.close();
 
 		// Retorna o endereço da string alocada.
-		return const_cast<const GLchar*>(source);
+		return const_cast<GLchar*>(source);
 	}
 	else {
 		std::cerr << "Erro ao abrir o ficheiro '" << filename << "'" << std::endl;
@@ -38,7 +52,7 @@ static const GLchar* ReadShader(const char* filename) {
 	return nullptr;
 }
 
-GLuint LoadShaders(ShaderInfo* shaders) {
+GLuint Shader::LoadShaders(ShaderInfo* shaders) {
 	if (shaders == nullptr) return 0;
 
 	// Cria um objeto de programa
@@ -114,7 +128,7 @@ GLuint LoadShaders(ShaderInfo* shaders) {
 	return program;
 }
 
-void DestroyShaders(ShaderInfo *shaders) {
+void Shader::DestroyShaders(ShaderInfo* shaders) {
 	// Destrói os shaders que tinham criados
 	for (int j = 0; shaders[j].type != GL_NONE; j++) {
 		// Se tem um shader válido (i.e., != 0)

@@ -29,10 +29,3 @@ void Model::AttribPointer(int buffer, int size, unsigned int location) {
 	glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(location);
 }
-
-void Model::Draw(void) {
-}
-
-void Model::BindProgram(GLuint program) {
-	program_ = program;
-}

@@ -130,9 +130,10 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="index_buffer.cpp" />
     <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="shader_util.cpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="vertex_array.cpp" />
     <ClCompile Include="vertex_buffer.cpp" />
     <ClCompile Include="world_transform.cpp" />
   </ItemGroup>
@@ -140,9 +141,10 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="index_buffer.h" />
     <ClInclude Include="renderer.h" />
-    <ClInclude Include="shader_util.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="table.h" />
+    <ClInclude Include="vertex_array.h" />
     <ClInclude Include="vertex_buffer.h" />
     <ClInclude Include="world_transform.h" />
   </ItemGroup>

@@ -1,11 +1,6 @@
 #include "renderer.h"
 #include "table.h"
 
-void Renderer::BindModel(Model* model)
-{
-	model_ = model;
-}
-
 void Renderer::Render(vec3 position, vec3 orientation)
 {
     WorldTrans world;
@@ -14,8 +9,7 @@ void Renderer::Render(vec3 position, vec3 orientation)
 
     mat4 mvp = projection * camera_.GetViewMatrix() * world.GetMatrix();
 
-    GLint mpvId = glGetProgramResourceLocation(model_->program_, GL_UNIFORM, "MVP");
-    glProgramUniformMatrix4fv(model_->program_, mpvId, 1, GL_FALSE, value_ptr(mvp));
+    shader_->SetUniformMatrix4fv("MVP", mvp);
 
     glBindVertexArray(model_->vao_);
 
@@ -29,9 +23,9 @@ void Renderer::Install(void) {
     model_->index_buffer_  = new IndexBuffer(indices, 36);
 
     model_->vertex_buffer_->Bind();
-    model_->AttribPointer(0, 3, 0);
+    model_->AttribPointer(0, 3, 0); // Location 0: vPositions
     model_->color_buffer_->Bind();
-    model_->AttribPointer(1, 3, 1);
+    model_->AttribPointer(1, 3, 1); // Location 1: vColors
 }
 
 void Renderer::Load(const std::string obj_model_filepath)

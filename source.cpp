@@ -20,7 +20,7 @@
 
 // Others
 
-#include "shader_util.h"
+#include "shader.h"
 #include "renderer.h"
 
 #pragma endregion
@@ -40,6 +40,9 @@ Model goofy_table;
 
 // Renderer
 Renderer renderer;
+
+// Shaders
+Shader* shader = nullptr;
 
 // Camera
 Camera camera;
@@ -135,13 +138,10 @@ void init(void) {
         { GL_NONE, NULL }
     };
 
-    // Compile and Load shaders to program (código feito pelo stor)
-    program = LoadShaders(shaders);
-    if (!program) exit(EXIT_FAILURE);
-    glUseProgram(program);
+    shader = new Shader(shaders);
 
+    renderer.BindShader(shader);
     renderer.BindModel(&goofy_table);
-    goofy_table.program_ = program;
 
     renderer.Install();
 }

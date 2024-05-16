@@ -1,4 +1,11 @@
-#include <GL\gl.h>
+#pragma once
+
+#include <iostream>
+#include <fstream>
+#include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
+#include <glm/gtc/type_ptr.hpp> // value_ptr
+#include <GL/glew.h>
+#include <string>
 
 /*****************************************************************************
 					 GLuint LoadShaders(ShaderInfo*);
@@ -31,16 +38,24 @@ Em caso de sucesso, a função retorna o valore que referencia o objeto programa.
 Em caso de erro, será retornado o valor zero (0).
 
 *****************************************************************************/
-
-// Descomentar para debug
-#define _DEBUG
-
 typedef struct {
 	GLenum      type;
 	const char* filename;
 	GLuint      shader;
 } ShaderInfo;
 
-GLuint LoadShaders(ShaderInfo*);
+class Shader {
+private:
+	GLuint program_;
 
-void DestroyShaders(ShaderInfo*);
+public:
+	Shader(ShaderInfo* shaders);
+
+	void SetUniformMatrix4fv(const std::string& name, glm::mat4 mat);
+
+	unsigned int GetUniformLocation(const std::string& name);
+
+	GLchar* ReadShader(const char* filename);
+	GLuint LoadShaders(ShaderInfo* shaders);
+	void DestroyShaders(ShaderInfo* shaders);
+};

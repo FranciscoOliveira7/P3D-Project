@@ -25,12 +25,7 @@ public:
 
 	void AttribPointer(int buffer, int size, unsigned int location);
 
-	void Draw(void);
-
-	void BindProgram(GLuint program);
-
 	GLuint vao_ = 0; // Vertex array object
-	GLuint program_ = 0;
 
 	VertexBuffer* vertex_buffer_ = nullptr;
 	VertexBuffer* color_buffer_ = nullptr;
