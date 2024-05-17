@@ -22,14 +22,14 @@ class Model {
 public:
 	~Model();
 
-	void AttribPointer(int size, unsigned int location);
-
-	//GLuint vao_ = 0; // Vertex array object
+	void AttribPointer();
 
 	VertexArray* vao_ = nullptr;
 
 	VertexBuffer* vertex_buffer_ = nullptr;
-	VertexBuffer* color_buffer_ = nullptr;
+	VertexBuffer* color_buffer_  = nullptr;
 	VertexBuffer* normal_buffer_ = nullptr;
-	IndexBuffer* index_buffer_ = nullptr;
+	IndexBuffer* index_buffer_   = nullptr;
+private:
+	Material material;
 };

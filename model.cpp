@@ -7,11 +7,22 @@ Model::~Model()
 	delete normal_buffer_;
 	delete index_buffer_;
 
-	
+	delete vao_;
 }
 
-void Model::AttribPointer(int size, unsigned int location) {
+// Not the most abstract implementation ever but I'm too lazy
+void Model::AttribPointer() {
 
-	glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(location);
+	// I'm just assuming the layout for each buffer
+
+	if (vertex_buffer_ != nullptr) {
+		vertex_buffer_->Bind();
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(0);
+	}
+	if (color_buffer_ != nullptr) {
+		color_buffer_->Bind();
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(1);
+	}
 }

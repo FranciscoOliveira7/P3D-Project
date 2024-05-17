@@ -24,10 +24,7 @@ void Renderer::Install(void) {
     model_->color_buffer_  = new VertexBuffer(cores, sizeof(cores));
     model_->index_buffer_  = new IndexBuffer(indices, sizeof(indices) / sizeof(GLuint));
 
-    model_->vertex_buffer_->Bind();
-    model_->AttribPointer(3, 0); // Location 0: vPositions
-    model_->color_buffer_->Bind();
-    model_->AttribPointer(3, 1); // Location 1: vColors
+    model_->AttribPointer();
 }
 
 void Renderer::Load(const std::string obj_model_filepath)

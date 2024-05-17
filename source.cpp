@@ -29,8 +29,8 @@
 #define HEIGHT 480
 
 void print_error(int error, const char* description);
-void init(std::vector<Model> models);
-void draw(std::vector<Model> models);
+void init(std::vector<Model> &models);
+void draw(std::vector<Model> &models);
 
 // Renderer
 Renderer renderer;
@@ -74,6 +74,8 @@ void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
     if (yoffset == 1) zoom -= fabs(zoom) * 0.1f;
     else if (yoffset == -1) zoom += fabs(zoom) * 0.1f;
+
+    renderer.SetCameraPosition(0.0f, 0.0f, zoom);
 }
 
 int main(void) {
@@ -104,7 +106,6 @@ int main(void) {
     Model goofy_table;
     models.push_back(goofy_table);
 
-
     init(models);
 
     while (!glfwWindowShouldClose(window)) {
@@ -119,7 +120,7 @@ int main(void) {
     return 0;
 }
 
-void init(std::vector<Model> models) {
+void init(std::vector<Model> &models) {
     glEnable(GL_DEPTH_TEST);
 
     // Shaders type and locations
@@ -137,17 +138,13 @@ void init(std::vector<Model> models) {
         renderer.BindModel(&models[i]);
         renderer.Install();
     }
-
-    glCullFace(GL_FRONT_AND_BACK);
 }
 
-void draw(std::vector<Model> models) {
+void draw(std::vector<Model> &models) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     // Draw each object
     for (int i = 0; i < models.size(); i++) {
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        renderer.SetCameraPosition(0.0f, 0.0f, zoom);
 
         renderer.BindModel(&models[i]);
         renderer.Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation, 0.0f));
