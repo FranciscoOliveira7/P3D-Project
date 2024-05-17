@@ -22,9 +22,9 @@ class Model {
 public:
 	~Model();
 
-	void AttribPointer();
+	void AttribPointer() const;
 
-	VertexArray* vao_ = nullptr;
+	VertexArray vao_;
 
 	VertexBuffer* vertex_buffer_ = nullptr;
 	VertexBuffer* color_buffer_  = nullptr;

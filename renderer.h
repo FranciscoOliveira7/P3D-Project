@@ -31,5 +31,10 @@ private:
 	Model* model_ = nullptr;
 	Camera camera_;
 
+	std::vector<float> vertices;
+	std::vector<float> colors;
+	std::vector<float> normals;
+	std::vector<int> indexes;
+
 	mat4 projection = perspective(radians(45.0f), (float)(640 / 480), 1.0f, 100.0f);
 };

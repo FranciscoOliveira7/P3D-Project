@@ -104,7 +104,9 @@ int main(void) {
 
     std::vector<Model> models;
     Model goofy_table;
+    Model goofy_table2;
     models.push_back(goofy_table);
+    models.push_back(goofy_table2);
 
     init(models);
 
@@ -147,7 +149,7 @@ void draw(std::vector<Model> &models) {
     for (int i = 0; i < models.size(); i++) {
 
         renderer.BindModel(&models[i]);
-        renderer.Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation, 0.0f));
+        renderer.Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation * (i+1), 0.0f));
     }
 }
 

@@ -11,14 +11,14 @@ void Renderer::Render(vec3 position, vec3 orientation)
 
     shader_->SetUniformMatrix4fv("MVP", mvp);
 
-    model_->vao_->Bind();
+    model_->vao_.Bind();
 
     glDrawElements(GL_TRIANGLES, model_->index_buffer_->Count(), GL_UNSIGNED_INT, (void*)0);
 }
 
 void Renderer::Install(void) {
 
-    model_->vao_ = new VertexArray();
+    model_->vao_.Bind();
 
     model_->vertex_buffer_ = new VertexBuffer(vertices, sizeof(vertices));
     model_->color_buffer_  = new VertexBuffer(cores, sizeof(cores));
@@ -29,5 +29,11 @@ void Renderer::Install(void) {
 
 void Renderer::Load(const std::string obj_model_filepath)
 {
+    /* Read to the vectors:
+       std::vector<float> vertices;
+       std::vector<float> colors;
+       std::vector<float> normals;
+       std::vector<int> indexes;
+    */
 }
 

@@ -6,12 +6,10 @@ Model::~Model()
 	delete color_buffer_;
 	delete normal_buffer_;
 	delete index_buffer_;
-
-	delete vao_;
 }
 
 // Not the most abstract implementation ever but I'm too lazy
-void Model::AttribPointer() {
+void Model::AttribPointer() const {
 
 	// I'm just assuming the layout for each buffer
 
