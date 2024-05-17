@@ -11,6 +11,11 @@ VertexArray::~VertexArray()
 	glDeleteVertexArrays(1, &id_);
 }
 
+void VertexArray::Bind()
+{
+	glBindVertexArray(id_);
+}
+
 void VertexArray::AddBuffer(const VertexBuffer& vb)
 {
 	vb.Bind();

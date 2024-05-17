@@ -6,6 +6,7 @@
 #include <vector>
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
 
+#include "vertex_array.h"
 #include "vertex_buffer.h"
 #include "index_buffer.h"
 
@@ -19,15 +20,16 @@ typedef struct {
 
 class Model {
 public:
+	~Model();
+
 	void AttribPointer(int size, unsigned int location);
 
-	GLuint vao_ = 0; // Vertex array object
+	//GLuint vao_ = 0; // Vertex array object
+
+	VertexArray* vao_ = nullptr;
 
 	VertexBuffer* vertex_buffer_ = nullptr;
 	VertexBuffer* color_buffer_ = nullptr;
 	VertexBuffer* normal_buffer_ = nullptr;
 	IndexBuffer* index_buffer_ = nullptr;
-
-private:
-
 };

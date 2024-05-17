@@ -29,28 +29,14 @@
 #define HEIGHT 480
 
 void print_error(int error, const char* description);
-void init(void);
-void display(void);
-
-// Porgram
-GLuint program;
-
-// Models
-Model goofy_table;
+void init(std::vector<Model> models);
+void draw(std::vector<Model> models);
 
 // Renderer
 Renderer renderer;
 
 // Shaders
 Shader* shader = nullptr;
-
-// Camera
-Camera camera;
-
-// Projection
-float FOV = 45.0f;
-float zNear = 1.0f;
-float zFar = 100.0f;
 
 float zoom = 10.0f;
 
@@ -114,11 +100,16 @@ int main(void) {
     glfwSetCursorPosCallback(window, cursorCallBack);
     glfwSetMouseButtonCallback(window, mouseCallBack);
 
-    init();
+    std::vector<Model> models;
+    Model goofy_table;
+    models.push_back(goofy_table);
+
+
+    init(models);
 
     while (!glfwWindowShouldClose(window)) {
 
-        display();
+        draw(models);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -128,7 +119,7 @@ int main(void) {
     return 0;
 }
 
-void init(void) {
+void init(std::vector<Model> models) {
     glEnable(GL_DEPTH_TEST);
 
     // Shaders type and locations
@@ -139,19 +130,28 @@ void init(void) {
     };
 
     shader = new Shader(shaders);
-
     renderer.BindShader(shader);
-    renderer.BindModel(&goofy_table);
 
-    renderer.Install();
+    // Load models to renderer
+    for (int i = 0; i < models.size(); i++) {
+        renderer.BindModel(&models[i]);
+        renderer.Install();
+    }
+
+    glCullFace(GL_FRONT_AND_BACK);
 }
 
-void display(void) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void draw(std::vector<Model> models) {
+    // Draw each object
+    for (int i = 0; i < models.size(); i++) {
 
-    renderer.SetCameraPosition(0.0f, 0.0f, zoom);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    renderer.Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation, 0.0f));
+        renderer.SetCameraPosition(0.0f, 0.0f, zoom);
+
+        renderer.BindModel(&models[i]);
+        renderer.Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation, 0.0f));
+    }
 }
 
 void print_error(int error, const char* description) {

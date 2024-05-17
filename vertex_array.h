@@ -11,5 +11,6 @@ public:
 	VertexArray();
 	~VertexArray();
 
+	void Bind();
 	void AddBuffer(const VertexBuffer& vb);
 };
