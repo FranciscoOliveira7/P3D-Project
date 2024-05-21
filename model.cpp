@@ -132,5 +132,6 @@ void Model::Load(const std::string& obj_model_filepath) {
     //std::cout << normals.size() << std::endl;
     //std::cout << vertexIndices.size() << std::endl;
 
+
     file.close();
 }
