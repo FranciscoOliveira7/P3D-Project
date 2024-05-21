@@ -12,13 +12,21 @@ void Renderer::Render(vec3 position, vec3 orientation)
     shader_->SetUniformMatrix4fv("MVP", mvp);
 
     model_->vao_.Bind();
+    std::cout << model_->vao_.GetId() << std::endl;
 
-    glDrawElements(GL_TRIANGLES, model_->index_buffer_->Count(), GL_UNSIGNED_INT, (void*)0);
+    glDrawElements(GL_TRIANGLES, model_->index_buffer_->Count(), GL_UNSIGNED_INT, (void*) 0);
 }
 
 void Renderer::Install(bool test) {
 
+    GLint vaoid;
+
     model_->vao_.Bind();
+    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &vaoid);
+
+    glBindVertexArray(1);
+    std::cout << model_->vao_.GetId() << std::endl;
+    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &vaoid);
 
     if (!test) {
         model_->vertex_buffer_ = new VertexBuffer(vertices, sizeof(vertices));
@@ -32,10 +40,20 @@ void Renderer::Install(bool test) {
     }
 
     model_->AttribPointer();
+
+    glBindVertexArray(0);
+    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &vaoid);
+
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    //glUseProgram(0);
+    //glBindTexture(GL_TEXTURE_2D, 0);
+
+    //model_->vao_.Unbind();
 }
 
-void Renderer::Load(const std::string &obj_model_filepath)
-{
+void Renderer::Load(const std::string &obj_model_filepath) {
+
     std::ifstream file(obj_model_filepath);
     if (!file.is_open()) {
         std::cerr << "Failed to open the file: " << obj_model_filepath << std::endl;
@@ -85,21 +103,11 @@ void Renderer::Load(const std::string &obj_model_filepath)
         }
     }
 
-    //for (int i = 0; i < vertexes.size(); i++)
-    //{
-    //    std::cout << "Vertice " << i << ": " << vertexes[i].x << vertexes[i].y << vertexes[i].z << std::endl;
-    //}
-
-    //for (int i = 0; i < vertexIndices.size(); i++)
-    //{
-    //    std::cout << "Vertice " << i << ": " << vertexIndices[i] << std::endl;
-    //}
-
-    std::cout << vertexes.size() << std::endl;
-    std::cout << colors.size() << std::endl;
-    std::cout << uvs.size() << std::endl;
-    std::cout << normals.size() << std::endl;
-    std::cout << vertexIndices.size() << std::endl;
+    //std::cout << vertexes.size() << std::endl;
+    //std::cout << colors.size() << std::endl;
+    //std::cout << uvs.size() << std::endl;
+    //std::cout << normals.size() << std::endl;
+    //std::cout << vertexIndices.size() << std::endl;
 
     file.close();
 }

@@ -12,5 +12,8 @@ public:
 	~VertexArray();
 
 	void Bind();
+	void Unbind();
 	void AddBuffer(const VertexBuffer& vb);
+
+	unsigned int GetId() { return id_; }
 };

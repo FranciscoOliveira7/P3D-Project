@@ -36,5 +36,5 @@ private:
 	std::vector<vec3> normals;
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
 
-	mat4 projection = perspective(radians(45.0f), (float)(640 / 480), 1.0f, 100.0f);
+	mat4 projection = perspective(radians(45.0f), (float)640 / (float)480, 1.0f, 100.0f);
 };

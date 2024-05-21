@@ -122,6 +122,7 @@ int main(void) {
 
 void init(std::vector<Model> &models) {
     glEnable(GL_DEPTH_TEST);
+    glClearColor(0.2f, 0.2f, 0.25f, 1.0f);
 
     // Shaders type and locations
     ShaderInfo shaders[] = {
@@ -133,11 +134,11 @@ void init(std::vector<Model> &models) {
     shader = new Shader(shaders);
     renderer.BindShader(shader);
 
+    renderer.Load("PoolBalls\\Ball1.obj");
+
     // Load models to renderer
     for (int i = 0; i < models.size(); i++) {
         renderer.BindModel(&models[i]);
-        if (i == 1)
-        renderer.Load("PoolBalls\\Ball1.obj");
         renderer.Install(i);
     }
 }
@@ -149,7 +150,7 @@ void draw(std::vector<Model> &models) {
     for (int i = 0; i < models.size(); i++) {
 
         renderer.BindModel(&models[i]);
-        renderer.Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation, 0.0f));
+        renderer.Render(glm::vec3(0.0f, -2.0f * (i+1), 0.0f), glm::vec3(0.0f, rotation * (i + 1), 0.0f));
     }
 }
 
