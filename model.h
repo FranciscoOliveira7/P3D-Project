@@ -7,6 +7,11 @@
 #include "vertex_array.h"
 #include "vertex_buffer.h"
 #include "index_buffer.h"
+#include "world_transform.h"
+#include "camera.h"
+#include "shader.h"
+
+using namespace glm;
 
 typedef struct {
 	glm::vec3 emissive;
@@ -18,16 +23,25 @@ typedef struct {
 
 class Model {
 public:
+	void BindShader(Shader* shader) { shader_ = shader; }
 	void Delete();
 
+	void Render(vec3 position, vec3 orientation);
+	void Install(bool);
 	void AttribPointer() const;
+
+	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 
 	VertexArray vao_;
 
-	VertexBuffer* vertex_buffer_ = nullptr;
-	VertexBuffer* color_buffer_  = nullptr;
-	VertexBuffer* normal_buffer_ = nullptr;
-	IndexBuffer* index_buffer_   = nullptr;
+	VertexBuffer vertex_buffer_;
+	VertexBuffer color_buffer_;
+	VertexBuffer normal_buffer_;
+	IndexBuffer index_buffer_;
 private:
+	Shader* shader_ = nullptr;
 	Material material;
+	Camera camera_;
+
+	mat4 projection = perspective(radians(45.0f), (float)640 / (float)480, 1.0f, 100.0f);
 };

@@ -5,15 +5,15 @@
 
 class VertexArray {
 private:
-	unsigned int id_;
+	unsigned int id_ = 0;
 
 public:
-	VertexArray();
-	~VertexArray();
+	void Create();
+	void Delete();
 
 	void Bind();
 	void Unbind();
 	void AddBuffer(const VertexBuffer& vb);
 
-	unsigned int GetId() { return id_; }
+	unsigned int GetId() const { return id_; }
 };

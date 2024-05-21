@@ -72,8 +72,6 @@ void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
     if (yoffset == 1) zoom -= fabs(zoom) * 0.1f;
     else if (yoffset == -1) zoom += fabs(zoom) * 0.1f;
-
-    renderer.SetCameraPosition(0.0f, 0.0f, zoom);
 }
 
 int main(void) {
@@ -102,9 +100,9 @@ int main(void) {
 
     std::vector<Model> models;
     Model goofy_table;
-    Model ball;
+    //Model ball;
     models.push_back(goofy_table);
-    models.push_back(ball);
+    //models.push_back(ball);
 
     init(models);
 
@@ -132,14 +130,14 @@ void init(std::vector<Model> &models) {
     };
 
     shader = new Shader(shaders);
-    renderer.BindShader(shader);
 
     renderer.Load("PoolBalls\\Ball1.obj");
 
     // Load models to renderer
     for (int i = 0; i < models.size(); i++) {
-        renderer.BindModel(&models[i]);
-        renderer.Install(i);
+        //renderer.BindModel(models[i]);
+        models[i].BindShader(shader);
+        models[i].Install(i);
     }
 }
 
@@ -149,8 +147,8 @@ void draw(std::vector<Model> &models) {
     // Draw each object
     for (int i = 0; i < models.size(); i++) {
 
-        renderer.BindModel(&models[i]);
-        renderer.Render(glm::vec3(0.0f, -2.0f * (i+1), 0.0f), glm::vec3(0.0f, rotation * (i + 1), 0.0f));
+        models[i].SetCameraPosition(0.0f, 0.0f, zoom);
+        models[i].Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation * (i + 1), 0.0f));
     }
 }
 

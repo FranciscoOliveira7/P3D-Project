@@ -1,12 +1,12 @@
 #include "vertex_array.h"
 
-VertexArray::VertexArray()
+void VertexArray::Create()
 {
 	glGenVertexArrays(1, &id_);
 	glBindVertexArray(id_);
 }
 
-VertexArray::~VertexArray()
+void VertexArray::Delete()
 {
 	glDeleteVertexArrays(1, &id_);
 }

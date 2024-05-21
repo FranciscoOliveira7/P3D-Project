@@ -7,9 +7,8 @@ private:
 	unsigned int id_;
 
 public:
-	VertexBuffer(const void* data, unsigned int size);
-	~VertexBuffer();
+	void Create(const void* data, GLsizeiptr size);
+	void Delete();
 
 	void Bind() const;
-	void Unbind() const;
 };
