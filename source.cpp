@@ -100,9 +100,9 @@ int main(void) {
 
     std::vector<Model> models;
     Model goofy_table;
-    //Model ball;
+    Model ball;
     models.push_back(goofy_table);
-    //models.push_back(ball);
+    models.push_back(ball);
 
     init(models);
 
@@ -131,11 +131,10 @@ void init(std::vector<Model> &models) {
 
     shader = new Shader(shaders);
 
-    renderer.Load("PoolBalls\\Ball1.obj");
+    models[1].Load("PoolBalls\\Ball1.obj");
 
     // Load models to renderer
     for (int i = 0; i < models.size(); i++) {
-        //renderer.BindModel(models[i]);
         models[i].BindShader(shader);
         models[i].Install(i);
     }
