@@ -1,6 +1,6 @@
 #include "model.h"
 
-Model::~Model()
+void Model::Delete()
 {
 	delete vertex_buffer_;
 	delete color_buffer_;
@@ -15,12 +15,12 @@ void Model::AttribPointer() const {
 
 	if (vertex_buffer_ != nullptr) {
 		vertex_buffer_->Bind();
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 		glEnableVertexAttribArray(0);
 	}
 	if (color_buffer_ != nullptr) {
 		color_buffer_->Bind();
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 		glEnableVertexAttribArray(1);
 	}
 }

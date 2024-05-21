@@ -2,8 +2,6 @@
 
 #define GLEW_STATIC
 #include <GL\glew.h>
-#include <string>
-#include <vector>
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
 
 #include "vertex_array.h"
@@ -20,7 +18,7 @@ typedef struct {
 
 class Model {
 public:
-	~Model();
+	void Delete();
 
 	void AttribPointer() const;
 

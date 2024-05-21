@@ -16,8 +16,6 @@
 
 #include <GLFW\glfw3.h>
 
-#include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
-
 // Others
 
 #include "shader.h"
@@ -104,9 +102,9 @@ int main(void) {
 
     std::vector<Model> models;
     Model goofy_table;
-    Model goofy_table2;
+    Model ball;
     models.push_back(goofy_table);
-    models.push_back(goofy_table2);
+    models.push_back(ball);
 
     init(models);
 
@@ -138,7 +136,9 @@ void init(std::vector<Model> &models) {
     // Load models to renderer
     for (int i = 0; i < models.size(); i++) {
         renderer.BindModel(&models[i]);
-        renderer.Install();
+        if (i == 1)
+        renderer.Load("PoolBalls\\Ball1.obj");
+        renderer.Install(i);
     }
 }
 
@@ -149,7 +149,7 @@ void draw(std::vector<Model> &models) {
     for (int i = 0; i < models.size(); i++) {
 
         renderer.BindModel(&models[i]);
-        renderer.Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation * (i+1), 0.0f));
+        renderer.Render(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, rotation, 0.0f));
     }
 }
 
