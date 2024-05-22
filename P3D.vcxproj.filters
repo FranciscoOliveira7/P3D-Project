@@ -10,6 +10,7 @@
     <ClCompile Include="index_buffer.cpp" />
     <ClCompile Include="vertex_array.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
@@ -21,6 +22,8 @@
     <ClInclude Include="index_buffer.h" />
     <ClInclude Include="vertex_array.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\triangles.vert" />

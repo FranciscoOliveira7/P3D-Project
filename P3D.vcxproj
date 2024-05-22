@@ -133,6 +133,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="texture.cpp" />
     <ClCompile Include="vertex_array.cpp" />
     <ClCompile Include="vertex_buffer.cpp" />
     <ClCompile Include="world_transform.cpp" />
@@ -143,7 +144,9 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="table.h" />
+    <ClInclude Include="texture.h" />
     <ClInclude Include="vertex_array.h" />
     <ClInclude Include="vertex_buffer.h" />
     <ClInclude Include="world_transform.h" />

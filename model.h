@@ -14,14 +14,21 @@
 #include "camera.h"
 #include "shader.h"
 
+// Library used for image loading
+#include "stb_image.h"
+
 using namespace glm;
 
 typedef struct {
+	std::string name = "N/A";
+
 	glm::vec3 emissive;
 	glm::vec3 ambient;  // Ka
 	glm::vec3 diffuse;  // kd
 	glm::vec3 specular; // ke
 	float shininess;    // Expoente de reflexão especular
+
+	GLuint diffuseTexture = 0;
 } Material;
 
 class Model {
@@ -34,6 +41,8 @@ public:
 	void AttribPointer() const;
 
 	void Load(const std::string& obj_model_filepath);
+
+	void LoadMaterial(const std::string& mtl_model_path);
 
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 
@@ -49,6 +58,7 @@ private:
 	VertexArray vao_;
 
 	VertexBuffer vertex_buffer_;
+	VertexBuffer uv_buffer_;
 	VertexBuffer color_buffer_;
 	VertexBuffer normal_buffer_;
 	IndexBuffer index_buffer_;

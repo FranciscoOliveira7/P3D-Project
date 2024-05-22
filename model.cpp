@@ -1,6 +1,8 @@
 #include "model.h"
 #include "table.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+
 void Model::Delete()
 {
 	vertex_buffer_.Delete();
@@ -24,7 +26,7 @@ void Model::Render(vec3 position, vec3 orientation)
         glDrawElements(GL_TRIANGLES, index_buffer_.Count(), GL_UNSIGNED_INT, (void*)0);
     }
     else {
-        glDrawArrays(GL_TRIANGLES, 0, vertexes.size());
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertexes.size()));
     }
 }
 
@@ -45,7 +47,7 @@ void Model::Install(bool test) {
     AttribPointer();
 }
 
-// Not the most abstract implementation ever but I'm too lazy
+// Not the most abstract implementation ever but I'm lazy
 void Model::AttribPointer() const {
 
 	// I'm just assuming the layout for each buffer
@@ -54,24 +56,24 @@ void Model::AttribPointer() const {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 	glEnableVertexAttribArray(0);
 
-	color_buffer_.Bind();
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-	glEnableVertexAttribArray(1);
+    color_buffer_.Bind();
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    glEnableVertexAttribArray(1);
 }
 
-void Model::Load(const std::string& obj_model_filepath) {
+void Model::Load(const std::string& path) {
 
     std::vector<vec3> tmp_vertexes;
     std::vector<vec2> tmp_uvs;
     std::vector<vec3> tmp_normals;
 
-    std::ifstream file(obj_model_filepath);
+    std::ifstream file(path);
     if (!file.is_open()) {
-        std::cerr << "Failed to open the file: " << obj_model_filepath << std::endl;
+        std::cerr << "Failed to open obj file: " << path << std::endl;
         return;
     }
 
-    std::string dir = obj_model_filepath.substr(0, obj_model_filepath.find_last_of('/'));
+    std::string dir = path.substr(0, path.find_last_of('/'));
     std::string line;
 
     while (std::getline(file, line)) {
@@ -111,7 +113,73 @@ void Model::Load(const std::string& obj_model_filepath) {
         else if (prefix == "mtllib") {
             std::string mtlFile;
             ss >> mtlFile;
-            //loadMTL(dir + "/" + mtlFile);
+            LoadMaterial(dir + "/" + mtlFile);
+        }
+    }
+
+    file.close();
+}
+
+void Model::LoadMaterial(const std::string& path) {
+
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open mtl file: " << path << std::endl;
+        return;
+    }
+
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::istringstream ss(line);
+        std::string prefix;
+        ss >> prefix;
+
+        if (prefix == "newmtl") {
+            ss >> material.name;
+        }
+        else if (prefix == "Ka") {
+            ss >> material.ambient.r >> material.ambient.g >> material.ambient.b;
+        }
+        else if (prefix == "Kd") {
+            ss >> material.diffuse.r >> material.diffuse.g >> material.diffuse.b;
+        }
+        else if (prefix == "Ks") {
+            ss >> material.specular.r >> material.specular.g >> material.specular.b;
+        }
+        else if (prefix == "Ns") {
+            ss >> material.shininess;
+        }
+        else if (prefix == "map_Kd") {
+            std::string texture_file;
+            ss >> texture_file;
+
+            std::string texture_path = path.substr(0, path.find_last_of('/')) + "/" + texture_file;
+            int width, height, channels;
+
+            unsigned char* imageData = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
+
+            if (!imageData) {
+                std::cerr << "Failed to load texture: " << texture_path << " - " << stbi_failure_reason() << std::endl;
+                continue;
+            }
+            if (imageData) {
+                glGenTextures(1, &material.diffuseTexture);
+                glBindTexture(GL_TEXTURE_2D, material.diffuseTexture);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, channels == 3 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+
+                // Set texture parameters here
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+                std::cout << "Loaded texture: " << texture_path << " with ID: " << material.diffuseTexture << std::endl;
+                stbi_image_free(imageData);
+            }
+            else {
+                std::cerr << "Failed to load texture: " << texture_path << std::endl;
+            }
         }
     }
 
