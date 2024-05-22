@@ -142,9 +142,8 @@ void draw(std::vector<Model> &models) {
 
     // Draw each object
     for (int i = 0; i < models.size(); i++) {
-
         models[i].SetCameraPosition(0.0f, 0.0f, zoom);
-        models[i].Render(glm::vec3(0.0f, -5.0f + 1.5f * i, 4.0f * i), glm::vec3(0.0f, rotation, 0.0f));
+        models[i].Render(glm::vec3(0.0f, -5.0f + 1.5f * i, 2.0f * i), glm::vec3(0.0f, rotation, 0.0f));
     }
 }
 

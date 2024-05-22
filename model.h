@@ -37,22 +37,26 @@ public:
 
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 
+	void SetScale(float scale) { world_.SetScale(scale); }
+private:
+
+	WorldTrans world_;
+
+	Shader* shader_ = nullptr;
+	Material material;
+	Camera camera_;
+
 	VertexArray vao_;
 
 	VertexBuffer vertex_buffer_;
 	VertexBuffer color_buffer_;
 	VertexBuffer normal_buffer_;
 	IndexBuffer index_buffer_;
-private:
-	Shader* shader_ = nullptr;
-	Material material;
-	Camera camera_;
 
 	std::vector<vec3> vertexes;
 	std::vector<vec3> colors;
 	std::vector<vec2> uvs;
 	std::vector<vec3> normals;
-	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
 
 	mat4 projection = perspective(radians(45.0f), (float)640 / (float)480, 1.0f, 100.0f);
 };
