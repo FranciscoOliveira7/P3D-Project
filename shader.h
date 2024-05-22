@@ -49,7 +49,9 @@ private:
 	GLuint program_;
 
 public:
-	Shader(ShaderInfo* shaders);
+	void Create(ShaderInfo* shaders);
+
+	void Bind() { glUseProgram(program_); }
 
 	void SetUniformMatrix4fv(const std::string& name, glm::mat4 mat);
 

@@ -1,6 +1,6 @@
 #include "shader.h"
 
-Shader::Shader(ShaderInfo* shaders)
+void Shader::Create(ShaderInfo* shaders)
 {
     // Compile and Load shaders to program (código feito pelo stor)
     program_ = LoadShaders(shaders);

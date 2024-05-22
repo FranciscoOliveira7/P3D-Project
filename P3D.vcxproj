@@ -128,20 +128,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="index_buffer.cpp" />
-    <ClCompile Include="renderer.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="texture.cpp" />
-    <ClCompile Include="vertex_array.cpp" />
-    <ClCompile Include="vertex_buffer.cpp" />
     <ClCompile Include="world_transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="index_buffer.h" />
-    <ClInclude Include="renderer.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="stb_image.h" />
@@ -152,6 +147,8 @@
     <ClInclude Include="world_transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\triangles_balls.frag" />
+    <None Include="shaders\triangles_balls.vert" />
     <None Include="shaders\triangles.frag" />
     <None Include="shaders\triangles.vert" />
   </ItemGroup>

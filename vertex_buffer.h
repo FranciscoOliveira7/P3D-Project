@@ -7,8 +7,17 @@ private:
 	unsigned int id_;
 
 public:
-	void Create(const void* data, GLsizeiptr size);
-	void Delete();
+	void Create(const void* data, GLsizeiptr size) {
+		glGenBuffers(1, &id_);
+		glBindBuffer(GL_ARRAY_BUFFER, id_);
+		glBufferStorage(GL_ARRAY_BUFFER, size, data, 0);
+	}
 
-	void Bind() const;
+	void Delete() {
+		glDeleteBuffers(1, &id_);
+	}
+
+	void Bind() const {
+		glBindBuffer(GL_ARRAY_BUFFER, id_);
+	}
 };

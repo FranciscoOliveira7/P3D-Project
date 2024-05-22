@@ -30,9 +30,6 @@ void print_error(int error, const char* description);
 void init(std::vector<Model> &models);
 void draw(std::vector<Model> &models);
 
-// Shaders
-Shader* shader = nullptr;
-
 float zoom = 10.0f;
 
 // Table rotation behaviour
@@ -98,6 +95,7 @@ int main(void) {
     std::vector<Model> models;
     Model goofy_table;
     Model ball;
+    Model ball2;
     models.push_back(goofy_table);
     models.push_back(ball);
 
@@ -126,13 +124,26 @@ void init(std::vector<Model> &models) {
         { GL_NONE, NULL }
     };
 
-    shader = new Shader(shaders);
+    // Shaders type and locations
+    ShaderInfo shaders_ball[] = {
+        { GL_VERTEX_SHADER,   "shaders/triangles_balls.vert" },
+        { GL_FRAGMENT_SHADER, "shaders/triangles_balls.frag" },
+        { GL_NONE, NULL }
+    };
+
+    Shader shader;
+    Shader shader_balls;
+
+    shader.Create(shaders);
+    shader_balls.Create(shaders_ball);
 
     models[1].Load("PoolBalls\\Ball1.obj");
+    models[2].Load("PoolBalls\\Ball2.obj");
+    models[0].BindShader(shader);
+    models[1].BindShader(shader_balls);
 
     // Load models to renderer
     for (int i = 0; i < models.size(); i++) {
-        models[i].BindShader(shader);
         models[i].Install(i);
     }
 }
@@ -142,6 +153,7 @@ void draw(std::vector<Model> &models) {
 
     // Draw each object
     for (int i = 0; i < models.size(); i++) {
+
         models[i].SetCameraPosition(0.0f, 0.0f, zoom);
         models[i].Render(glm::vec3(0.0f, -5.0f + 1.5f * i, 2.0f * i), glm::vec3(0.0f, rotation, 0.0f));
     }

@@ -8,12 +8,23 @@ private:
 	unsigned int id_ = 0;
 
 public:
-	void Create();
-	void Delete();
+	void Create() {
+		glGenVertexArrays(1, &id_);
+		glBindVertexArray(id_);
+	}
+	void Delete() {
+		glDeleteVertexArrays(1, &id_);
+	}
 
-	void Bind();
-	void Unbind();
-	void AddBuffer(const VertexBuffer& vb);
+	void Bind() {
+		glBindVertexArray(id_);
+	}
+
+	void AddBuffer(const VertexBuffer& vb) {
+		vb.Bind();
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(0);
+	}
 
 	unsigned int GetId() const { return id_; }
 };

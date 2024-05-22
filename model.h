@@ -13,14 +13,14 @@
 #include "world_transform.h"
 #include "camera.h"
 #include "shader.h"
+#include "texture.h"
 
 // Library used for image loading
-#include "stb_image.h"
 
 using namespace glm;
 
-typedef struct {
-	std::string name = "N/A";
+typedef struct Material {
+	std::string name;
 
 	glm::vec3 emissive;
 	glm::vec3 ambient;  // Ka
@@ -29,11 +29,13 @@ typedef struct {
 	float shininess;    // Expoente de reflexão especular
 
 	GLuint diffuseTexture = 0;
+
+	Material() : name("N/A"), emissive(glm::vec3(0.0f)), ambient(glm::vec3(0.0f)), diffuse(glm::vec3(0.0f)), specular(glm::vec3(0.0f)), shininess(0.0f), diffuseTexture(0) {}
 } Material;
 
 class Model {
 public:
-	void BindShader(Shader* shader) { shader_ = shader; }
+	void BindShader(Shader shader) { shader_ = shader; }
 	void Delete();
 
 	void Render(vec3 position, vec3 orientation);
@@ -51,20 +53,21 @@ private:
 
 	WorldTrans world_;
 
-	Shader* shader_ = nullptr;
-	Material material;
+	Shader shader_;
+	Material material_;
 	Camera camera_;
+
+	Texture texture_;
 
 	VertexArray vao_;
 
 	VertexBuffer vertex_buffer_;
-	VertexBuffer uv_buffer_;
 	VertexBuffer color_buffer_;
+	VertexBuffer uv_buffer_;
 	VertexBuffer normal_buffer_;
 	IndexBuffer index_buffer_;
 
 	std::vector<vec3> vertexes;
-	std::vector<vec3> colors;
 	std::vector<vec2> uvs;
 	std::vector<vec3> normals;
 

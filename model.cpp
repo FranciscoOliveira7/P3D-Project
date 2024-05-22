@@ -1,7 +1,6 @@
 #include "model.h"
 #include "table.h"
-
-#define STB_IMAGE_IMPLEMENTATION
+#include "texture.h"
 
 void Model::Delete()
 {
@@ -18,14 +17,17 @@ void Model::Render(vec3 position, vec3 orientation)
 
     mat4 mvp = projection * camera_.GetViewMatrix() * world_.GetMatrix();
 
-    shader_->SetUniformMatrix4fv("MVP", mvp);
+    shader_.SetUniformMatrix4fv("MVP", mvp);
 
     vao_.Bind();
+    shader_.Bind();
 
     if (index_buffer_.Count() > 0) {
-        glDrawElements(GL_TRIANGLES, index_buffer_.Count(), GL_UNSIGNED_INT, (void*)0);
+        glDrawElements(GL_TRIANGLES, index_buffer_.Count(), GL_UNSIGNED_INT, (void*) 0);
     }
     else {
+        texture_.Bind();
+        //glUniform1i(3, texture_.GetId());
         glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertexes.size()));
     }
 }
@@ -41,7 +43,7 @@ void Model::Install(bool test) {
     }
     else {
         vertex_buffer_.Create(vertexes.data(), vertexes.size() * sizeof(vec3));
-        color_buffer_.Create(colors.data(), colors.size() * sizeof(vec3));
+        uv_buffer_.Create(uvs.data(), uvs.size() * sizeof(vec2));
     }
 
     AttribPointer();
@@ -56,9 +58,16 @@ void Model::AttribPointer() const {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 	glEnableVertexAttribArray(0);
 
-    color_buffer_.Bind();
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    glEnableVertexAttribArray(1);
+    if (index_buffer_.Count() > 0) {
+        color_buffer_.Bind();
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+        glEnableVertexAttribArray(1);
+    }
+    else {
+        uv_buffer_.Bind();
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+        glEnableVertexAttribArray(2);
+    }
 }
 
 void Model::Load(const std::string& path) {
@@ -73,10 +82,11 @@ void Model::Load(const std::string& path) {
         return;
     }
 
-    std::string dir = path.substr(0, path.find_last_of('/'));
+    std::string dir = path.substr(0, path.find_last_of('\\'));
     std::string line;
 
     while (std::getline(file, line)) {
+
         std::istringstream ss(line);
         std::string prefix;
         ss >> prefix;
@@ -98,16 +108,16 @@ void Model::Load(const std::string& path) {
         }
         else if (prefix == "f") {
             vec3 color = vec3(1.0f, 1.0f, 1.0f);
-            unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+            unsigned int vertexIndex, uvIndex, normalIndex;
             char slash;
             for (int i = 0; i < 3; ++i) {
-                ss >> vertexIndex[i] >> slash >> uvIndex[i] >> slash >> normalIndex[i];
+                ss >> vertexIndex >> slash >> uvIndex >> slash >> normalIndex;
 
                 // Criar um novo array com a ordem dos indices
-                colors.push_back(color);
-                vertexes.push_back(tmp_vertexes[vertexIndex[i] - 1]);
-                uvs.push_back(tmp_uvs[vertexIndex[i] - 1]);
-                normals.push_back(tmp_normals[vertexIndex[i] - 1]);
+
+                vertexes.push_back(tmp_vertexes.at(vertexIndex - 1));
+                uvs.push_back(tmp_uvs.at(uvIndex - 1));
+                normals.push_back(tmp_normals.at(normalIndex - 1));
             }
         }
         else if (prefix == "mtllib") {
@@ -136,50 +146,28 @@ void Model::LoadMaterial(const std::string& path) {
         ss >> prefix;
 
         if (prefix == "newmtl") {
-            ss >> material.name;
+            ss >> material_.name;
         }
         else if (prefix == "Ka") {
-            ss >> material.ambient.r >> material.ambient.g >> material.ambient.b;
+            ss >> material_.ambient.r >> material_.ambient.g >> material_.ambient.b;
         }
         else if (prefix == "Kd") {
-            ss >> material.diffuse.r >> material.diffuse.g >> material.diffuse.b;
+            ss >> material_.diffuse.r >> material_.diffuse.g >> material_.diffuse.b;
         }
         else if (prefix == "Ks") {
-            ss >> material.specular.r >> material.specular.g >> material.specular.b;
+            ss >> material_.specular.r >> material_.specular.g >> material_.specular.b;
         }
         else if (prefix == "Ns") {
-            ss >> material.shininess;
+            ss >> material_.shininess;
         }
         else if (prefix == "map_Kd") {
             std::string texture_file;
             ss >> texture_file;
 
             std::string texture_path = path.substr(0, path.find_last_of('/')) + "/" + texture_file;
-            int width, height, channels;
 
-            unsigned char* imageData = stbi_load(texture_path.c_str(), &width, &height, &channels, 0);
-
-            if (!imageData) {
-                std::cerr << "Failed to load texture: " << texture_path << " - " << stbi_failure_reason() << std::endl;
-                continue;
-            }
-            if (imageData) {
-                glGenTextures(1, &material.diffuseTexture);
-                glBindTexture(GL_TEXTURE_2D, material.diffuseTexture);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, channels == 3 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-
-                // Set texture parameters here
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-                std::cout << "Loaded texture: " << texture_path << " with ID: " << material.diffuseTexture << std::endl;
-                stbi_image_free(imageData);
-            }
-            else {
-                std::cerr << "Failed to load texture: " << texture_path << std::endl;
-            }
+            texture_.Create();
+            texture_.Load(texture_path);
         }
     }
 
