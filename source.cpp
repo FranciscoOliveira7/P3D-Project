@@ -33,24 +33,34 @@ void set_ball_pos();
 
 std::vector<vec3> ball_positions;
 
-float zoom = 10.0f;
+float zoom = 45.0f;
+float camera_pos = 15.0f;
 
 // Table rotation behaviour
 
 GLfloat rotation = 0.0f;
 bool isPressing = false;
+
 double prevXpos = 0.0;
 double prevYpos = 0.0;
 double xPos = 0.0;
+double yPos = 0.0;
 
 float mouse_sensitivity = 3.0f;
 
 void cursorCallBack(GLFWwindow* window, double xpos, double ypos) {
     xPos = xpos;
+    yPos = ypos;
+
     if (isPressing) {
         double deltaX = xpos - prevXpos;
         rotation += static_cast<float>(deltaX) / WIDTH * mouse_sensitivity;
         prevXpos = xpos;
+
+        double deltaY = ypos - prevYpos;
+        camera_pos += static_cast<float>(deltaY) / HEIGHT * 10;
+        camera_pos = std::max<float>(0.5f, std::min<float>(camera_pos, 30.0f));
+        prevYpos = ypos;
     }
 }
 
@@ -59,6 +69,7 @@ void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
         if (action == GLFW_PRESS) {
             isPressing = true;
             prevXpos = xPos;
+            prevYpos = yPos;
         }
         else if (action == GLFW_RELEASE) isPressing = false;
     }
@@ -69,6 +80,7 @@ void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
     if (yoffset == 1) zoom -= fabs(zoom) * 0.1f;
     else if (yoffset == -1) zoom += fabs(zoom) * 0.1f;
+    zoom = std::max<float>(10.0f, std::min<float>(zoom, 120.0f));
 }
 
 int main(void) {
@@ -85,6 +97,9 @@ int main(void) {
     }
 
     glfwMakeContextCurrent(window);
+
+    // Uncomment to disable v-sync
+    // glfwSwapInterval(0);
 
     // Inicia o gestor de extensões GLEW
     glewExperimental = GL_TRUE;
@@ -126,15 +141,15 @@ void init(std::vector<Model>& models) {
 
     // Shaders type and locations
     ShaderInfo shaders[] = {
-        { GL_VERTEX_SHADER,   "shaders/triangles.vert" },
-        { GL_FRAGMENT_SHADER, "shaders/triangles.frag" },
+        { GL_VERTEX_SHADER,   "shaders/colored.vert" },
+        { GL_FRAGMENT_SHADER, "shaders/colored.frag" },
         { GL_NONE, NULL }
     };
 
     // Shaders type and locations
     ShaderInfo shaders_ball[] = {
-        { GL_VERTEX_SHADER,   "shaders/triangles_balls.vert" },
-        { GL_FRAGMENT_SHADER, "shaders/triangles_balls.frag" },
+        { GL_VERTEX_SHADER,   "shaders/textured.vert" },
+        { GL_FRAGMENT_SHADER, "shaders/textured.frag" },
         { GL_NONE, NULL }
     };
 
@@ -163,7 +178,8 @@ void draw(std::vector<Model>& models) {
 
     // Draw each object
     for (int i = 0; i < models.size(); i++) {
-        models[i].SetCameraPosition(0.0f, 10.0f, zoom);
+        models[i].SetCameraPosition(0.0f, 1.0f, camera_pos);
+        models[i].SetCameraFov(zoom);
         if (i == 0) models[i].Render(glm::vec3(0.0f, -5.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
 
         else {

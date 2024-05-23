@@ -7,8 +7,6 @@ using namespace glm;
 
 class WorldTrans {
 public:
-    WorldTrans() {}
-
     void SetScale(float scale);
     void SetRotation(float x, float y, float z);
     void SetPosition(vec3 position);

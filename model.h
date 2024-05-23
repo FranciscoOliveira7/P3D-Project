@@ -22,15 +22,12 @@ using namespace glm;
 typedef struct Material {
 	std::string name;
 
-	glm::vec3 emissive;
 	glm::vec3 ambient;  // Ka
 	glm::vec3 diffuse;  // kd
 	glm::vec3 specular; // ke
 	float shininess;    // Expoente de reflexão especular
 
-	GLuint diffuseTexture = 0;
-
-	Material() : name("N/A"), emissive(glm::vec3(0.0f)), ambient(glm::vec3(0.0f)), diffuse(glm::vec3(0.0f)), specular(glm::vec3(0.0f)), shininess(0.0f), diffuseTexture(0) {}
+	Material() : name("N/A"), ambient(glm::vec3(0.0f)), diffuse(glm::vec3(0.0f)), specular(glm::vec3(0.0f)), shininess(0.0f) {}
 } Material;
 
 class Model {
@@ -47,8 +44,11 @@ public:
 	void LoadMaterial(const std::string& mtl_model_path);
 
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
+	void SetCameraFov(float fov) { camera_.SetFov(fov); }
 
 	void SetScale(float scale) { world_.SetScale(scale); }
+
+	bool has_no_texture_;
 private:
 
 	WorldTrans world_;
@@ -70,6 +70,4 @@ private:
 	std::vector<vec3> vertexes;
 	std::vector<vec2> uvs;
 	std::vector<vec3> normals;
-
-	mat4 projection = perspective(radians(45.0f), (float)640 / (float)480, 1.0f, 100.0f);
 };

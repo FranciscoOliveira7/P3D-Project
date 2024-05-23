@@ -1,7 +1,6 @@
 #version 440 core
 
-layout (location = 0) in vec3 color;		// Cor do vértice
-layout (location = 1) in vec2 textureCoord;	// Coordenada de textura do vértice
+in vec2 textureCoord;	// Coordenada de textura do vértice
 
 uniform sampler2D TexSampler;				// Sampler de textura
 

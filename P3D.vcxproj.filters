@@ -2,13 +2,8 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="source.cpp" />
-    <ClCompile Include="camera.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="world_transform.cpp" />
-    <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="vertex_buffer.cpp" />
-    <ClCompile Include="index_buffer.cpp" />
-    <ClCompile Include="vertex_array.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
@@ -17,7 +12,6 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="table.h" />
     <ClInclude Include="world_transform.h" />
-    <ClInclude Include="renderer.h" />
     <ClInclude Include="vertex_buffer.h" />
     <ClInclude Include="index_buffer.h" />
     <ClInclude Include="vertex_array.h" />
@@ -26,7 +20,9 @@
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\triangles.vert" />
-    <None Include="shaders\triangles.frag" />
+    <None Include="shaders\colored.vert" />
+    <None Include="shaders\colored.frag" />
+    <None Include="shaders\textured.frag" />
+    <None Include="shaders\textured.vert" />
   </ItemGroup>
 </Project>

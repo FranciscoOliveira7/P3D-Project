@@ -5,7 +5,6 @@ void WorldTrans::SetScale(float scale)
     scale_ = vec3(scale);
 }
 
-
 void WorldTrans::SetRotation(float x, float y, float z)
 {
     rotation_.x = x;
@@ -13,12 +12,10 @@ void WorldTrans::SetRotation(float x, float y, float z)
     rotation_.z = z;
 }
 
-
 void WorldTrans::SetPosition(vec3 position)
 {
     pos_ = position;
 }
-
 
 void WorldTrans::Rotate(float x, float y, float z)
 {
@@ -27,14 +24,13 @@ void WorldTrans::Rotate(float x, float y, float z)
     rotation_.z += z;
 }
 
-
 mat4 WorldTrans::GetMatrix(void)
 {
     mat4 model = mat4(1.0f);
 
     model = scale(model, scale_);
 
-    // there's probably a way to make optimize this, might fix later
+    // do this with quaternions or whatever it's called
     model = rotate(model, rotation_.x, vec3(1, 0, 0));
     model = rotate(model, rotation_.y, vec3(0, 1, 0));
     model = rotate(model, rotation_.z, vec3(0, 0, 1));

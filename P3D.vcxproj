@@ -127,7 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="camera.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="model.cpp" />
@@ -147,10 +146,10 @@
     <ClInclude Include="world_transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\triangles_balls.frag" />
-    <None Include="shaders\triangles_balls.vert" />
-    <None Include="shaders\triangles.frag" />
-    <None Include="shaders\triangles.vert" />
+    <None Include="shaders\textured.frag" />
+    <None Include="shaders\textured.vert" />
+    <None Include="shaders\colored.frag" />
+    <None Include="shaders\colored.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

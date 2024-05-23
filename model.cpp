@@ -15,7 +15,7 @@ void Model::Render(vec3 position, vec3 orientation)
     world_.SetPosition(position);
     world_.SetRotation(orientation.x, orientation.y, orientation.z);
 
-    mat4 mvp = projection * camera_.GetViewMatrix() * world_.GetMatrix();
+    mat4 mvp = camera_.GetProjectionViewMatrix() * world_.GetMatrix();
 
     shader_.SetUniformMatrix4fv("MVP", mvp);
 
