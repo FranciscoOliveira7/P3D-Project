@@ -30,6 +30,8 @@ void print_error(int error, const char* description);
 void init(std::vector<Model> &models);
 void draw(std::vector<Model> &models);
 
+std::vector<vec3> ball_positions;
+
 float zoom = 10.0f;
 
 // Table rotation behaviour
@@ -150,6 +152,10 @@ void init(std::vector<Model> &models) {
         models[i].Install(1);
         models[i].BindShader(shader_balls);
         models[i].SetScale(0.6f);
+
+        // Posições
+        vec3 position = vec3(0.0f, 1.0f * i, 0.0f);
+        ball_positions.push_back(position);
     }
 }
 
@@ -157,10 +163,13 @@ void draw(std::vector<Model> &models) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Draw each object
-    for (int i = 0; i < models.size(); i++) {
+    models[0].SetCameraPosition(0.0f, 0.0f, zoom);
+    models[0].Render(glm::vec3(0.0f, -5.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
+
+    for (int i = 1; i < models.size(); i++) {
 
         models[i].SetCameraPosition(0.0f, 0.0f, zoom);
-        models[i].Render(glm::vec3(0.0f, -5.0f + 1.0f * i, 2.0f * i), glm::vec3(0.0f, rotation, 0.0f));
+        models[i].Render(ball_positions[i - 1], glm::vec3(0.0f, rotation, 0.0f));
     }
 }
 
