@@ -25,6 +25,4 @@ public:
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(0);
 	}
-
-	unsigned int GetId() const { return id_; }
 };
