@@ -111,12 +111,13 @@ int main(void) {
     glfwSetMouseButtonCallback(window, mouseCallBack);
 
     std::vector<Model> models;
-    Model goofy_table;
 
+    // Table
+    Model goofy_table;
     models.push_back(goofy_table);
 
     // Balls
-    for (int i = 1; i < 16; i++) {
+    for (int i = 0; i < 16; i++) {
         Model ball;
         models.push_back(ball);
     }
@@ -146,18 +147,9 @@ void init(std::vector<Model>& models) {
         { GL_NONE, NULL }
     };
 
-    // Shaders type and locations
-    ShaderInfo shaders_ball[] = {
-        { GL_VERTEX_SHADER,   "shaders/textured.vert" },
-        { GL_FRAGMENT_SHADER, "shaders/textured.frag" },
-        { GL_NONE, NULL }
-    };
-
     Shader shader;
-    Shader shader_balls;
 
     shader.Create(shaders);
-    shader_balls.Create(shaders_ball);
 
     models[0].BindShader(shader);
     models[0].Load("Models\\Table.obj");
@@ -166,9 +158,9 @@ void init(std::vector<Model>& models) {
 
     // Load models to renderer
     for (int i = 1; i < models.size(); i++) {
-        models[i].Load("Models\\Ball" + std::to_string(i) + ".obj");
+        models[i].Load("Models\\Ball" + std::to_string(i - 1) + ".obj");
         models[i].Install();
-        models[i].BindShader(shader_balls);
+        models[i].BindShader(shader);
         models[i].SetScale(0.6f);
     }
 
@@ -183,9 +175,10 @@ void draw(std::vector<Model>& models) {
         models[i].SetCameraPosition(0.0f, 1.0f, camera_pos);
         models[i].SetCameraFov(zoom);
         if (i == 0) models[i].Render(glm::vec3(0.0f, -2.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
+        else if (i == 1) models[i].Render(glm::vec3(-13.0f, -6.5f, 0), glm::vec3(0.0f, rotation, 0.0f));
 
         else {
-            models[i].Render(ball_positions[i - 1], glm::vec3(0.0f, rotation, 0.0f));
+            models[i].Render(ball_positions[i - 2], glm::vec3(0.0f, rotation, 0.0f));
         }
     }
 }
