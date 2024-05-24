@@ -14,6 +14,20 @@ void Shader::SetUniformMatrix4fv(const std::string& name, glm::mat4 mat)
     glProgramUniformMatrix4fv(program_, location, 1, GL_FALSE, value_ptr(mat));
 }
 
+void Shader::SetUniform3fv(const std::string& name, glm::vec3 idk)
+{
+	glProgramUniform3fv(program_, glGetProgramResourceLocation(program_, GL_UNIFORM, "ambientLight.ambient"), 1, glm::value_ptr(glm::vec3(0.1, 0.1, 0.1)));
+}
+
+void Shader::SetUniformMaterial(const std::string& name, Material material)
+{
+	glProgramUniform3fv(program_, glGetProgramResourceLocation(program_, GL_UNIFORM, "material.emissive"), 1, value_ptr(glm::vec3(0.0, 0.0, 0.0)));
+	glProgramUniform3fv(program_, glGetProgramResourceLocation(program_, GL_UNIFORM, "material.ambient"), 1, value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+	glProgramUniform3fv(program_, glGetProgramResourceLocation(program_, GL_UNIFORM, "material.diffuse"), 1, value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+	glProgramUniform3fv(program_, glGetProgramResourceLocation(program_, GL_UNIFORM, "material.specular"), 1, value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+	glProgramUniform1f(program_, glGetProgramResourceLocation(program_, GL_UNIFORM, "material.shininess"), 12.0f);
+}
+
 unsigned int Shader::GetUniformLocation(const std::string& name)
 {
     GLint location = glGetProgramResourceLocation(program_, GL_UNIFORM, name.c_str());
@@ -83,6 +97,15 @@ GLuint Shader::LoadShaders(ShaderInfo* shaders) {
 		glGetShaderiv(shaders[i].shader, GL_COMPILE_STATUS, &compiled);
 		// Em caso de erro na compilação
 		if (!compiled) {
+#ifdef _DEBUG
+			GLsizei len;
+			glGetShaderiv(shaders[i].shader, GL_INFO_LOG_LENGTH, &len);
+
+			GLchar* log = new GLchar[len + 1];
+			glGetShaderInfoLog(shaders[i].shader, len, &len, log);
+			std::cerr << "Shader compilation failed: " << log << std::endl;
+			delete[] log;
+#endif /* DEBUG */
 			DestroyShaders(shaders);
 
 			return 0;
@@ -100,6 +123,15 @@ GLuint Shader::LoadShaders(ShaderInfo* shaders) {
 	glGetProgramiv(program, GL_LINK_STATUS, &linked);
 	// Em caso de erro na linkagem
 	if (!linked) {
+#ifdef _DEBUG
+		GLsizei len;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
+
+		GLchar* log = new GLchar[len + 1];
+		glGetProgramInfoLog(program, len, &len, log);
+		std::cerr << "Shader linking failed: " << log << std::endl;
+		delete[] log;
+#endif /* DEBUG */
 		DestroyShaders(shaders);
 
 		return 0;
