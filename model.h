@@ -31,15 +31,22 @@ typedef struct Material {
 
 class Model {
 public:
-	~Model();
+	void Delete() const;
 
 	void BindShader(Shader shader) { shader_ = shader; }
 
 	void Render(vec3 position, vec3 orientation);
-	void Install(bool);
+	void Install();
 	void AttribPointer() const;
 
 	void Load(const std::string obj_model_filepath);
+
+	// Hard coded stuff since the table has no obj file
+	//void LoadTable(std::vector<vec3> vertices, std::vector<vec3> colors, std::vector<unsigned int> indexes) {
+	//	vertices_ = vertices;
+	//	colors_ = colors;
+	//	indexes_ = indexes;
+	//}
 
 	void LoadMaterial(const std::string mtl_model_path);
 
@@ -47,8 +54,6 @@ public:
 	void SetCameraFov(float fov) { camera_.SetFov(fov); }
 
 	void SetScale(float scale) { world_.SetScale(scale); }
-
-	bool has_no_texture_;
 private:
 
 	WorldTrans world_;
@@ -62,10 +67,8 @@ private:
 	VertexArray vao_;
 
 	VertexBuffer vertex_buffer_;
-	VertexBuffer color_buffer_;
 	VertexBuffer uv_buffer_;
 	VertexBuffer normal_buffer_;
-	IndexBuffer index_buffer_;
 
 	std::vector<vec3> vertices_;
 	std::vector<vec2> uvs_;

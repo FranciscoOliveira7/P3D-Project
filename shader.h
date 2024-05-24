@@ -46,7 +46,7 @@ typedef struct {
 
 class Shader {
 private:
-	GLuint program_;
+	GLuint program_ = 0;
 
 public:
 	void Create(ShaderInfo* shaders);

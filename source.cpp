@@ -58,7 +58,7 @@ void cursorCallBack(GLFWwindow* window, double xpos, double ypos) {
         prevXpos = xpos;
 
         double deltaY = ypos - prevYpos;
-        camera_pos += static_cast<float>(deltaY) / HEIGHT * 10;
+        camera_pos -= static_cast<float>(deltaY) / HEIGHT * 10;
         camera_pos = std::max<float>(0.5f, std::min<float>(camera_pos, 30.0f));
         prevYpos = ypos;
     }
@@ -113,13 +113,13 @@ int main(void) {
     std::vector<Model> models;
     Model goofy_table;
 
+    models.push_back(goofy_table);
+
     // Balls
     for (int i = 1; i < 16; i++) {
         Model ball;
         models.push_back(ball);
     }
-
-    models.push_back(goofy_table);
 
     init(models);
 
@@ -141,8 +141,8 @@ void init(std::vector<Model>& models) {
 
     // Shaders type and locations
     ShaderInfo shaders[] = {
-        { GL_VERTEX_SHADER,   "shaders/colored.vert" },
-        { GL_FRAGMENT_SHADER, "shaders/colored.frag" },
+        { GL_VERTEX_SHADER,   "shaders/textured.vert" },
+        { GL_FRAGMENT_SHADER, "shaders/textured.frag" },
         { GL_NONE, NULL }
     };
 
@@ -160,12 +160,14 @@ void init(std::vector<Model>& models) {
     shader_balls.Create(shaders_ball);
 
     models[0].BindShader(shader);
-    models[0].Install(0);
+    models[0].Load("Models\\Table.obj");
+    models[0].Install();
+    models[0].SetScale(2.2f);
 
     // Load models to renderer
     for (int i = 1; i < models.size(); i++) {
-        models[i].Load("PoolBalls\\Ball" + std::to_string(i) + ".obj");
-        models[i].Install(1);
+        models[i].Load("Models\\Ball" + std::to_string(i) + ".obj");
+        models[i].Install();
         models[i].BindShader(shader_balls);
         models[i].SetScale(0.6f);
     }
@@ -180,7 +182,7 @@ void draw(std::vector<Model>& models) {
     for (int i = 0; i < models.size(); i++) {
         models[i].SetCameraPosition(0.0f, 1.0f, camera_pos);
         models[i].SetCameraFov(zoom);
-        if (i == 0) models[i].Render(glm::vec3(0.0f, -5.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
+        if (i == 0) models[i].Render(glm::vec3(0.0f, -2.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
 
         else {
             models[i].Render(ball_positions[i - 1], glm::vec3(0.0f, rotation, 0.0f));
@@ -192,7 +194,7 @@ void set_ball_pos() {
     // Posição das bola, calculado pelo zés e o gaio
     for (int i = 1; i < 6; i++) {
         for (int j = 0; j < i; j++) {
-            glm::vec3 position = vec3(2.0f + i * 1.73f /*sin(60) * 2*/, -6.5f /*table pos*/, (i - 1) - j * 2);
+            glm::vec3 position = vec3(4.0f + i * 1.75f /*sin(60)*/, -6.5f /*table pos*/, (i - 1.0f) - j * 2.0f);
 
             ball_positions.push_back(position);
         }

@@ -1,12 +1,10 @@
 #include "model.h"
-#include "table.h"
 #include "texture.h"
 
-Model::~Model() {
+void Model::Delete() const {
 	vertex_buffer_.Delete();
-	color_buffer_.Delete();
 	normal_buffer_.Delete();
-	index_buffer_.Delete();
+    texture_.Delete();
 }
 
 void Model::Render(vec3 position, vec3 orientation)
@@ -21,29 +19,18 @@ void Model::Render(vec3 position, vec3 orientation)
     vao_.Bind();
     shader_.Bind();
 
-    if (index_buffer_.Count() > 0) {
-        glDrawElements(GL_TRIANGLES, index_buffer_.Count(), GL_UNSIGNED_INT, (void*) 0);
-    }
-    else {
-        texture_.Bind();
-        //glUniform1i(3, texture_.GetId());
-        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices_.size()));
-    }
+
+    texture_.Bind();
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices_.size()));
 }
 
-void Model::Install(bool test) {
+void Model::Install() {
 
     vao_.Create();
 
-    if (!test) {
-        vertex_buffer_.Create(vertices, sizeof(vertices));
-        color_buffer_.Create(cores, sizeof(cores));
-        index_buffer_.Create(indices, sizeof(indices) / sizeof(GLuint));
-    }
-    else {
-        vertex_buffer_.Create(vertices_.data(), vertices_.size() * sizeof(vec3));
-        uv_buffer_.Create(uvs_.data(), uvs_.size() * sizeof(vec2));
-    }
+    vertex_buffer_.Create(vertices_.data(), vertices_.size() * sizeof(vec3));
+    uv_buffer_.Create(uvs_.data(), uvs_.size() * sizeof(vec2));
+    normal_buffer_.Create(normals_.data(), normals_.size() * sizeof(vec3));
 
     AttribPointer();
 }
@@ -57,16 +44,9 @@ void Model::AttribPointer() const {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
 	glEnableVertexAttribArray(0);
 
-    if (index_buffer_.Count() > 0) {
-        color_buffer_.Bind();
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-        glEnableVertexAttribArray(1);
-    }
-    else {
-        uv_buffer_.Bind();
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
-        glEnableVertexAttribArray(2);
-    }
+    uv_buffer_.Bind();
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+    glEnableVertexAttribArray(2);
 }
 
 void Model::Load(const std::string path) {
@@ -89,7 +69,7 @@ void Model::Load(const std::string path) {
     constexpr int buffer_size = 128;
     char buffer[buffer_size]{};
 
-    // Used fscanf_s instead of ifstream for double the performance
+    // Used fscanf_s instead of ifstream for twice the performance
     while (fscanf_s(file, "%s", buffer, buffer_size) != EOF) {
 
         if (!strcmp(buffer, "v")) {

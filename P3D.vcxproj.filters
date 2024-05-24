@@ -10,7 +10,6 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="model.h" />
-    <ClInclude Include="table.h" />
     <ClInclude Include="world_transform.h" />
     <ClInclude Include="vertex_buffer.h" />
     <ClInclude Include="index_buffer.h" />
@@ -20,8 +19,6 @@
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\colored.vert" />
-    <None Include="shaders\colored.frag" />
     <None Include="shaders\textured.frag" />
     <None Include="shaders\textured.vert" />
   </ItemGroup>
