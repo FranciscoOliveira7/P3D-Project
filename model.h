@@ -3,7 +3,6 @@
 #define GLEW_STATIC
 #include <GL\glew.h>
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
-#include <glm\gtc\matrix_inverse.hpp> // glm::inverseTranspose()
 #include <vector>
 #include <string>
 #include <sstream>
@@ -20,27 +19,39 @@
 
 using namespace glm;
 
+typedef struct Material {
+	vec3 ambient;  // Ka
+	vec3 diffuse;  // kd
+	vec3 specular; // ke
+	float shininess;    // Expoente de reflexão especular
+
+	// default material
+	Material() : ambient(vec3(0.0f)), diffuse(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
+} Material;
+
 class Model {
 public:
+	~Model();
+
 	void BindShader(Shader shader) { shader_ = shader; }
-	void Delete();
 
 	void Render(vec3 position, vec3 orientation);
 	void Install(bool);
 	void AttribPointer() const;
 
-	void Load(const std::string& obj_model_filepath);
+	void Load(const std::string obj_model_filepath);
 
-	void LoadMaterial(const std::string& mtl_model_path);
+	void LoadMaterial(const std::string mtl_model_path);
 
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 	void SetCameraFov(float fov) { camera_.SetFov(fov); }
 
-	void SetScale(float scale) { transform_.SetScale(scale); }
+	void SetScale(float scale) { world_.SetScale(scale); }
 
+	bool has_no_texture_;
 private:
 
-	WorldTrans transform_;
+	WorldTrans world_;
 
 	Shader shader_;
 	Material material_;
@@ -56,7 +67,7 @@ private:
 	VertexBuffer normal_buffer_;
 	IndexBuffer index_buffer_;
 
-	std::vector<vec3> vertexes;
-	std::vector<vec2> uvs;
-	std::vector<vec3> normals;
+	std::vector<vec3> vertices_;
+	std::vector<vec2> uvs_;
+	std::vector<vec3> normals_;
 };

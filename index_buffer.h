@@ -15,7 +15,7 @@ public:
 		count_ = count;
 	}
 
-	void Delete() {
+	void Delete() const {
 		glDeleteBuffers(1, &id_);
 	}
 
