@@ -6,16 +6,16 @@
 
 class Texture {
 private:
-	static unsigned int unit_;
-	unsigned int id_;
+	unsigned int id_ = 0;
 
 public:
 	void Create();
+
 	void Delete() const {
 		glDeleteTextures(1, &id_);
 	}
 
-	void Load(const std::string& path);
+	void Load(const std::string& path) const;
 
 	void Bind() const {
 		glBindTexture(GL_TEXTURE_2D, id_);

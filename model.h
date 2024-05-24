@@ -20,28 +20,28 @@
 using namespace glm;
 
 typedef struct Material {
-	std::string name;
-
-	glm::vec3 ambient;  // Ka
-	glm::vec3 diffuse;  // kd
-	glm::vec3 specular; // ke
+	vec3 ambient;  // Ka
+	vec3 diffuse;  // kd
+	vec3 specular; // ke
 	float shininess;    // Expoente de reflexão especular
 
-	Material() : name("N/A"), ambient(glm::vec3(0.0f)), diffuse(glm::vec3(0.0f)), specular(glm::vec3(0.0f)), shininess(0.0f) {}
+	// default material
+	Material() : ambient(vec3(0.0f)), diffuse(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
 } Material;
 
 class Model {
 public:
+	~Model();
+
 	void BindShader(Shader shader) { shader_ = shader; }
-	void Delete();
 
 	void Render(vec3 position, vec3 orientation);
 	void Install(bool);
 	void AttribPointer() const;
 
-	void Load(const std::string& obj_model_filepath);
+	void Load(const std::string obj_model_filepath);
 
-	void LoadMaterial(const std::string& mtl_model_path);
+	void LoadMaterial(const std::string mtl_model_path);
 
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 	void SetCameraFov(float fov) { camera_.SetFov(fov); }
@@ -67,7 +67,7 @@ private:
 	VertexBuffer normal_buffer_;
 	IndexBuffer index_buffer_;
 
-	std::vector<vec3> vertexes;
-	std::vector<vec2> uvs;
-	std::vector<vec3> normals;
+	std::vector<vec3> vertices_;
+	std::vector<vec2> uvs_;
+	std::vector<vec3> normals_;
 };

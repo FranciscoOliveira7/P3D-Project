@@ -2,8 +2,7 @@
 #include "table.h"
 #include "texture.h"
 
-void Model::Delete()
-{
+Model::~Model() {
 	vertex_buffer_.Delete();
 	color_buffer_.Delete();
 	normal_buffer_.Delete();
@@ -28,7 +27,7 @@ void Model::Render(vec3 position, vec3 orientation)
     else {
         texture_.Bind();
         //glUniform1i(3, texture_.GetId());
-        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertexes.size()));
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices_.size()));
     }
 }
 
@@ -42,8 +41,8 @@ void Model::Install(bool test) {
         index_buffer_.Create(indices, sizeof(indices) / sizeof(GLuint));
     }
     else {
-        vertex_buffer_.Create(vertexes.data(), vertexes.size() * sizeof(vec3));
-        uv_buffer_.Create(uvs.data(), uvs.size() * sizeof(vec2));
+        vertex_buffer_.Create(vertices_.data(), vertices_.size() * sizeof(vec3));
+        uv_buffer_.Create(uvs_.data(), uvs_.size() * sizeof(vec2));
     }
 
     AttribPointer();
@@ -70,100 +69,97 @@ void Model::AttribPointer() const {
     }
 }
 
-void Model::Load(const std::string& path) {
+void Model::Load(const std::string path) {
+
+    FILE* file;
+
+    if (fopen_s(&file, path.c_str(), "r")) {
+        std::cerr << "Failed to open obj file: " << path << std::endl;
+        return;
+    }
 
     std::vector<vec3> tmp_vertexes;
     std::vector<vec2> tmp_uvs;
     std::vector<vec3> tmp_normals;
 
-    std::ifstream file(path);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open obj file: " << path << std::endl;
-        return;
-    }
+    // All vector will be read to this vec3 and uints
+    vec3 vec = vec3(0.0f);
+    unsigned int vertexIndex[3]{}, uvIndex[3]{}, normalIndex[3]{};
 
-    std::string dir = path.substr(0, path.find_last_of('\\'));
-    std::string line;
+    constexpr int buffer_size = 128;
+    char buffer[buffer_size]{};
 
-    while (std::getline(file, line)) {
+    // Used fscanf_s instead of ifstream for double the performance
+    while (fscanf_s(file, "%s", buffer, buffer_size) != EOF) {
 
-        std::istringstream ss(line);
-        std::string prefix;
-        ss >> prefix;
-
-        if (prefix == "v") {
-            glm::vec3 vertex;
-            ss >> vertex.x >> vertex.y >> vertex.z;
-            tmp_vertexes.push_back(vertex);
+        if (!strcmp(buffer, "v")) {
+            fscanf_s(file, "%f %f %f\n", &vec.x, &vec.y, &vec.z);
+            tmp_vertexes.push_back(vec);
         }
-        else if (prefix == "vt") {
-            glm::vec2 uv;
-            ss >> uv.x >> uv.y;
-            tmp_uvs.push_back(uv);
+        else if (!strcmp(buffer, "vt")) {
+            fscanf_s(file, "%f %f\n", &vec.x, &vec.y);
+            tmp_uvs.push_back(vec);
         }
-        else if (prefix == "vn") {
-            glm::vec3 normal;
-            ss >> normal.x >> normal.y >> normal.z;
-            tmp_normals.push_back(normal);
+        else if (!strcmp(buffer, "vn")) {
+            fscanf_s(file, "%f %f %f\n", &vec.x, &vec.y, &vec.z);
+            tmp_normals.push_back(vec);
         }
-        else if (prefix == "f") {
-            vec3 color = vec3(1.0f, 1.0f, 1.0f);
-            unsigned int vertexIndex, uvIndex, normalIndex;
-            char slash;
+        else if (!strcmp(buffer, "f")) {
+            fscanf_s(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+            // Uncomment for debug
+            //if (results != 9) {
+            //    std::cerr << "Failed to read face information from file: " << path << std::endl;
+            //    return;
+            //}
+
             for (int i = 0; i < 3; ++i) {
-                ss >> vertexIndex >> slash >> uvIndex >> slash >> normalIndex;
-
-                // Criar um novo array com a ordem dos indices
-
-                vertexes.push_back(tmp_vertexes.at(vertexIndex - 1));
-                uvs.push_back(tmp_uvs.at(uvIndex - 1));
-                normals.push_back(tmp_normals.at(normalIndex - 1));
+                vertices_.push_back(tmp_vertexes.at(vertexIndex[i] - 1));
+                uvs_.push_back(tmp_uvs.at(uvIndex[i] - 1));
+                normals_.push_back(tmp_normals.at(normalIndex[i] - 1));
             }
         }
-        else if (prefix == "mtllib") {
-            std::string mtlFile;
-            ss >> mtlFile;
+        else if (!strcmp(buffer, "mtllib")) {
+            // Get current .obj file directory
+            std::string dir = path.substr(0, path.find_last_of('\\'));
+
+            char mtlFile[128]{};
+            fscanf_s(file, "%s\n", mtlFile, 128);
             LoadMaterial(dir + "/" + mtlFile);
         }
     }
 
-    file.close();
+    fclose(file);
 }
 
-void Model::LoadMaterial(const std::string& path) {
+void Model::LoadMaterial(const std::string path) {
 
-    std::ifstream file(path);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open mtl file: " << path << std::endl;
+    FILE* file;
+
+    if (fopen_s(&file, path.c_str(), "r")) {
+        std::cerr << "Failed to open obj file: " << path << std::endl;
         return;
     }
 
-    std::string line;
+    constexpr int buffer_size = 128;
+    char buffer[buffer_size]{};
 
-    while (std::getline(file, line)) {
-        std::istringstream ss(line);
-        std::string prefix;
-        ss >> prefix;
+    while (fscanf_s(file, "%s", buffer, buffer_size) != EOF) {
 
-        if (prefix == "newmtl") {
-            ss >> material_.name;
+        if (!strcmp(buffer, "Ka")) {
+            fscanf_s(file, "%f %f %f", &material_.ambient.r, &material_.ambient.g, &material_.ambient.b);
         }
-        else if (prefix == "Ka") {
-            ss >> material_.ambient.r >> material_.ambient.g >> material_.ambient.b;
+        else if (!strcmp(buffer, "Kd")) {
+            fscanf_s(file, "%f %f %f", &material_.diffuse.r, &material_.diffuse.g, &material_.diffuse.b);
         }
-        else if (prefix == "Kd") {
-            ss >> material_.diffuse.r >> material_.diffuse.g >> material_.diffuse.b;
+        else if (!strcmp(buffer, "Ks")) {
+            fscanf_s(file, "%f %f %f", &material_.specular.r, &material_.specular.g, &material_.specular.b);
         }
-        else if (prefix == "Ks") {
-            ss >> material_.specular.r >> material_.specular.g >> material_.specular.b;
+        else if (!strcmp(buffer, "Ns")) {
+            fscanf_s(file, "%f", &material_.shininess);
         }
-        else if (prefix == "Ns") {
-            ss >> material_.shininess;
-        }
-        else if (prefix == "map_Kd") {
-            std::string texture_file;
-            ss >> texture_file;
-
+        else if (!strcmp(buffer, "map_Kd")) {
+            char texture_file[128]{};
+            fscanf_s(file, "%s\n", texture_file, 128);
             std::string texture_path = path.substr(0, path.find_last_of('/')) + "/" + texture_file;
 
             texture_.Create();
@@ -171,5 +167,5 @@ void Model::LoadMaterial(const std::string& path) {
         }
     }
 
-    file.close();
+    fclose(file);
 }
