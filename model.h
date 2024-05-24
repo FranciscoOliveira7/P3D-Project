@@ -3,6 +3,7 @@
 #define GLEW_STATIC
 #include <GL\glew.h>
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
+#include <glm\gtc\matrix_inverse.hpp> // glm::inverseTranspose()
 #include <vector>
 #include <string>
 #include <sstream>
@@ -18,17 +19,6 @@
 // Library used for image loading
 
 using namespace glm;
-
-typedef struct Material {
-	std::string name;
-
-	glm::vec3 ambient;  // Ka
-	glm::vec3 diffuse;  // kd
-	glm::vec3 specular; // ke
-	float shininess;    // Expoente de reflexão especular
-
-	Material() : name("N/A"), ambient(glm::vec3(0.0f)), diffuse(glm::vec3(0.0f)), specular(glm::vec3(0.0f)), shininess(0.0f) {}
-} Material;
 
 class Model {
 public:
@@ -46,12 +36,11 @@ public:
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 	void SetCameraFov(float fov) { camera_.SetFov(fov); }
 
-	void SetScale(float scale) { world_.SetScale(scale); }
+	void SetScale(float scale) { transform_.SetScale(scale); }
 
-	bool has_no_texture_;
 private:
 
-	WorldTrans world_;
+	WorldTrans transform_;
 
 	Shader shader_;
 	Material material_;

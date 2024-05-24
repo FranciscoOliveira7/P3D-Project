@@ -2,27 +2,34 @@
 #include "table.h"
 #include "texture.h"
 
-void Model::Delete()
-{
+void Model::Delete() {
 	vertex_buffer_.Delete();
 	color_buffer_.Delete();
 	normal_buffer_.Delete();
 	index_buffer_.Delete();
 }
 
-void Model::Render(vec3 position, vec3 orientation)
-{
-    world_.SetPosition(position);
-    world_.SetRotation(orientation.x, orientation.y, orientation.z);
+void Model::Render(vec3 position, vec3 orientation) {
 
-    mat4 mvp = camera_.GetProjectionViewMatrix() * world_.GetMatrix();
+    transform_.SetPosition(position);
+    transform_.SetRotation(orientation.x, orientation.y, orientation.z);
+
+    mat4 mvp = camera_.GetProjectionMatrix() * camera_.GetViewMatrix() * transform_.GetMatrix();
 
     shader_.SetUniformMatrix4fv("MVP", mvp);
 
     vao_.Bind();
     shader_.Bind();
 
+    mat4 NormalMatrix;
+    NormalMatrix = inverseTranspose(mat3(transform_.GetMatrix()));
+
     if (index_buffer_.Count() > 0) {
+        shader_.SetUniformMatrix4fv("View", camera_.GetViewMatrix());
+        shader_.SetUniformMatrix4fv("ModelView", camera_.GetViewMatrix() * transform_.GetMatrix());
+        shader_.SetUniformMatrix4fv("NormalMatrix", NormalMatrix);
+        shader_.SetUniformMaterial("material", material_);
+        shader_.SetUniform3fv("asdas", vec3(0.0f));
         glDrawElements(GL_TRIANGLES, index_buffer_.Count(), GL_UNSIGNED_INT, (void*) 0);
     }
     else {
@@ -39,11 +46,13 @@ void Model::Install(bool test) {
     if (!test) {
         vertex_buffer_.Create(vertices, sizeof(vertices));
         color_buffer_.Create(cores, sizeof(cores));
+        normal_buffer_.Create(normais, sizeof(normais));
         index_buffer_.Create(indices, sizeof(indices) / sizeof(GLuint));
     }
     else {
         vertex_buffer_.Create(vertexes.data(), vertexes.size() * sizeof(vec3));
         uv_buffer_.Create(uvs.data(), uvs.size() * sizeof(vec2));
+        //normal_buffer_.Create(normals.data(), normals.size() * sizeof(vec3));
     }
 
     AttribPointer();
@@ -62,6 +71,10 @@ void Model::AttribPointer() const {
         color_buffer_.Bind();
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
         glEnableVertexAttribArray(1);
+
+        normal_buffer_.Bind();
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+        glEnableVertexAttribArray(3);
     }
     else {
         uv_buffer_.Bind();

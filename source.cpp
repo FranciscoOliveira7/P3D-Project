@@ -194,7 +194,7 @@ void set_ball_pos() {
     // Posição das bola, calculado pelo zés e o gaio
     for (int i = 1; i < 6; i++) {
         for (int j = 0; j < i; j++) {
-            glm::vec3 position = vec3(x + i * 1.73f /*sin(60) * 2*/, -6.5f /*table pos*/, (i - 1) - j * 2);
+            glm::vec3 position = vec3(x + i * 1.73f /*sin(60) * 2 para formar um triangulo equilátero*/, -6.5f /*table pos*/, (i - 1) - j * 2);
 
             ball_positions.push_back(position);
         }
