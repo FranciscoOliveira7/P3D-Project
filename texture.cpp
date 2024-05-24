@@ -3,8 +3,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-unsigned int Texture::unit_ = 0;
-
 void Texture::Create() {
 
 	// I'll just use the unit 0, f### it we ball
@@ -15,7 +13,8 @@ void Texture::Create() {
 	glBindTexture(GL_TEXTURE_2D, id_);
 }
 
-void Texture::Load(const std::string& path) {
+void Texture::Load(const std::string& path) const {
+
     int width, height, channels;
 
     stbi_set_flip_vertically_on_load(true);
