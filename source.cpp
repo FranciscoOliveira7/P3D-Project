@@ -105,7 +105,7 @@ int main(void) {
     glewExperimental = GL_TRUE;
     glewInit();
 
-    //TODO Input Manager (or maybe not, I'll probably just leave it like this)
+    //TODO Input Manager
     glfwSetScrollCallback(window, scrollCallBack);
     glfwSetCursorPosCallback(window, cursorCallBack);
     glfwSetMouseButtonCallback(window, mouseCallBack);
@@ -189,10 +189,12 @@ void draw(std::vector<Model>& models) {
 }
 
 void set_ball_pos() {
+    int x = 2.0f;
+
     // Posição das bola, calculado pelo zés e o gaio
     for (int i = 1; i < 6; i++) {
         for (int j = 0; j < i; j++) {
-            glm::vec3 position = vec3(2.0f + i * 1.73f /*sin(60) * 2*/, -6.5f /*table pos*/, (i - 1) - j * 2);
+            glm::vec3 position = vec3(x + i * 1.73f /*sin(60) * 2 para formar um triangulo equilátero*/, -6.5f /*table pos*/, (i - 1) - j * 2);
 
             ball_positions.push_back(position);
         }

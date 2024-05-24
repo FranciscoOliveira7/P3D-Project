@@ -4,7 +4,7 @@
 
 class VertexBuffer {
 private:
-	unsigned int id_ = 0;
+	unsigned int id_;
 
 public:
 	void Create(const void* data, GLsizeiptr size) {
@@ -13,7 +13,7 @@ public:
 		glBufferStorage(GL_ARRAY_BUFFER, size, data, 0);
 	}
 
-	void Delete() const {
+	void Delete() {
 		glDeleteBuffers(1, &id_);
 	}
 
