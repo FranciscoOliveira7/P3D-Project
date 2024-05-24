@@ -2,11 +2,12 @@
 #include "table.h"
 #include "texture.h"
 
-Model::~Model() {
+void Model::Delete() const {
 	vertex_buffer_.Delete();
 	color_buffer_.Delete();
 	normal_buffer_.Delete();
 	index_buffer_.Delete();
+    texture_.Delete();
 }
 
 void Model::Render(vec3 position, vec3 orientation)
@@ -14,7 +15,7 @@ void Model::Render(vec3 position, vec3 orientation)
     world_.SetPosition(position);
     world_.SetRotation(orientation.x, orientation.y, orientation.z);
 
-    mat4 mvp = camera_.GetProjectionViewMatrix() * world_.GetMatrix();
+    mat4 mvp = camera_.GetProjectionMatrix() * camera_.GetViewMatrix() * world_.GetMatrix();
 
     shader_.SetUniformMatrix4fv("MVP", mvp);
 

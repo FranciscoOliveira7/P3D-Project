@@ -31,7 +31,7 @@ typedef struct Material {
 
 class Model {
 public:
-	~Model();
+	void Delete() const;
 
 	void BindShader(Shader shader) { shader_ = shader; }
 

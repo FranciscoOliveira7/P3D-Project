@@ -44,17 +44,6 @@ typedef struct {
 	GLuint      shader;
 } ShaderInfo;
 
-typedef struct Material {
-	std::string name;
-
-	glm::vec3 ambient;  // Ka
-	glm::vec3 diffuse;  // kd
-	glm::vec3 specular; // ke
-	float shininess;    // Expoente de reflexão especular
-
-	Material() : name("N/A"), ambient(glm::vec3(0.0f)), diffuse(glm::vec3(0.0f)), specular(glm::vec3(0.0f)), shininess(0.0f) {}
-} Material;
-
 class Shader {
 private:
 	GLuint program_;
@@ -62,15 +51,11 @@ private:
 public:
 	void Create(ShaderInfo* shaders);
 
-	void Bind() { glUseProgram(program_); }
+	void Bind() const { glUseProgram(program_); }
 
 	void SetUniformMatrix4fv(const std::string& name, glm::mat4 mat);
 
-	void SetUniform3fv(const std::string& name, glm::vec3 idk);
-
-	void SetUniformMaterial(const std::string& name, Material material);
-
-	unsigned int GetUniformLocation(const std::string& name);
+	unsigned int GetUniformLocation(const std::string& name) const;
 
 	// Funções criadas pelo stor
 	GLchar* ReadShader(const char* filename);
