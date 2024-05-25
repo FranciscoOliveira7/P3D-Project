@@ -1,26 +1,72 @@
 #include "model.h"
 #include "texture.h"
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\matrix_inverse.hpp> // glm::inverseTranspose()
 
 void Model::Delete() const {
-	vertex_buffer_.Delete();
+    vertex_buffer_.Delete();
+    uv_buffer_.Delete();
 	normal_buffer_.Delete();
     texture_.Delete();
+    vao_.Delete();
 }
 
-void Model::Render(vec3 position, vec3 orientation)
-{
+void Model::Render(vec3 position, vec3 orientation) {
+
     world_.SetPosition(position);
     world_.SetRotation(orientation.x, orientation.y, orientation.z);
 
-    mat4 mvp = camera_.GetProjectionViewMatrix() * world_.GetMatrix();
+    shader_.SetUniformMatrix4fv("Projection", camera_.GetProjectionMatrix());
+    shader_.SetUniformMatrix4fv("View", camera_.GetViewMatrix());
+    shader_.SetUniformMatrix4fv("Model", world_.GetMatrix());
 
-    shader_.SetUniformMatrix4fv("MVP", mvp);
+    GLuint programa = shader_.GetProgram();
 
     vao_.Bind();
     shader_.Bind();
-
-
     texture_.Bind();
+
+    glm::mat4 ModelView = camera_.GetViewMatrix() * world_.GetMatrix();
+
+    mat3 NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
+
+    GLint normalViewId = glGetProgramResourceLocation(programa, GL_UNIFORM, "NormalMatrix");
+    glProgramUniformMatrix3fv(programa, normalViewId, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+
+    // Fonte de luz ambiente global
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "ambientLight.ambient"), 1, glm::value_ptr(glm::vec3(0.1, 0.1, 0.1)));
+
+    // Fonte de luz direcional
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "directionalLight.direction"), 1, glm::value_ptr(glm::vec3(1.0, 0.0, 0.0)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "directionalLight.ambient"), 1, glm::value_ptr(glm::vec3(0.2, 0.2, 0.2)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "directionalLight.diffuse"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "directionalLight.specular"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+
+    // Fonte de luz pontual #1
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[0].position"), 1, glm::value_ptr(glm::vec3(0.0, 0.0, 5.0)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[0].ambient"), 1, glm::value_ptr(glm::vec3(0.1, 0.1, 0.1)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[0].diffuse"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[0].specular"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+    glProgramUniform1f(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[0].constant"), 1.0f);
+    glProgramUniform1f(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[0].linear"), 0.06f);
+    glProgramUniform1f(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[0].quadratic"), 0.02f);
+
+    // Fonte de luz pontual #2
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[1].position"), 1, glm::value_ptr(glm::vec3(-2.0, 2.0, 5.0)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[1].ambient"), 1, glm::value_ptr(glm::vec3(0.1, 0.1, 0.1)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[1].diffuse"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[1].specular"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+    glProgramUniform1f(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[1].constant"), 1.0f);
+    glProgramUniform1f(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[1].linear"), 0.06f);
+    glProgramUniform1f(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "pointLight[1].quadratic"), 0.02f);
+
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "material.emissive"), 1, glm::value_ptr(glm::vec3(0.0, 0.0, 0.0)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "material.ambient"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "material.diffuse"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "material.specular"), 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
+    glProgramUniform1f(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "material.shininess"), 12.0f);
+
+
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices_.size()));
 }
 
@@ -45,7 +91,11 @@ void Model::AttribPointer() const {
 	glEnableVertexAttribArray(0);
 
     uv_buffer_.Bind();
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+    glEnableVertexAttribArray(1);
+
+    normal_buffer_.Bind();
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*) 0);
     glEnableVertexAttribArray(2);
 }
 
@@ -86,11 +136,6 @@ void Model::Load(const std::string path) {
         }
         else if (!strcmp(buffer, "f")) {
             fscanf_s(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-            // Uncomment for debug
-            //if (results != 9) {
-            //    std::cerr << "Failed to read face information from file: " << path << std::endl;
-            //    return;
-            //}
 
             for (int i = 0; i < 3; ++i) {
                 vertices_.push_back(tmp_vertexes.at(vertexIndex[i] - 1));

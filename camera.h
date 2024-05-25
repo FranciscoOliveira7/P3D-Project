@@ -24,7 +24,8 @@ public:
         projection_ = perspective(radians(fov), (float)640 / (float)480, 1.0f, 100.0f);
     }
 
-    mat4 GetProjectionViewMatrix(void) { return projection_ * view_; }
+    mat4 GetProjectionMatrix(void) const { return projection_; }
+    mat4 GetViewMatrix(void) const { return view_; }
 
 private:
 

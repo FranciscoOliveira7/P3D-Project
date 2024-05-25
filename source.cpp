@@ -192,6 +192,10 @@ void set_ball_pos() {
             ball_positions.push_back(position);
         }
     }
+
+    vec3 aux = ball_positions[4];
+    ball_positions[4] = ball_positions[7];
+    ball_positions[7] = aux;
 }
 
 void print_error(int error, const char* description) {
