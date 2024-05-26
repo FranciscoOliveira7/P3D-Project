@@ -34,22 +34,22 @@ class Model {
 public:
 	void Delete() const;
 
-	void BindShader(Shader shader) { shader_ = shader; }
+	void SetShader(Shader shader) { shader_ = shader; }
 
 	void Render(vec3 position, vec3 orientation);
-	void SetMaterialUniforms();
 	void Install();
-	void AttribPointer() const;
 
 	void Load(const std::string obj_model_filepath);
-
-	void LoadMaterial(const std::string mtl_model_path);
 
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 	void SetCameraFov(float fov) { camera_.SetFov(fov); }
 
 	void SetScale(float scale) { world_.SetScale(scale); }
 private:
+	void SetMaterialUniforms();
+	void AttribPointer() const;
+
+	void LoadMaterial(const std::string mtl_model_path);
 
 	WorldTrans world_;
 

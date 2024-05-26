@@ -151,7 +151,7 @@ void init(std::vector<Model>& models) {
 
     shader.Create(shaders);
 
-    models[0].BindShader(shader);
+    models[0].SetShader(shader);
     models[0].Load("Models\\Table.obj");
     models[0].Install();
     models[0].SetScale(2.2f);
@@ -160,7 +160,7 @@ void init(std::vector<Model>& models) {
     for (int i = 1; i < models.size(); i++) {
         models[i].Load("Models\\Ball" + std::to_string(i - 1) + ".obj");
         models[i].Install();
-        models[i].BindShader(shader);
+        models[i].SetShader(shader);
         models[i].SetScale(0.6f);
     }
 
