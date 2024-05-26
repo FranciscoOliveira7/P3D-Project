@@ -20,6 +20,4 @@ public:
 	void Bind() const {
 		glBindTexture(GL_TEXTURE_2D, id_);
 	}
-
-	unsigned int GetId() const { return id_; }
 };

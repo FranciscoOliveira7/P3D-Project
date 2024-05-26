@@ -1,31 +1,7 @@
 #include "world_transform.h"
 
-void WorldTrans::SetScale(float scale)
-{
-    scale_ = vec3(scale);
-}
+mat4 WorldTrans::GetMatrix(void) {
 
-void WorldTrans::SetRotation(float x, float y, float z)
-{
-    rotation_.x = x;
-    rotation_.y = y;
-    rotation_.z = z;
-}
-
-void WorldTrans::SetPosition(vec3 position)
-{
-    pos_ = position;
-}
-
-void WorldTrans::Rotate(float x, float y, float z)
-{
-    rotation_.x += x;
-    rotation_.y += y;
-    rotation_.z += z;
-}
-
-mat4 WorldTrans::GetMatrix(void)
-{
     mat4 model = mat4(1.0f);
 
     model = scale(model, scale_);

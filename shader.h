@@ -55,8 +55,6 @@ public:
 		glDeleteProgram(program_);
 	}
 
-	GLuint GetProgram() { return program_; }
-
 	void Bind() const { glUseProgram(program_); }
 
 	void SetUniformMatrix4fv(const std::string& name, glm::mat4 value) const;

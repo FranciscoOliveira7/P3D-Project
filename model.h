@@ -44,14 +44,14 @@ public:
 	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
 	void SetCameraFov(float fov) { camera_.SetFov(fov); }
 
-	void SetScale(float scale) { world_.SetScale(scale); }
+	void SetScale(float scale) { transform_.SetScale(scale); }
 private:
-	void SetMaterialUniforms();
+	void SetUniforms();
 	void AttribPointer() const;
 
 	void LoadMaterial(const std::string mtl_model_path);
 
-	WorldTrans world_;
+	WorldTrans transform_;
 
 	Shader shader_;
 	Material material_;

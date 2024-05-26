@@ -11,57 +11,25 @@ void Model::Delete() const {
 
 void Model::Render(vec3 position, vec3 orientation) {
 
-    world_.SetPosition(position);
-    world_.SetRotation(orientation.x, orientation.y, orientation.z);
+    transform_.SetPosition(position);
+    transform_.SetRotation(orientation);
 
     shader_.SetUniformMatrix4fv("Projection", camera_.GetProjectionMatrix());
     shader_.SetUniformMatrix4fv("View", camera_.GetViewMatrix());
-    shader_.SetUniformMatrix4fv("Model", world_.GetMatrix());
-
-    GLuint programa = shader_.GetProgram();
+    shader_.SetUniformMatrix4fv("Model", transform_.GetMatrix());
 
     vao_.Bind();
     shader_.Bind();
     texture_.Bind();
 
-    mat3 NormalMatrix = inverseTranspose(mat3(camera_.GetViewMatrix() * world_.GetMatrix()));
-
-    shader_.SetUniformMatrix3fv("NormalMatrix", NormalMatrix);
-
-    // Fonte de luz ambiente global
-    shader_.SetUniform3fv("ambientLight.ambient", vec3(0.1f));
-    glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "ambientLight.ambient"), 1, value_ptr(vec3(0.1, 0.1, 0.1)));
-
-    // Fonte de luz direcional
-    shader_.SetUniform3fv("directionalLight.direction",vec3(1.0, 0.0, 0.0));
-    shader_.SetUniform3fv("directionalLight.ambient", vec3(0.2));
-    shader_.SetUniform3fv("directionalLight.diffuse", vec3(1.0));
-    shader_.SetUniform3fv("directionalLight.specular", vec3(1.0));
-
-    // Fonte de luz pontual #1
-    shader_.SetUniform3fv("pointLight[0].position", vec3(0.0, 0.0, 5.0));
-    shader_.SetUniform3fv("pointLight[0].ambient", vec3(0.1));
-    shader_.SetUniform3fv("pointLight[0].diffuse", vec3(1.0));
-    shader_.SetUniform3fv("pointLight[0].specular", vec3(1.0));
-    shader_.SetUniform1f("pointLight[0].constant", 1.0f);
-    shader_.SetUniform1f("pointLight[0].linear", 0.06f);
-    shader_.SetUniform1f("pointLight[0].quadratic", 0.02f);
-
-    // Fonte de luz pontual #2
-    shader_.SetUniform3fv("pointLight[1].position", vec3(-2.0, 2.0, 5.0));
-    shader_.SetUniform3fv("pointLight[1].ambient", vec3(0.1));
-    shader_.SetUniform3fv("pointLight[1].diffuse", vec3(1.0));
-    shader_.SetUniform3fv("pointLight[1].specular", vec3(1.0));
-    shader_.SetUniform1f("pointLight[1].constant", 1.0f);
-    shader_.SetUniform1f("pointLight[1].linear", 0.06f);
-    shader_.SetUniform1f("pointLight[1].quadratic", 0.02f);
-
-    SetMaterialUniforms();
+    SetUniforms();
 
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices_.size()));
 }
 
-void Model::SetMaterialUniforms() {
+void Model::SetUniforms() {
+
+    shader_.SetUniformMatrix3fv("NormalMatrix", inverseTranspose(mat3(camera_.GetViewMatrix() * transform_.GetMatrix())));
 
     shader_.SetUniform3fv("material.emissive", vec3(0.0));
     shader_.SetUniform3fv("material.ambient", material_.ambient);

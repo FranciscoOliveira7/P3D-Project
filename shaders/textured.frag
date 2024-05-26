@@ -14,8 +14,6 @@ struct AmbientLight {
 	vec3 ambient;	// Componente de luz ambiente global
 };
 
-uniform AmbientLight ambientLight; // Fonte de luz ambiente global
-
 // Estrutura de uma fonte de luz direcional
 struct DirectionalLight	{
 	vec3 direction;		// Direção da luz, espaço do mundo
@@ -24,8 +22,6 @@ struct DirectionalLight	{
 	vec3 diffuse;		// Componente de luz difusa
 	vec3 specular;		// Componente de luz especular
 };
-
-uniform DirectionalLight directionalLight; // Fonte de luz direcional
 
 // Estrutura de uma fonte de luz pontual
 struct PointLight	{
@@ -39,8 +35,6 @@ struct PointLight	{
 	float linear;		// Coeficiente de atenuação linear
 	float quadratic;	// Coeficiente de atenuação quadrática
 };
-
-uniform PointLight pointLight[2]; // Duas fontes de luz pontual
 
 // Estrutura de uma fonte de luz cónica
 struct SpotLight {
@@ -58,8 +52,6 @@ struct SpotLight {
 	vec3 spotDirection;
 };
 
-uniform SpotLight spotLight; // Fonte de luz cónica
-
 struct Material{
 	vec3 emissive;
 	vec3 ambient;		// Ka
@@ -68,7 +60,12 @@ struct Material{
 	float shininess;
 };
 
+uniform AmbientLight ambientLight; // Fonte de luz ambiente global
+uniform DirectionalLight directionalLight; // Fonte de luz direcional
+uniform PointLight pointLight; // Duas fontes de luz pontual
+uniform SpotLight spotLight; // Fonte de luz cónica
 uniform Material material;
+
 vec3 diffuseColor;
 
 in vec3 vPositionEyeSpace;
@@ -97,7 +94,7 @@ void main() {
 	vec4 ambient;
 
 	// Cálculo do efeito da iluminação no fragmento.
-	vec4 light[4];
+	vec4 light[3];
 	vec4 ambientTmp;
 	// Contribuição da fonte de luz ambiente
 	ambient = calcAmbientLight(ambientLight);
@@ -105,19 +102,16 @@ void main() {
 	light[0] = calcDirectionalLight(directionalLight, ambientTmp);
 	ambient += ambientTmp;
 	// Contribuição de cada fonte de luz Pontual
-	for(int i=0; i<2; i++) {
-		light[i+1] = calcPointLight(pointLight[i], ambientTmp);
-		ambient += ambientTmp;
-	}
+
+	light[1] = calcPointLight(pointLight, ambientTmp);
+	ambient += ambientTmp;
+
 	// Contribuição da fonte de luz cónica
-	light[3] = calcSpotLight(spotLight, ambientTmp);
+	light[2] = calcSpotLight(spotLight, ambientTmp);
 	ambient += ambientTmp;
 
 	// Cálculo da cor final do fragmento.
-	// Com CubeMap
-	//fColor = emissive + (ambient/4) + light[0] + light[1] + light[2] + light[3];
-	// Com cor de fragmento
-	fColor = emissive + (ambient/4) + light[0] + light[1] + light[2] + light[3];
+	fColor = emissive + (ambient/4) + light[0] + light[1] + light[2];
 	// Renderizar sem ilumação
 	//fColor = vec4(diffuseColor, 1.0f);
 }
