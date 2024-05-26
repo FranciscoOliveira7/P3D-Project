@@ -7,11 +7,18 @@ using namespace glm;
 
 class WorldTrans {
 public:
-    void SetScale(float scale);
-    void SetRotation(float x, float y, float z);
-    void SetPosition(vec3 position);
 
-    void Rotate(float x, float y, float z);
+    void SetScale(float scale) { scale_ = vec3(scale); }
+
+    void SetRotation(vec3 rotation) { rotation_ = rotation; }
+
+    void SetPosition(vec3 position) { pos_ = position; }
+
+    void Rotate(float x, float y, float z) {
+        rotation_.x += x;
+        rotation_.y += y;
+        rotation_.z += z;
+    }
 
     mat4 GetMatrix(void);
 

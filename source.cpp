@@ -151,6 +151,24 @@ void init(std::vector<Model>& models) {
 
     shader.Create(shaders);
 
+    // Fonte de luz ambiente global
+    shader.SetUniform3fv("ambientLight.ambient", vec3(0.1f));
+
+    // Fonte de luz direcional
+    shader.SetUniform3fv("directionalLight.direction", vec3(1.0, 0.0, 0.0));
+    shader.SetUniform3fv("directionalLight.ambient", vec3(0.2));
+    shader.SetUniform3fv("directionalLight.diffuse", vec3(1.0));
+    shader.SetUniform3fv("directionalLight.specular", vec3(1.0));
+
+    // Fonte de luz pontual
+    shader.SetUniform3fv("pointLight.position", vec3(-2.0, 2.0, 5.0));
+    shader.SetUniform3fv("pointLight.ambient", vec3(0.1));
+    shader.SetUniform3fv("pointLight.diffuse", vec3(1.0));
+    shader.SetUniform3fv("pointLight.specular", vec3(1.0));
+    shader.SetUniform1f("pointLight.constant", 1.0f);
+    shader.SetUniform1f("pointLight.linear", 0.06f);
+    shader.SetUniform1f("pointLight.quadratic", 0.02f);
+
     models[0].SetShader(shader);
     models[0].Load("Models\\Table.obj");
     models[0].Install();
