@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 
+// Deprecated class
+
 class IndexBuffer {
 private:
 	unsigned int id_ = 0;

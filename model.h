@@ -5,7 +5,8 @@
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
 #include <vector>
 #include <string>
-#include <sstream>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\matrix_inverse.hpp> // inverseTranspose()
 
 #include "vertex_array.h"
 #include "vertex_buffer.h"
@@ -26,7 +27,7 @@ typedef struct Material {
 	float shininess;    // Expoente de reflexão especular
 
 	// default material
-	Material() : ambient(vec3(0.0f)), diffuse(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
+	//Material() : ambient(vec3(0.0f)), diffuse(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
 } Material;
 
 class Model {
@@ -36,17 +37,11 @@ public:
 	void BindShader(Shader shader) { shader_ = shader; }
 
 	void Render(vec3 position, vec3 orientation);
+	void SetMaterialUniforms();
 	void Install();
 	void AttribPointer() const;
 
 	void Load(const std::string obj_model_filepath);
-
-	// Hard coded stuff since the table has no obj file
-	//void LoadTable(std::vector<vec3> vertices, std::vector<vec3> colors, std::vector<unsigned int> indexes) {
-	//	vertices_ = vertices;
-	//	colors_ = colors;
-	//	indexes_ = indexes;
-	//}
 
 	void LoadMaterial(const std::string mtl_model_path);
 
