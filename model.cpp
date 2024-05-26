@@ -26,12 +26,9 @@ void Model::Render(vec3 position, vec3 orientation) {
     shader_.Bind();
     texture_.Bind();
 
-    glm::mat4 ModelView = camera_.GetViewMatrix() * world_.GetMatrix();
+    mat3 NormalMatrix = inverseTranspose(mat3(camera_.GetViewMatrix() * world_.GetMatrix()));
 
-    mat3 NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
-
-    GLint normalViewId = glGetProgramResourceLocation(programa, GL_UNIFORM, "NormalMatrix");
-    glProgramUniformMatrix3fv(programa, normalViewId, 1, GL_FALSE, glm::value_ptr(NormalMatrix));
+    shader_.SetUniformMatrix3fv("NormalMatrix", NormalMatrix);
 
     // Fonte de luz ambiente global
     glProgramUniform3fv(programa, glGetProgramResourceLocation(programa, GL_UNIFORM, "ambientLight.ambient"), 1, glm::value_ptr(glm::vec3(0.1, 0.1, 0.1)));

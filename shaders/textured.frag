@@ -118,6 +118,8 @@ void main() {
 	//fColor = emissive + (ambient/4) + light[0] + light[1] + light[2] + light[3];
 	// Com cor de fragmento
 	fColor = emissive + (ambient/4) + light[0] + light[1] + light[2] + light[3];
+	// Renderizar sem ilumação
+	//fColor = vec4(diffuseColor, 1.0f);
 }
 
 vec4 calcAmbientLight(AmbientLight light) {

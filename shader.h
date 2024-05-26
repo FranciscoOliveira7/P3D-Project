@@ -59,9 +59,10 @@ public:
 
 	void Bind() const { glUseProgram(program_); }
 
-	void SetUniformMatrix4fv(const std::string& name, glm::mat4 mat);
+	void SetUniformMatrix4fv(const std::string& name, glm::mat4 mat) const;
+	void SetUniformMatrix3fv(const std::string& name, glm::mat3 mat) const;
 
-	unsigned int GetUniformLocation(const std::string& name);
+	unsigned int GetUniformLocation(const std::string& name) const;
 
 	GLchar* ReadShader(const char* filename);
 	GLuint LoadShaders(ShaderInfo* shaders);

@@ -8,14 +8,15 @@ void Shader::Create(ShaderInfo* shaders)
     glUseProgram(program_);
 }
 
-void Shader::SetUniformMatrix4fv(const std::string& name, glm::mat4 mat)
-{
-    GLint location = GetUniformLocation(name);
-    glProgramUniformMatrix4fv(program_, location, 1, GL_FALSE, value_ptr(mat));
+void Shader::SetUniformMatrix4fv(const std::string& name, glm::mat4 mat) const {
+    glProgramUniformMatrix4fv(program_, GetUniformLocation(name), 1, GL_FALSE, value_ptr(mat));
 }
 
-unsigned int Shader::GetUniformLocation(const std::string& name)
-{
+void Shader::SetUniformMatrix3fv(const std::string& name, glm::mat3 mat) const {
+	glProgramUniformMatrix3fv(program_, GetUniformLocation(name), 1, GL_FALSE, value_ptr(mat));
+}
+
+unsigned int Shader::GetUniformLocation(const std::string& name) const {
     GLint location = glGetProgramResourceLocation(program_, GL_UNIFORM, name.c_str());
     if (location == -1) std::cout << "Warning: uniform '" << name << "' doesn't exist" << std::endl;
     return location;
