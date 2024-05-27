@@ -10,62 +10,62 @@
 
 #include "vertex_array.h"
 #include "vertex_buffer.h"
-#include "index_buffer.h"
 #include "world_transform.h"
 #include "camera.h"
 #include "shader.h"
 #include "texture.h"
 
-// Library used for image loading
-
 using namespace glm;
 
-typedef struct Material {
-	vec3 ambient;  // Ka
-	vec3 diffuse;  // kd
-	vec3 specular; // ke
-	float shininess;    // Expoente de reflexão especular
+namespace AsBolasDoJose {
 
-	// default material
-	Material() : ambient(vec3(0.0f)), diffuse(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
-} Material;
+	typedef struct Material {
+		vec3 ambient;    // Ka
+		vec3 diffuse;    // kd
+		vec3 specular;   // ke
+		float shininess; // Expoente de reflexão especular
 
-class Model {
-public:
-	void Delete() const;
+		// default material
+		Material() : ambient(vec3(0.0f)), diffuse(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
+	} Material;
 
-	void SetShader(Shader shader) { shader_ = shader; }
+	class Model {
+	public:
+		void Delete() const;
 
-	void Render(vec3 position, vec3 orientation);
-	void Install();
+		void SetShader(Shader shader) { shader_ = shader; }
 
-	void Load(const std::string obj_model_filepath);
+		void Render(vec3 position, vec3 orientation);
+		void Install();
 
-	void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
-	void SetCameraFov(float fov) { camera_.SetFov(fov); }
+		void Load(const std::string obj_model_filepath);
 
-	void SetScale(float scale) { transform_.SetScale(scale); }
-private:
-	void SetUniforms();
-	void AttribPointer() const;
+		void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
+		void SetCameraFov(float fov) { camera_.SetFov(fov); }
 
-	void LoadMaterial(const std::string mtl_model_path);
+		void SetScale(float scale) { transform_.SetScale(scale); }
+	private:
+		void SetUniforms();
+		void AttribPointer() const;
 
-	WorldTrans transform_;
+		void LoadMaterial(const std::string mtl_model_path);
 
-	Shader shader_;
-	Material material_;
-	Camera camera_;
+		WorldTrans transform_;
 
-	Texture texture_;
+		Shader shader_;
+		Material material_;
+		Camera camera_;
 
-	VertexArray vao_;
+		Texture texture_;
 
-	VertexBuffer vertex_buffer_;
-	VertexBuffer uv_buffer_;
-	VertexBuffer normal_buffer_;
+		VertexArray vao_;
 
-	std::vector<vec3> vertices_;
-	std::vector<vec2> uvs_;
-	std::vector<vec3> normals_;
-};
+		VertexBuffer vertex_buffer_;
+		VertexBuffer uv_buffer_;
+		VertexBuffer normal_buffer_;
+
+		std::vector<vec3> vertices_;
+		std::vector<vec2> uvs_;
+		std::vector<vec3> normals_;
+	};
+}

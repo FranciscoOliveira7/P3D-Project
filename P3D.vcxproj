@@ -135,10 +135,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
-    <ClInclude Include="index_buffer.h" />
-    <ClInclude Include="Lights\directional_light.h" />
-    <ClInclude Include="Lights\light_source.h" />
-    <ClInclude Include="Lights\point_light.h" />
+    <ClInclude Include="lights\ambient_light.h" />
+    <ClInclude Include="lights\directional_light.h" />
+    <ClInclude Include="lights\light_source.h" />
+    <ClInclude Include="lights\point_light.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="stb_image.h" />

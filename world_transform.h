@@ -5,25 +5,28 @@
 
 using namespace glm;
 
-class WorldTrans {
-public:
+namespace AsBolasDoJose {
 
-    void SetScale(float scale) { scale_ = vec3(scale); }
+    class WorldTrans {
+    public:
 
-    void SetRotation(vec3 rotation) { rotation_ = rotation; }
+        void SetScale(float scale) { scale_ = vec3(scale); }
 
-    void SetPosition(vec3 position) { pos_ = position; }
+        void SetRotation(vec3 rotation) { rotation_ = rotation; }
 
-    void Rotate(float x, float y, float z) {
-        rotation_.x += x;
-        rotation_.y += y;
-        rotation_.z += z;
-    }
+        void SetPosition(vec3 position) { pos_ = position; }
 
-    mat4 GetMatrix(void);
+        void Rotate(float x, float y, float z) {
+            rotation_.x += x;
+            rotation_.y += y;
+            rotation_.z += z;
+        }
 
-private:
-    vec3 scale_    = vec3(1.0f);
-    vec3 rotation_ = vec3(0.0f);
-    vec3 pos_      = vec3(0.0f);
-};
+        mat4 GetMatrix(void);
+
+    private:
+        vec3 scale_ = vec3(1.0f);
+        vec3 rotation_ = vec3(0.0f);
+        vec3 pos_ = vec3(0.0f);
+    };
+}

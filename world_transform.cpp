@@ -1,18 +1,21 @@
 #include "world_transform.h"
 
-mat4 WorldTrans::GetMatrix(void) {
+namespace AsBolasDoJose {
 
-    mat4 model = mat4(1.0f);
+    mat4 WorldTrans::GetMatrix(void) {
 
-    model = scale(model, scale_);
+        mat4 model = mat4(1.0f);
 
-    // do this with quaternions or whatever it's called
-    model = rotate(model, rotation_.x, vec3(1, 0, 0));
-    model = rotate(model, rotation_.y, vec3(0, 1, 0));
-    model = rotate(model, rotation_.z, vec3(0, 0, 1));
-    // ---
+        model = scale(model, scale_);
 
-    model = translate(model, pos_);
+        // do this with quaternions or whatever it's called
+        model = rotate(model, rotation_.x, vec3(1, 0, 0));
+        model = rotate(model, rotation_.y, vec3(0, 1, 0));
+        model = rotate(model, rotation_.z, vec3(0, 0, 1));
+        // ---
 
-    return model;
+        model = translate(model, pos_);
+
+        return model;
+    }
 }

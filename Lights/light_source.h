@@ -6,24 +6,24 @@
 
 using namespace glm;
 
-class LightSource {
-public:
-	virtual void Update() = 0;
-	virtual void Disable() = 0;
+namespace AsBolasDoJose {
 
-	void Toggle() {
-		if (enabled_) Disable();
-		else Update();
-	}
-	void SetShader(Shader shader) { shader_ = shader; }
+	class LightSource {
+	public:
+		virtual void Update() = 0;
+		virtual void Disable() = 0;
 
-	void SetPosition(vec3 position) { position_ = position; }
-protected:
-	Shader shader_;
-	vec3 position_ = vec3(0.0f);
-	vec3 direction_ = vec3(0.0f, -1.0f, 0.0f);
+		void Toggle() {
+			if (enabled_) Disable();
+			else Update();
+		}
+		void SetShader(Shader shader) { shader_ = shader; }
 
-	vec3 ambient_;
+	protected:
+		Shader shader_;
 
-	bool enabled_ = true;
-};
+		vec3 ambient_ = vec3(0.0f, 0.0f, 0.0f);
+
+		bool enabled_ = true;
+	};
+}

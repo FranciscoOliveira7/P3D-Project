@@ -11,7 +11,6 @@ layout( location = 2 ) in vec3 vNormal;
 
 out vec3 vPositionEyeSpace;
 out vec3 vNormalEyeSpace;
-out vec3 textureVector;
 out vec2 textureCoord;
 
 void main()
@@ -22,9 +21,6 @@ void main()
 
 	// Transformar a normal do vértice.
 	vNormalEyeSpace = normalize(NormalMatrix * vNormal);
-
-	// Coordenada de textura para o CubeMap
-	textureVector = vPosition;
 
 	// Posição final do vértice (em coordenadas de clip)
 	gl_Position = Projection * ModelView * vec4(vPosition, 1.0f);

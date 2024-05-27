@@ -20,10 +20,13 @@
 
 #include "shader.h"
 #include "model.h"
-#include "Lights/point_light.h"
-#include "Lights/directional_light.h"
+#include "lights/point_light.h"
+#include "lights/directional_light.h"
+#include "lights/ambient_light.h"
 
 #pragma endregion
+
+using namespace AsBolasDoJose;
 
 #define WIDTH 640
 #define HEIGHT 480
@@ -36,6 +39,7 @@ void set_ball_pos();
 std::vector<vec3> ball_positions;
 
 // Lights Sources
+AmbientLight ambient_light;
 PointLight point_light;
 DirectionalLight directional_light;
 
@@ -89,6 +93,19 @@ void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
     zoom = std::max<float>(10.0f, std::min<float>(zoom, 120.0f));
 }
 
+// Lights toggle
+
+void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        switch (key) {
+            case GLFW_KEY_1: ambient_light.Toggle(); break;
+            case GLFW_KEY_2: directional_light.Toggle(); break;
+            case GLFW_KEY_3: point_light.Toggle(); break;
+            default: break;
+        }
+    }
+}
+
 int main(void) {
     GLFWwindow* window;
 
@@ -115,6 +132,7 @@ int main(void) {
     glfwSetScrollCallback(window, scrollCallBack);
     glfwSetCursorPosCallback(window, cursorCallBack);
     glfwSetMouseButtonCallback(window, mouseCallBack);
+    glfwSetKeyCallback(window, keyCallBack);
 
     std::vector<Model> models;
 
@@ -156,11 +174,12 @@ void init(std::vector<Model>& models) {
     Shader shader;
     shader.Create(shaders);
 
+    ambient_light.SetShader(shader);
     point_light.SetShader(shader);
     directional_light.SetShader(shader);
 
     // Fonte de luz ambiente global
-    shader.SetUniform3fv("ambientLight.ambient", vec3(1.0f));
+    ambient_light.Update();
 
     // Fonte de luz direcional
     directional_light.Update();
