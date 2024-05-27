@@ -27,7 +27,7 @@ typedef struct Material {
 	float shininess;    // Expoente de reflexão especular
 
 	// default material
-	//Material() : ambient(vec3(0.0f)), diffuse(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
+	Material() : ambient(vec3(0.0f)), diffuse(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
 } Material;
 
 class Model {

@@ -20,6 +20,8 @@
 
 #include "shader.h"
 #include "model.h"
+#include "Lights/point_light.h"
+#include "Lights/directional_light.h"
 
 #pragma endregion
 
@@ -148,33 +150,30 @@ void init(std::vector<Model>& models) {
     };
 
     Shader shader;
-
     shader.Create(shaders);
+
+    PointLight point_light;
+    point_light.SetShader(shader);
+
+    DirectionalLight directional_light;
+    directional_light.SetShader(shader);
 
     // Fonte de luz ambiente global
     shader.SetUniform3fv("ambientLight.ambient", vec3(0.1f));
 
     // Fonte de luz direcional
-    shader.SetUniform3fv("directionalLight.direction", vec3(1.0, 0.0, 0.0));
-    shader.SetUniform3fv("directionalLight.ambient", vec3(0.2));
-    shader.SetUniform3fv("directionalLight.diffuse", vec3(1.0));
-    shader.SetUniform3fv("directionalLight.specular", vec3(1.0));
+    directional_light.Update();
 
     // Fonte de luz pontual
-    shader.SetUniform3fv("pointLight.position", vec3(-2.0, 2.0, 5.0));
-    shader.SetUniform3fv("pointLight.ambient", vec3(0.1));
-    shader.SetUniform3fv("pointLight.diffuse", vec3(1.0));
-    shader.SetUniform3fv("pointLight.specular", vec3(1.0));
-    shader.SetUniform1f("pointLight.constant", 1.0f);
-    shader.SetUniform1f("pointLight.linear", 0.06f);
-    shader.SetUniform1f("pointLight.quadratic", 0.02f);
+    point_light.Update();
 
+    // Load Table
     models[0].SetShader(shader);
     models[0].Load("Models\\Table.obj");
     models[0].Install();
     models[0].SetScale(2.2f);
 
-    // Load models to renderer
+    // Load Balls
     for (int i = 1; i < models.size(); i++) {
         models[i].Load("Models\\Ball" + std::to_string(i - 1) + ".obj");
         models[i].Install();
