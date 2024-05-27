@@ -144,8 +144,8 @@ void init(std::vector<Model>& models) {
 
     // Shaders type and locations
     ShaderInfo shaders[] = {
-        { GL_VERTEX_SHADER,   "shaders/textured.vert" },
-        { GL_FRAGMENT_SHADER, "shaders/textured.frag" },
+        { GL_VERTEX_SHADER,   "shaders/shader.vert" },
+        { GL_FRAGMENT_SHADER, "shaders/shader.frag" },
         { GL_NONE, NULL }
     };
 
@@ -159,13 +159,15 @@ void init(std::vector<Model>& models) {
     directional_light.SetShader(shader);
 
     // Fonte de luz ambiente global
-    shader.SetUniform3fv("ambientLight.ambient", vec3(0.1f));
+    shader.SetUniform3fv("ambientLight.ambient", vec3(1.0f));
 
     // Fonte de luz direcional
     directional_light.Update();
+    //directional_light.Disable();
 
     // Fonte de luz pontual
     point_light.Update();
+    //point_light.Disable();
 
     // Load Table
     models[0].SetShader(shader);

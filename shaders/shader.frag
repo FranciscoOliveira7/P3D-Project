@@ -1,5 +1,7 @@
 #version 440 core
 
+in vec3 vPositionEyeSpace;
+in vec3 vNormalEyeSpace;
 in vec2 textureCoord;	// Coordenada de textura do vértice
 
 uniform mat4 Model;
@@ -7,14 +9,10 @@ uniform mat4 View;
 
 uniform sampler2D TexSampler;				// Sampler de textura
 
-uniform samplerCube cubeMap;
-
-// Estrutura da fonte de luz ambiente global
 struct AmbientLight {
 	vec3 ambient;	// Componente de luz ambiente global
 };
 
-// Estrutura de uma fonte de luz direcional
 struct DirectionalLight	{
 	vec3 direction;		// Direção da luz, espaço do mundo
 	
@@ -23,7 +21,6 @@ struct DirectionalLight	{
 	vec3 specular;		// Componente de luz especular
 };
 
-// Estrutura de uma fonte de luz pontual
 struct PointLight	{
 	vec3 position;		// Posição do ponto de luz, espaço do mundo
 	
@@ -36,7 +33,6 @@ struct PointLight	{
 	float quadratic;	// Coeficiente de atenuação quadrática
 };
 
-// Estrutura de uma fonte de luz cónica
 struct SpotLight {
 	vec3 position;		// Posição do foco de luz, espaço do mundo
 	
@@ -62,15 +58,9 @@ struct Material{
 
 uniform AmbientLight ambientLight; // Fonte de luz ambiente global
 uniform DirectionalLight directionalLight; // Fonte de luz direcional
-uniform PointLight pointLight; // Duas fontes de luz pontual
+uniform PointLight pointLight; // Fonte de luz pontual
 uniform SpotLight spotLight; // Fonte de luz cónica
 uniform Material material;
-
-vec3 diffuseColor;
-
-in vec3 vPositionEyeSpace;
-in vec3 vNormalEyeSpace;
-in vec3 textureVector;
 
 layout (location = 0) out vec4 fColor; // Cor final do fragmento
 
@@ -79,13 +69,11 @@ vec4 calcDirectionalLight(DirectionalLight light, out vec4 ambient);
 vec4 calcPointLight(PointLight light, out vec4 ambient);
 vec4 calcSpotLight(SpotLight light, out vec4 ambient);
 
+vec3 diffuseColor;
+
 void main() {
 	// Cor do Material
-	// Se a textura não for nula, então a cor do material é a cor da textura.
-	//diffuseColor = texture(cubeMap, textureVector).rgb;
 	diffuseColor = texture(TexSampler, textureCoord).rgb;
-	// Senão
-	//diffuseColor = material.diffuse;
 
 	// Cálculo da componente emissiva do material.
 	vec4 emissive = vec4(material.emissive, 1.0);
@@ -111,14 +99,17 @@ void main() {
 	ambient += ambientTmp;
 
 	// Cálculo da cor final do fragmento.
-	fColor = emissive + (ambient/4) + light[0] + light[1] + light[2];
+	fColor = emissive + (ambient/2) + light[0] + light[1];
 	// Renderizar sem ilumação
-	//fColor = vec4(diffuseColor, 1.0f);
+//	fColor = vec4(diffuseColor, 1.0f);
 }
 
 vec4 calcAmbientLight(AmbientLight light) {
 	// Cálculo da contribuição da fonte de luz ambiente global, para a cor do objeto.
-	vec4 ambient = vec4(material.ambient * light.ambient, 1.0);
+	vec4 ambient = vec4(diffuseColor * light.ambient, 1.0);
+
+	// Antes estava assim
+	//vec4 ambient = vec4(material.ambient * light.ambient, 1.0);
 	return ambient;
 }
 

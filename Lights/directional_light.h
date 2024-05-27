@@ -11,12 +11,17 @@ public:
         specular_ = vec3(1.0f);
 	}
 
-
-    void Update() {
+    void Update() const {
         shader_.SetUniform3fv("directionalLight.direction", direction_);
         shader_.SetUniform3fv("directionalLight.ambient", ambient_);
         shader_.SetUniform3fv("directionalLight.diffuse", diffuse_);
         shader_.SetUniform3fv("directionalLight.specular", specular_);
+    }
+
+    void Disable() const {
+        shader_.SetUniform3fv("directionalLight.ambient", vec3(0.0f));
+        shader_.SetUniform3fv("directionalLight.diffuse", vec3(0.0f));
+        shader_.SetUniform3fv("directionalLight.specular", vec3(0.0f));
     }
 
 private:

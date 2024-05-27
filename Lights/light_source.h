@@ -8,7 +8,8 @@ using namespace glm;
 
 class LightSource {
 public:
-	virtual void Update() = 0;
+	virtual void Update() const = 0;
+	virtual void Disable() const = 0;
 	void SetShader(Shader shader) { shader_ = shader; }
 
 	void SetPosition(vec3 position) { position_ = position; }

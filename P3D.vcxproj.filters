@@ -18,9 +18,11 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="Lights\light_source.h" />
+    <ClInclude Include="Lights\directional_light.h" />
+    <ClInclude Include="Lights\point_light.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\textured.frag" />
-    <None Include="shaders\textured.vert" />
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
   </ItemGroup>
 </Project>
