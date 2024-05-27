@@ -35,6 +35,10 @@ void set_ball_pos();
 
 std::vector<vec3> ball_positions;
 
+// Lights Sources
+PointLight point_light;
+DirectionalLight directional_light;
+
 float zoom = 45.0f;
 float camera_pos = 15.0f;
 
@@ -152,10 +156,7 @@ void init(std::vector<Model>& models) {
     Shader shader;
     shader.Create(shaders);
 
-    PointLight point_light;
     point_light.SetShader(shader);
-
-    DirectionalLight directional_light;
     directional_light.SetShader(shader);
 
     // Fonte de luz ambiente global

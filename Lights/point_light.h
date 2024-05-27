@@ -14,7 +14,8 @@ public:
         quadratic = 0.02f;
     }
 
-    void Update() const {
+    void Update() {
+        enabled_ = true;
         shader_.SetUniform3fv("pointLight.position", position_);
         shader_.SetUniform3fv("pointLight.ambient", ambient_);
         shader_.SetUniform3fv("pointLight.diffuse", diffuse);
@@ -24,7 +25,8 @@ public:
         shader_.SetUniform1f("pointLight.quadratic", quadratic);
     }
 
-    void Disable() const {
+    void Disable() {
+        enabled_ = false;
         shader_.SetUniform3fv("pointLight.ambient", vec3(0.0f));
         shader_.SetUniform3fv("pointLight.diffuse", vec3(0.0f));
         shader_.SetUniform3fv("pointLight.specular", vec3(0.0f));
