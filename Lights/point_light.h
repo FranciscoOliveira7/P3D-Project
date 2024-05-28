@@ -9,22 +9,22 @@ namespace objr {
         PointLight() {
             position_ = vec3(0.0f);
             ambient_ = vec3(0.1f);
-            diffuse = vec3(1.0f);
-            specular = vec3(1.0f);
-            constant = 1.0f;
-            linear = 0.06f;
-            quadratic = 0.02f;
+            diffuse_ = vec3(1.0f);
+            specular_ = vec3(1.0f);
+            constant_ = 1.0f;
+            linear_ = 0.06f;
+            quadratic_ = 0.02f;
         }
 
         void Update() {
             enabled_ = true;
             shader_.SetUniform3fv("pointLight.position", position_);
             shader_.SetUniform3fv("pointLight.ambient", ambient_);
-            shader_.SetUniform3fv("pointLight.diffuse", diffuse);
-            shader_.SetUniform3fv("pointLight.specular", specular);
-            shader_.SetUniform1f("pointLight.constant", constant);
-            shader_.SetUniform1f("pointLight.linear", linear);
-            shader_.SetUniform1f("pointLight.quadratic", quadratic);
+            shader_.SetUniform3fv("pointLight.diffuse", diffuse_);
+            shader_.SetUniform3fv("pointLight.specular", specular_);
+            shader_.SetUniform1f("pointLight.constant", constant_);
+            shader_.SetUniform1f("pointLight.linear", linear_);
+            shader_.SetUniform1f("pointLight.quadratic", quadratic_);
         }
 
         void Disable() {
@@ -38,10 +38,10 @@ namespace objr {
 
     private:
         vec3 position_;
-        vec3  diffuse;
-        vec3  specular;
-        float constant;
-        float linear;
-        float quadratic;
+        vec3  diffuse_;
+        vec3  specular_;
+        float constant_;
+        float linear_;
+        float quadratic_;
     };
 }

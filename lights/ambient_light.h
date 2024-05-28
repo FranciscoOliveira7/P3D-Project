@@ -10,6 +10,8 @@ namespace objr {
             ambient_ = vec3(0.5f);
         }
 
+        void SetAmbient(vec3 ambient) { ambient_ = ambient; }
+
         void Update() {
             enabled_ = true;
             shader_.SetUniform3fv("ambientLight.ambient", ambient_);

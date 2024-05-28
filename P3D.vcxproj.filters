@@ -23,6 +23,7 @@
     <ClInclude Include="lights\ambient_light.h" />
     <ClInclude Include="physic_object.h" />
     <ClInclude Include="collision_box.h" />
+    <ClInclude Include="lights\spot_light.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\phong.frag" />

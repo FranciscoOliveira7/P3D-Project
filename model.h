@@ -56,7 +56,7 @@ namespace objr {
 
 		Shader shader_;
 		Material material_;
-		Camera* camera_;
+		Camera* camera_ = nullptr;
 
 		Texture texture_;
 

@@ -8,12 +8,12 @@ using namespace glm;
 class Camera {
 public:
 
-    Camera() {
+    Camera(float ratio) : ratio_{ ratio } {
         center_ = vec3(0.0f, -5.0f, 0.0f);
         up_ = vec3(0.0f, 1.0f, 0.0f);
 
         view_ = lookAt(vec3(0.0f), center_, up_);
-        projection_ = perspective(radians(45.0f), (float)640 / (float)480, 1.0f, 100.0f);
+        projection_ = perspective(radians(45.0f), ratio, 1.0f, 100.0f);
     }
 
     void SetPosition(float x, float y, float z) {
@@ -21,16 +21,25 @@ public:
     }
 
     void SetFov(float fov) {
-        projection_ = perspective(radians(fov), (float)640 / (float)480, 1.0f, 100.0f);
+        fov_ = fov;
+        UpdateProjection();
+    }
+
+    void SetRatio(float ratio) {
+        ratio_ = ratio;
+        UpdateProjection();
     }
 
     mat4 GetProjectionMatrix(void) const { return projection_; }
     mat4 GetViewMatrix(void) const { return view_; }
 
 private:
+    void UpdateProjection() { projection_ = perspective(radians(fov_), ratio_, 1.0f, 100.0f); }
 
     vec3 center_;
     vec3 up_;
+
+    float ratio_, fov_;
 
     mat4 projection_, view_;
 };

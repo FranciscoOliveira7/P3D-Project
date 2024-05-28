@@ -51,7 +51,7 @@ struct SpotLight {
 struct Material{
 	vec3 emissive;
 	vec3 ambient;		// Ka
-	vec3 diffuse;		// kd
+//	vec3 diffuse;		// kd
 	vec3 specular;		// ke
 	float shininess;
 };

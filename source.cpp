@@ -23,6 +23,7 @@
 #include "lights/point_light.h"
 #include "lights/directional_light.h"
 #include "lights/ambient_light.h"
+#include "lights/spot_light.h"
 #include "physic_object.h"
 #include "camera.h"
 
@@ -37,6 +38,7 @@ void print_error(int error, const char* description);
 void init(std::vector<Model>& models);
 void draw(std::vector<Model>& models);
 void set_ball_pos();
+void resize(int height, int width);
 
 std::vector<vec3> ball_positions;
 std::vector<PhysicsObject> balls;
@@ -48,8 +50,9 @@ double oldTime = 0.0f;
 AmbientLight ambient_light;
 PointLight point_light;
 DirectionalLight directional_light;
+SpotLight spot_light;
 
-Camera camera;
+Camera camera((float)WIDTH / (float)HEIGHT);
 
 float zoom = 45.0f;
 float camera_pos = 15.0f;
@@ -115,6 +118,8 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
     }
 }
 
+void window_size_callback(GLFWwindow* window, int width, int height) { resize(height, width); }
+
 int main(void) {
     GLFWwindow* window;
 
@@ -156,6 +161,7 @@ int main(void) {
     glfwSetCursorPosCallback(window, cursorCallBack);
     glfwSetMouseButtonCallback(window, mouseCallBack);
     glfwSetKeyCallback(window, keyCallBack);
+    glfwSetWindowSizeCallback(window, window_size_callback);
 
     while (!glfwWindowShouldClose(window)) {
         // Delta time para que as físicas não sejam fps based
@@ -178,14 +184,22 @@ int main(void) {
     return 0;
 }
 
+void resize(int height, int width) {
+    glViewport(0, 0, GLsizei(width), GLsizei(height));
+    camera.SetRatio((float)width / (float)height);
+}
+
 void init(std::vector<Model>& models) {
+
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE); // Por defeito está desativado
+    glCullFace(GL_BACK); // GL_FRONT, [GL_BACK], GL_FRONT_AND_BACK
     glClearColor(0.2f, 0.2f, 0.25f, 1.0f);
 
     // Shaders type and locations
     ShaderInfo shaders[] = {
-        { GL_VERTEX_SHADER,   "shaders/shader.vert" },
-        { GL_FRAGMENT_SHADER, "shaders/shader.frag" },
+        { GL_VERTEX_SHADER,   "shaders/phong.vert" },
+        { GL_FRAGMENT_SHADER, "shaders/phong.frag" },
         { GL_NONE, NULL }
     };
 
@@ -194,6 +208,7 @@ void init(std::vector<Model>& models) {
 
     // Fonte de luz ambiente global
     ambient_light.SetShader(shader);
+    ambient_light.SetAmbient(vec3(0.8f, 0.8f, 0.8f));
     ambient_light.Update();
 
     // Fonte de luz direcional
@@ -203,6 +218,10 @@ void init(std::vector<Model>& models) {
     // Fonte de luz pontual
     point_light.SetShader(shader);
     point_light.Update();
+
+    // Fonte de luz cónica
+    spot_light.SetShader(shader);
+    spot_light.Update();
 
     // Load Table
     models[0].SetShader(shader);
@@ -232,17 +251,16 @@ void init(std::vector<Model>& models) {
 void draw(std::vector<Model>& models) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // Update Camera
+    camera.SetPosition(0.0f, 1.0f, camera_pos);
+    camera.SetFov(zoom);
+
     // Draw each object
     for (int i = 0; i < models.size(); i++) {
-        // Update Camera
-        camera.SetPosition(0.0f, 1.0f, camera_pos);
-        camera.SetFov(zoom);
-
         // Table
         if (i == 0) models[i].Render(glm::vec3(0.0f, -2.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
-        else {
-            models[i].Render(balls[i - 1].position_, glm::vec3(0.0f, rotation, 0.0f));
-        }
+        // Balls
+        else models[i].Render(balls[i - 1].position_, glm::vec3(0.0f, rotation, 0.0f));
     }
 }
 
