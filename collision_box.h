@@ -1,23 +1,25 @@
 #pragma once
 
+#include <glm/glm.hpp> // vec3, vec4, ivec4, mat4, ...
 #include <iostream>
 #include <algorithm>
 
+using namespace glm;
+
 class CollisionBox {
 public:
-	CollisionBox() : center_x_{ 0.0f },	center_y_{ 0.0f }, center_z_{ 0.0f },
-					 width_{ 1.0f },	height_{ 1.0f },   depth_{ 1.0f } {};
+	CollisionBox() : position_{ vec3(0.0f) }, width_{ 1.0f }, height_{ 1.0f }, depth_{ 1.0f } {};
 	
-	CollisionBox(float x, float y, float z, float w, float h, float d)
-		: center_x_{ x }, center_y_{ y }, center_z_{ z }, width_{ w }, height_{ h }, depth_{ z } {};
+	CollisionBox(vec3 position, float w, float h, float d)
+		: position_{ position }, width_{ w }, height_{ h }, depth_{ d } {};
 
 	bool ComputeCollision(CollisionBox& other) {
-		float min_x = std::min<float>(center_x_ - width_ / 2.0f, other.center_x_ - other.width_ / 2.0f);
-		float max_x = std::max<float>(center_x_ + width_ / 2.0f, other.center_x_ + other.width_ / 2.0f);
-		float min_y = std::min<float>(center_y_ - height_ / 2.0f, other.center_y_ - other.height_ / 2.0f);
-		float max_y = std::max<float>(center_y_ + height_ / 2.0f, other.center_y_ + other.height_ / 2.0f);
-		float min_z = std::min<float>(center_z_ - depth_ / 2.0f, other.center_z_ - other.depth_ / 2.0f);
-		float max_z = std::max<float>(center_z_ + depth_ / 2.0f, other.center_z_ + other.depth_ / 2.0f);
+		float min_x = std::min<float>(position_.x - width_ / 2.0f, other.position_.x - other.width_ / 2.0f);
+		float max_x = std::max<float>(position_.x + width_ / 2.0f, other.position_.x + other.width_ / 2.0f);
+		float min_y = std::min<float>(position_.y - height_ / 2.0f,other.position_.y - other.height_ / 2.0f);
+		float max_y = std::max<float>(position_.y + height_ / 2.0f,other.position_.y + other.height_ / 2.0f);
+		float min_z = std::min<float>(position_.z - depth_ / 2.0f, other.position_.z - other.depth_ / 2.0f);
+		float max_z = std::max<float>(position_.z + depth_ / 2.0f, other.position_.z + other.depth_ / 2.0f);
 
 		if (((min_x - max_x) < (width_ - other.width_)) ||
 			((min_y - max_y) < (height_ - other.height_)) ||
@@ -25,19 +27,15 @@ public:
 			hit_ = true;
 			other.hit_ = true;
 
-			std::cout << "Collision Detected!";
+			std::cout << "Collision Detected!" << position_.x << " | " << other.position_.x << std::endl;
 		}
-		else {
-			hit_ |= false;
-		}
+		else hit_ == false;
 
 		return hit_;
 	}
+	vec3 position_;
 
 private:
-	float center_x_;
-	float center_y_;
-	float center_z_;
 	float width_;
 	float height_;
 	float depth_;

@@ -39,7 +39,7 @@ private:
     vec3 center_;
     vec3 up_;
 
-    float ratio_, fov_;
+    float ratio_ = 0.0f, fov_ = 45.0f;
 
     mat4 projection_, view_;
 };

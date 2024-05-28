@@ -169,10 +169,10 @@ int main(void) {
         double fps = (1 / deltaTime) * 1000;
         oldTime = clock();
 
-        for (int i = 0; i < balls.size(); i++) {
-            balls[i].Update(static_cast<float>(deltaTime));
-            models[i + 1].SetSpin(glm::vec3(balls[i].rotation_.x, 0.0f, balls[i].rotation_.y));
-        }
+        //for (int i = 0; i < balls.size(); i++) {
+            balls[0].Update(balls, static_cast<float>(deltaTime));
+            models[1].SetSpin(glm::vec3(balls[0].rotation_.x, 0.0f, balls[0].rotation_.y));
+        //}
 
         draw(models);
 
@@ -221,7 +221,7 @@ void init(std::vector<Model>& models) {
 
     // Fonte de luz cónica
     spot_light.SetShader(shader);
-    spot_light.Update();
+    //spot_light.Update();
 
     // Load Table
     models[0].SetShader(shader);
@@ -233,8 +233,7 @@ void init(std::vector<Model>& models) {
     // Load Balls
     for (int i = 1; i < models.size(); i++) {
         if (i == 1) models[i].Load("Models\\Ball1.obj");
-        else
-        models[i].Load("Models\\Ball" + std::to_string(i - 1) + ".obj");
+        else models[i].Load("Models\\Ball" + std::to_string(i - 1) + ".obj");
         models[i].Install();
         models[i].SetShader(shader);
         models[i].SetScale(0.6f);
@@ -260,7 +259,7 @@ void draw(std::vector<Model>& models) {
         // Table
         if (i == 0) models[i].Render(glm::vec3(0.0f, -2.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
         // Balls
-        else models[i].Render(balls[i - 1].position_, glm::vec3(0.0f, rotation, 0.0f));
+        else models[i].Render(balls[i - 1].collision_box_.position_, glm::vec3(0.0f, rotation, 0.0f));
     }
 }
 
@@ -274,9 +273,9 @@ void set_ball_pos() {
         }
     }
 
-    vec3 aux = balls[4].position_;
-    balls[4].position_ = balls[7].position_;
-    balls[7].position_ = aux;
+    vec3 aux = balls[4].collision_box_.position_;
+    balls[4].collision_box_.position_ = balls[7].collision_box_.position_;
+    balls[7].collision_box_.position_ = aux;
 }
 
 void print_error(int error, const char* description) {
