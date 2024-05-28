@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 
-namespace AsBolasDoJose {
+namespace objr {
 
 	class Texture {
 	private: unsigned int id_ = 0;

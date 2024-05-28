@@ -17,7 +17,7 @@
 
 using namespace glm;
 
-namespace AsBolasDoJose {
+namespace objr {
 
 	typedef struct Material {
 		vec3 ambient;    // Ka
@@ -34,16 +34,18 @@ namespace AsBolasDoJose {
 		void Delete() const;
 
 		void SetShader(Shader shader) { shader_ = shader; }
+		void SetCamera(Camera* camera) { camera_ = camera; }
 
 		void Render(vec3 position, vec3 orientation);
 		void Install();
 
 		void Load(const std::string obj_model_filepath);
 
-		void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
-		void SetCameraFov(float fov) { camera_.SetFov(fov); }
+		//void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
+		//void SetCameraFov(float fov) { camera_.SetFov(fov); }
 
 		void SetScale(float scale) { transform_.SetScale(scale); }
+		void SetSpin(vec3 spin) { transform_.SetSpin(spin); }
 	private:
 		void SetUniforms();
 		void AttribPointer() const;
@@ -54,7 +56,7 @@ namespace AsBolasDoJose {
 
 		Shader shader_;
 		Material material_;
-		Camera camera_;
+		Camera* camera_;
 
 		Texture texture_;
 

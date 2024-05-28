@@ -8,7 +8,7 @@
 #include <string>
 
 
-namespace AsBolasDoJose {
+namespace objr {
 
 	/*****************************************************************************
 						 GLuint LoadShaders(ShaderInfo*);

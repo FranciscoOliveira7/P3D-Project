@@ -23,10 +23,12 @@
 #include "lights/point_light.h"
 #include "lights/directional_light.h"
 #include "lights/ambient_light.h"
+#include "physic_object.h"
+#include "camera.h"
 
 #pragma endregion
 
-using namespace AsBolasDoJose;
+using namespace objr;
 
 #define WIDTH 640
 #define HEIGHT 480
@@ -37,11 +39,17 @@ void draw(std::vector<Model>& models);
 void set_ball_pos();
 
 std::vector<vec3> ball_positions;
+std::vector<PhysicsObject> balls;
+
+double deltaTime = 0.0f;
+double oldTime = 0.0f;
 
 // Lights Sources
 AmbientLight ambient_light;
 PointLight point_light;
 DirectionalLight directional_light;
+
+Camera camera;
 
 float zoom = 45.0f;
 float camera_pos = 15.0f;
@@ -101,6 +109,7 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
             case GLFW_KEY_1: ambient_light.Toggle(); break;
             case GLFW_KEY_2: directional_light.Toggle(); break;
             case GLFW_KEY_3: point_light.Toggle(); break;
+            case GLFW_KEY_SPACE: balls[0].velocity_ += glm::vec3(0.01f, 0.0f, 0.0f);
             default: break;
         }
     }
@@ -122,17 +131,11 @@ int main(void) {
     glfwMakeContextCurrent(window);
 
     // Uncomment to disable v-sync
-    // glfwSwapInterval(0);
+     //glfwSwapInterval(0);
 
     // Inicia o gestor de extensões GLEW
     glewExperimental = GL_TRUE;
     glewInit();
-
-    //TODO Input Manager (or maybe not, I'll probably just leave it like this)
-    glfwSetScrollCallback(window, scrollCallBack);
-    glfwSetCursorPosCallback(window, cursorCallBack);
-    glfwSetMouseButtonCallback(window, mouseCallBack);
-    glfwSetKeyCallback(window, keyCallBack);
 
     std::vector<Model> models;
 
@@ -148,7 +151,22 @@ int main(void) {
 
     init(models);
 
+    //TODO Input Manager (or maybe not, I'll probably just leave it like this)
+    glfwSetScrollCallback(window, scrollCallBack);
+    glfwSetCursorPosCallback(window, cursorCallBack);
+    glfwSetMouseButtonCallback(window, mouseCallBack);
+    glfwSetKeyCallback(window, keyCallBack);
+
     while (!glfwWindowShouldClose(window)) {
+        // Delta time para que as físicas não sejam fps based
+        deltaTime = clock() - oldTime;
+        double fps = (1 / deltaTime) * 1000;
+        oldTime = clock();
+
+        for (int i = 0; i < balls.size(); i++) {
+            balls[i].Update(static_cast<float>(deltaTime));
+            models[i + 1].SetSpin(glm::vec3(balls[i].rotation_.x, 0.0f, balls[i].rotation_.y));
+        }
 
         draw(models);
 
@@ -174,34 +192,39 @@ void init(std::vector<Model>& models) {
     Shader shader;
     shader.Create(shaders);
 
-    ambient_light.SetShader(shader);
-    point_light.SetShader(shader);
-    directional_light.SetShader(shader);
-
     // Fonte de luz ambiente global
+    ambient_light.SetShader(shader);
     ambient_light.Update();
 
     // Fonte de luz direcional
+    directional_light.SetShader(shader);
     directional_light.Update();
-    //directional_light.Disable();
 
     // Fonte de luz pontual
+    point_light.SetShader(shader);
     point_light.Update();
-    //point_light.Disable();
 
     // Load Table
     models[0].SetShader(shader);
     models[0].Load("Models\\Table.obj");
     models[0].Install();
     models[0].SetScale(2.2f);
+    models[0].SetCamera(&camera);
 
     // Load Balls
     for (int i = 1; i < models.size(); i++) {
+        if (i == 1) models[i].Load("Models\\Ball1.obj");
+        else
         models[i].Load("Models\\Ball" + std::to_string(i - 1) + ".obj");
         models[i].Install();
         models[i].SetShader(shader);
         models[i].SetScale(0.6f);
+        models[i].SetCamera(&camera);
     }
+
+    // White ball
+    PhysicsObject white_ball(glm::vec3(-13.0f, -6.5f, 0));
+    balls.push_back(white_ball);
 
     set_ball_pos();
 }
@@ -211,13 +234,14 @@ void draw(std::vector<Model>& models) {
 
     // Draw each object
     for (int i = 0; i < models.size(); i++) {
-        models[i].SetCameraPosition(0.0f, 1.0f, camera_pos);
-        models[i].SetCameraFov(zoom);
-        if (i == 0) models[i].Render(glm::vec3(0.0f, -2.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
-        else if (i == 1) models[i].Render(glm::vec3(-13.0f, -6.5f, 0), glm::vec3(0.0f, rotation, 0.0f));
+        // Update Camera
+        camera.SetPosition(0.0f, 1.0f, camera_pos);
+        camera.SetFov(zoom);
 
+        // Table
+        if (i == 0) models[i].Render(glm::vec3(0.0f, -2.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
         else {
-            models[i].Render(ball_positions[i - 2], glm::vec3(0.0f, rotation, 0.0f));
+            models[i].Render(balls[i - 1].position_, glm::vec3(0.0f, rotation, 0.0f));
         }
     }
 }
@@ -228,13 +252,13 @@ void set_ball_pos() {
         for (int j = 0; j < i; j++) {
             glm::vec3 position = vec3(4.0f + i * 1.75f /*sin(60)*/, -6.5f /*table pos*/, (i - 1.0f) - j * 2.0f);
 
-            ball_positions.push_back(position);
+            balls.push_back(position);
         }
     }
 
-    vec3 aux = ball_positions[4];
-    ball_positions[4] = ball_positions[7];
-    ball_positions[7] = aux;
+    vec3 aux = balls[4].position_;
+    balls[4].position_ = balls[7].position_;
+    balls[7].position_ = aux;
 }
 
 void print_error(int error, const char* description) {

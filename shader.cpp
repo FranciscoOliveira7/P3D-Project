@@ -1,7 +1,7 @@
 #include "shader.h"
 
 
-namespace AsBolasDoJose {
+namespace objr {
 
 	void Shader::Create(ShaderInfo* shaders)
 	{

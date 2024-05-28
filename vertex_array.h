@@ -2,7 +2,7 @@
 
 #include "vertex_buffer.h"
 
-namespace AsBolasDoJose {
+namespace objr {
 
 	class VertexArray {
 	private: unsigned int id_ = 0;

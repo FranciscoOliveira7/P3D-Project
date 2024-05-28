@@ -1,7 +1,7 @@
 #include "model.h"
 #include "texture.h"
 
-namespace AsBolasDoJose {
+namespace objr {
 
     void Model::Delete() const {
         vertex_buffer_.Delete();
@@ -16,8 +16,8 @@ namespace AsBolasDoJose {
         transform_.SetPosition(position);
         transform_.SetRotation(orientation);
 
-        shader_.SetUniformMatrix4fv("Projection", camera_.GetProjectionMatrix());
-        shader_.SetUniformMatrix4fv("View", camera_.GetViewMatrix());
+        shader_.SetUniformMatrix4fv("Projection", camera_->GetProjectionMatrix());
+        shader_.SetUniformMatrix4fv("View", camera_->GetViewMatrix());
         shader_.SetUniformMatrix4fv("Model", transform_.GetMatrix());
 
         vao_.Bind();
@@ -31,7 +31,7 @@ namespace AsBolasDoJose {
 
     void Model::SetUniforms() {
 
-        shader_.SetUniformMatrix3fv("NormalMatrix", inverseTranspose(mat3(camera_.GetViewMatrix() * transform_.GetMatrix())));
+        shader_.SetUniformMatrix3fv("NormalMatrix", inverseTranspose(mat3(camera_->GetViewMatrix() * transform_.GetMatrix())));
 
         shader_.SetUniform3fv("material.emissive", vec3(0.0));
         shader_.SetUniform3fv("material.ambient", material_.ambient);

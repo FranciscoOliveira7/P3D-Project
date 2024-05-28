@@ -2,7 +2,7 @@
 
 #include "light_source.h"
 
-namespace AsBolasDoJose {
+namespace objr {
 
     class DirectionalLight : public LightSource {
     public:

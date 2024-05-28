@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 
-namespace AsBolasDoJose {
+namespace objr {
 
 	class VertexBuffer {
 	private: unsigned int id_ = 0;

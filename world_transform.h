@@ -5,7 +5,7 @@
 
 using namespace glm;
 
-namespace AsBolasDoJose {
+namespace objr {
 
     class WorldTrans {
     public:
@@ -14,19 +14,16 @@ namespace AsBolasDoJose {
 
         void SetRotation(vec3 rotation) { rotation_ = rotation; }
 
-        void SetPosition(vec3 position) { pos_ = position; }
+        void SetSpin(vec3 spin) { spin_ = spin; }
 
-        void Rotate(float x, float y, float z) {
-            rotation_.x += x;
-            rotation_.y += y;
-            rotation_.z += z;
-        }
+        void SetPosition(vec3 position) { pos_ = position; }
 
         mat4 GetMatrix(void);
 
     private:
         vec3 scale_ = vec3(1.0f);
         vec3 rotation_ = vec3(0.0f);
+        vec3 spin_ = vec3(0.0f);
         vec3 pos_ = vec3(0.0f);
     };
 }

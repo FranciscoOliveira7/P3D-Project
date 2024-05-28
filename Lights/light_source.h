@@ -6,7 +6,7 @@
 
 using namespace glm;
 
-namespace AsBolasDoJose {
+namespace objr {
 
 	class LightSource {
 	public:

@@ -1,6 +1,6 @@
 #include "world_transform.h"
 
-namespace AsBolasDoJose {
+namespace objr {
 
     mat4 WorldTrans::GetMatrix(void) {
 
@@ -15,6 +15,10 @@ namespace AsBolasDoJose {
         // ---
 
         model = translate(model, pos_);
+
+        model = rotate(model, spin_.x, vec3(1, 0, 0));
+        model = rotate(model, spin_.y, vec3(0, 1, 0));
+        model = rotate(model, spin_.z, vec3(0, 0, 1));
 
         return model;
     }

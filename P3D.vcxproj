@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="physic_object.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="model.cpp" />
@@ -135,10 +136,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="collision_box.h" />
     <ClInclude Include="lights\ambient_light.h" />
     <ClInclude Include="lights\directional_light.h" />
     <ClInclude Include="lights\light_source.h" />
     <ClInclude Include="lights\point_light.h" />
+    <ClInclude Include="physic_object.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="stb_image.h" />
@@ -148,8 +151,8 @@
     <ClInclude Include="world_transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\shader.frag" />
-    <None Include="shaders\shader.vert" />
+    <None Include="shaders\phong.frag" />
+    <None Include="shaders\phong.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
