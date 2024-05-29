@@ -7,7 +7,7 @@
 namespace objr {
 
 	class Texture {
-	private: unsigned int id_ = 0;
+		unsigned int id_ = 0;
 
 	public:
 		void Create();

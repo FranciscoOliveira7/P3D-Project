@@ -26,7 +26,7 @@ namespace objr {
 
         SetUniforms();
 
-        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices_.size()));
+        glDrawArrays(GL_TRIANGLES, 0, vertices_.size());
     }
 
     void Model::SetUniforms() {

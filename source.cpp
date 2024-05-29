@@ -142,7 +142,7 @@ int main(void) {
     glfwMakeContextCurrent(window);
 
     // Uncomment to disable v-sync
-     //glfwSwapInterval(0);
+     glfwSwapInterval(0);
 
     // Inicia o gestor de extensões GLEW
     glewExperimental = GL_TRUE;

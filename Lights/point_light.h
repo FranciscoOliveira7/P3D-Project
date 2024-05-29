@@ -37,7 +37,7 @@ namespace objr {
         void SetPosition(vec3 position) { position_ = position; }
 
     private:
-        vec3 position_;
+        vec3  position_;
         vec3  diffuse_;
         vec3  specular_;
         float constant_;
