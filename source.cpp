@@ -116,7 +116,11 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
             case GLFW_KEY_S: balls[0].AddVelocity(vec3(0.0f, 0.0f, 0.01f)); break;
             case GLFW_KEY_D: balls[0].AddVelocity(vec3(0.01f, 0.0f, 0.0f)); break;
             //case GLFW_KEY_SPACE: balls[0].AddVelocity(vec3(0.01f, 0.0f, 0.0f)); break;
-            case GLFW_KEY_R: balls[0].Stop(); balls[0].ResetPosition(); break;
+            case GLFW_KEY_R:
+                for (int i = 0; i < balls.size(); i++) {
+                    balls[i].Stop(); balls[i].ResetPosition();
+                }
+                break;
             default: break;
         }
     }
