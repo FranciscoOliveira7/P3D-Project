@@ -40,7 +40,6 @@ void draw(std::vector<Model>& models);
 void set_ball_pos();
 void resize(int height, int width);
 
-std::vector<vec3> ball_positions;
 std::vector<PhysicsObject> balls;
 
 double deltaTime = 0.0f;
@@ -112,7 +111,8 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
             case GLFW_KEY_1: ambient_light.Toggle(); break;
             case GLFW_KEY_2: directional_light.Toggle(); break;
             case GLFW_KEY_3: point_light.Toggle(); break;
-            case GLFW_KEY_SPACE: balls[0].velocity_ += glm::vec3(0.01f, 0.0f, 0.0f);
+            case GLFW_KEY_SPACE: balls[0].velocity_ += vec3(0.01f, 0.0f, 0.0f); break;
+            case GLFW_KEY_R: balls[0].velocity_ = vec3(0.0f); balls[0].collision_box_.position_ = vec3(-13.0f, -6.5f, 0); break;
             default: break;
         }
     }
@@ -171,7 +171,7 @@ int main(void) {
 
         //for (int i = 0; i < balls.size(); i++) {
             balls[0].Update(balls, static_cast<float>(deltaTime));
-            models[1].SetSpin(glm::vec3(balls[0].rotation_.x, 0.0f, balls[0].rotation_.y));
+            models[1].SetSpin(vec3(balls[0].rotation_.x, 0.0f, balls[0].rotation_.y));
         //}
 
         draw(models);
@@ -241,7 +241,7 @@ void init(std::vector<Model>& models) {
     }
 
     // White ball
-    PhysicsObject white_ball(glm::vec3(-13.0f, -6.5f, 0));
+    PhysicsObject white_ball(vec3(-13.0f, -6.5f, 0), vec3(2.0f));
     balls.push_back(white_ball);
 
     set_ball_pos();
@@ -257,9 +257,9 @@ void draw(std::vector<Model>& models) {
     // Draw each object
     for (int i = 0; i < models.size(); i++) {
         // Table
-        if (i == 0) models[i].Render(glm::vec3(0.0f, -2.0f, 0), glm::vec3(0.0f, rotation, 0.0f));
+        if (i == 0) models[i].Render(vec3(0.0f, -2.0f, 0), vec3(0.0f, rotation, 0.0f));
         // Balls
-        else models[i].Render(balls[i - 1].collision_box_.position_, glm::vec3(0.0f, rotation, 0.0f));
+        else models[i].Render(balls[i - 1].collision_box_.position_, vec3(0.0f, rotation, 0.0f));
     }
 }
 
@@ -267,15 +267,15 @@ void set_ball_pos() {
     // Posição das bola, calculado pelo zés e o gaio
     for (int i = 1; i < 6; i++) {
         for (int j = 0; j < i; j++) {
-            glm::vec3 position = vec3(4.0f + i * 1.75f /*sin(60)*/, -6.5f /*table pos*/, (i - 1.0f) - j * 2.0f);
+            vec3 position = vec3(4.0f + i * 1.75f /*sin(60)*/, -6.5f /*table pos*/, (i - 1.0f) - j * 2.0f);
 
-            balls.push_back(position);
+            balls.push_back(PhysicsObject(position, vec3(2.0f)));
         }
     }
 
-    vec3 aux = balls[4].collision_box_.position_;
-    balls[4].collision_box_.position_ = balls[7].collision_box_.position_;
-    balls[7].collision_box_.position_ = aux;
+    //vec3 aux = balls[4].collision_box_.position_;
+    //balls[4].collision_box_.position_ = balls[7].collision_box_.position_;
+    //balls[7].collision_box_.position_ = aux;
 }
 
 void print_error(int error, const char* description) {

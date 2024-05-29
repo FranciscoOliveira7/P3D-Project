@@ -8,20 +8,20 @@ using namespace glm;
 
 class PhysicsObject {
 public:
-	PhysicsObject() : velocity_{ vec3(0.0f) }, rotation_{ vec2(0.0f) } {}
+	PhysicsObject(vec3 position) { collision_box_.position_ = position; }
 
-	PhysicsObject(vec3 position) : velocity_{ vec3(0.0f) }, rotation_{ vec2(0.0f) } {
-		collision_box_.position_ = position;
-	}
+	PhysicsObject(vec3 position, vec3 size)
+		: rotation_{ vec2(0.0f) }, collision_box_{ CollisionBox(position, size) } {}
 
 	void Update(std::vector<PhysicsObject>& others, float deltaTime) {
 
 		if (velocity_ != vec3(0.0f)) {
-			for (PhysicsObject& other : others) {
-				if (this == &other) continue;
+			for (PhysicsObject& collider : others) {
+				if (this == &collider) continue;
 
-				if (collision_box_.ComputeCollision(other.collision_box_)) {
-					velocity_ = vec3(0.0f);
+				if (collision_box_.ComputeCollision(collider.collision_box_)) {
+					//velocity_ = vec3(0.0f);
+					velocity_.x = -velocity_.x;
 				}
 			}
 		}
@@ -31,8 +31,8 @@ public:
 		rotation_.x += (-velocity_ * deltaTime).z;
 		rotation_.y += (-velocity_ * deltaTime).x;
 	}
-	vec2 rotation_;
-	vec3 velocity_;
+	vec2 rotation_ = vec3(0.0f);
+	vec3 velocity_ = vec3(0.0f);
 	CollisionBox collision_box_;
 
 private:
