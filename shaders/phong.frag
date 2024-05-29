@@ -51,7 +51,6 @@ struct SpotLight {
 struct Material{
 	vec3 emissive;
 	vec3 ambient;		// Ka
-//	vec3 diffuse;		// kd
 	vec3 specular;		// ke
 	float shininess;
 };
@@ -100,7 +99,7 @@ void main() {
 
 	// Cálculo da cor final do fragmento.
 	fColor = emissive + (ambient/2) + light[0] + light[1];
-	// Renderizar sem ilumação
+	// Renderizar sem iluminação
 //	fColor = vec4(diffuseColor, 1.0f);
 }
 

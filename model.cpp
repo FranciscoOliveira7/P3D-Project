@@ -35,7 +35,6 @@ namespace objr {
 
         shader_.SetUniform3fv("material.emissive", vec3(0.0));
         shader_.SetUniform3fv("material.ambient", material_.ambient);
-        //shader_.SetUniform3fv("material.diffuse", material_.diffuse);
         shader_.SetUniform3fv("material.specular", material_.specular);
         shader_.SetUniform1f("material.shininess", material_.shininess);
     }
@@ -48,25 +47,9 @@ namespace objr {
         uv_buffer_.Create(uvs_.data(), uvs_.size() * sizeof(vec2));
         normal_buffer_.Create(normals_.data(), normals_.size() * sizeof(vec3));
 
-        AttribPointer();
-    }
-
-    // Not the most abstract implementation ever but I'm lazy
-    void Model::AttribPointer() const {
-
-        // I'm just assuming the layout for each buffer
-
-        vertex_buffer_.Bind();
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(0);
-
-        uv_buffer_.Bind();
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(1);
-
-        normal_buffer_.Bind();
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-        glEnableVertexAttribArray(2);
+        vao_.AddBuffer(vertex_buffer_, 3, 0);
+        vao_.AddBuffer(uv_buffer_, 2, 1);
+        vao_.AddBuffer(normal_buffer_, 3, 2);
     }
 
     void Model::Load(const std::string path) {
@@ -142,9 +125,6 @@ namespace objr {
 
             if (!strcmp(buffer, "Ka")) {
                 fscanf_s(file, "%f %f %f", &material_.ambient.r, &material_.ambient.g, &material_.ambient.b);
-            }
-            else if (!strcmp(buffer, "Kd")) {
-                fscanf_s(file, "%f %f %f", &material_.diffuse.r, &material_.diffuse.g, &material_.diffuse.b);
             }
             else if (!strcmp(buffer, "Ks")) {
                 fscanf_s(file, "%f %f %f", &material_.specular.r, &material_.specular.g, &material_.specular.b);

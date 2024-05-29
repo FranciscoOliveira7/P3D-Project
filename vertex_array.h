@@ -5,7 +5,7 @@
 namespace objr {
 
 	class VertexArray {
-	private: unsigned int id_ = 0;
+		unsigned int id_ = 0;
 
 	public:
 		void Create() {
@@ -19,6 +19,14 @@ namespace objr {
 
 		void Bind() const {
 			glBindVertexArray(id_);
+		}
+
+		void AddBuffer(VertexBuffer buffer, int size, int location) const {
+
+			// Neither stride nor initial offset is used for reading .obj files so I'll keep it simple
+			buffer.Bind();
+			glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, 0, (void*) 0);
+			glEnableVertexAttribArray(location);
 		}
 	};
 }

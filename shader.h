@@ -48,8 +48,7 @@ namespace objr {
 	} ShaderInfo;
 
 	class Shader {
-	private:
-		GLuint program_ = 0;
+		unsigned int program_ = 0;
 
 	public:
 		void Create(ShaderInfo* shaders);
@@ -60,6 +59,7 @@ namespace objr {
 
 		void Bind() const { glUseProgram(program_); }
 
+		// Uniforms used
 		void SetUniformMatrix4fv(const std::string& name, glm::mat4 value) const;
 		void SetUniformMatrix3fv(const std::string& name, glm::mat3 value) const;
 		void SetUniform3fv(const std::string& name, glm::vec3 value) const;

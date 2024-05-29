@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="physic_object.cpp" />
+    <ClCompile Include="physics\physic_object.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="model.cpp" />
@@ -136,13 +136,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
-    <ClInclude Include="collision_box.h" />
     <ClInclude Include="lights\ambient_light.h" />
     <ClInclude Include="lights\spot_light.h" />
     <ClInclude Include="lights\directional_light.h" />
     <ClInclude Include="lights\light_source.h" />
     <ClInclude Include="lights\point_light.h" />
-    <ClInclude Include="physic_object.h" />
+    <ClInclude Include="physics\collision_box.h" />
+    <ClInclude Include="physics\physic_object.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="stb_image.h" />

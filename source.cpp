@@ -12,8 +12,6 @@
 #define GLEW_STATIC
 #include <GL\glew.h>
 
-#include <gl\GL.h>
-
 #include <GLFW\glfw3.h>
 
 // Others
@@ -24,7 +22,7 @@
 #include "lights/directional_light.h"
 #include "lights/ambient_light.h"
 #include "lights/spot_light.h"
-#include "physic_object.h"
+#include "physics/physic_object.h"
 #include "camera.h"
 
 #pragma endregion

@@ -21,12 +21,11 @@ namespace objr {
 
 	typedef struct Material {
 		vec3 ambient;    // Ka
-		vec3 diffuse;    // kd
 		vec3 specular;   // ke
 		float shininess; // Expoente de reflexão especular
 
 		// default material
-		Material() : ambient(vec3(0.0f)), diffuse(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
+		Material() : ambient(vec3(0.0f)), specular(vec3(0.0f)), shininess(0.0f) {}
 	} Material;
 
 	class Model {
@@ -41,14 +40,11 @@ namespace objr {
 
 		void Load(const std::string obj_model_filepath);
 
-		//void SetCameraPosition(float x, float y, float z) { camera_.SetPosition(x, y, z); }
-		//void SetCameraFov(float fov) { camera_.SetFov(fov); }
-
 		void SetScale(float scale) { transform_.SetScale(scale); }
 		void SetSpin(vec3 spin) { transform_.SetSpin(spin); }
+
 	private:
 		void SetUniforms();
-		void AttribPointer() const;
 
 		void LoadMaterial(const std::string mtl_model_path);
 
@@ -56,6 +52,9 @@ namespace objr {
 
 		Shader shader_;
 		Material material_;
+
+		// Used a pointer for the camera so it can be changed
+		// globally instead of changing for each object.
 		Camera* camera_ = nullptr;
 
 		Texture texture_;

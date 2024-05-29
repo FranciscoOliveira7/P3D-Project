@@ -13,34 +13,14 @@ public:
 	PhysicsObject(vec3 position, vec2 size)
 		: initial_pos_{ position }, rotation_{ vec2(0.0f) }, collision_box_{ CollisionBox(position, size) } {}
 
-	void Update(std::vector<PhysicsObject>& others, float deltaTime) {
-
-		if (velocity_ != vec3(0.0f)) {
-			vec3 collision;
-			bool collided = false;
-
-			for (PhysicsObject& collider : others) {
-				if (this == &collider) continue;
-				if (collision_box_.ComputeCollision(collider.collision_box_, collision)) {
-					collider.velocity_ += velocity_ * collision;
-					collided = true;
-				}
-			}
-		}
-
-		const vec3 delta_vel = velocity_ * deltaTime;
-		collision_box_.position_ += delta_vel;
-		velocity_ -= delta_vel * k_friction_;
-		rotation_.x += -delta_vel.z;
-		rotation_.y += -delta_vel.x;
-	}
+	void Update(std::vector<PhysicsObject>& others, float deltaTime);
 
 	void ResetPosition() { collision_box_.position_ = initial_pos_; }
 	void Stop() { velocity_ = vec3(0.0f); }
 	void SetVelocity(vec3 velocity) { velocity_ = velocity; }
 	void AddVelocity(vec3 velocity) { velocity_ += velocity; }
-	vec3 GetPosition() { return collision_box_.position_; }
-	vec2 GetRotation() { return rotation_; }
+	vec3 GetPosition() const { return collision_box_.position_; }
+	vec2 GetRotation() const { return rotation_; }
 
 private:
 	vec2 rotation_ = vec3(0.0f);

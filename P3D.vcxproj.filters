@@ -6,7 +6,7 @@
     <ClCompile Include="world_transform.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
-    <ClCompile Include="physic_object.cpp" />
+    <ClCompile Include="physics\physic_object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
@@ -21,9 +21,9 @@
     <ClInclude Include="Lights\directional_light.h" />
     <ClInclude Include="Lights\point_light.h" />
     <ClInclude Include="lights\ambient_light.h" />
-    <ClInclude Include="physic_object.h" />
-    <ClInclude Include="collision_box.h" />
     <ClInclude Include="lights\spot_light.h" />
+    <ClInclude Include="physics\collision_box.h" />
+    <ClInclude Include="physics\physic_object.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\phong.frag" />
