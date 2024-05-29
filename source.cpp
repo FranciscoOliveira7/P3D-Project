@@ -111,8 +111,12 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
             case GLFW_KEY_1: ambient_light.Toggle(); break;
             case GLFW_KEY_2: directional_light.Toggle(); break;
             case GLFW_KEY_3: point_light.Toggle(); break;
-            case GLFW_KEY_SPACE: balls[0].velocity_ += vec3(0.01f, 0.0f, 0.0f); break;
-            case GLFW_KEY_R: balls[0].velocity_ = vec3(0.0f); balls[0].collision_box_.position_ = vec3(-13.0f, -6.5f, 0); break;
+            case GLFW_KEY_W: balls[0].AddVelocity(vec3(0.0f, 0.0f, -0.01f)); break;
+            case GLFW_KEY_A: balls[0].AddVelocity(vec3(-0.01f, 0.0f, 0.0f)); break;
+            case GLFW_KEY_S: balls[0].AddVelocity(vec3(0.0f, 0.0f, 0.01f)); break;
+            case GLFW_KEY_D: balls[0].AddVelocity(vec3(0.01f, 0.0f, 0.0f)); break;
+            //case GLFW_KEY_SPACE: balls[0].AddVelocity(vec3(0.01f, 0.0f, 0.0f)); break;
+            case GLFW_KEY_R: balls[0].Stop(); balls[0].ResetPosition(); break;
             default: break;
         }
     }
@@ -136,7 +140,7 @@ int main(void) {
     glfwMakeContextCurrent(window);
 
     // Uncomment to disable v-sync
-     //glfwSwapInterval(0);
+     glfwSwapInterval(0);
 
     // Inicia o gestor de extensões GLEW
     glewExperimental = GL_TRUE;
@@ -171,7 +175,7 @@ int main(void) {
 
         //for (int i = 0; i < balls.size(); i++) {
             balls[0].Update(balls, static_cast<float>(deltaTime));
-            models[1].SetSpin(vec3(balls[0].rotation_.x, 0.0f, balls[0].rotation_.y));
+            models[1].SetSpin(vec3(balls[0].GetRotation().x, 0.0f, balls[0].GetRotation().y));
         //}
 
         draw(models);
@@ -241,7 +245,7 @@ void init(std::vector<Model>& models) {
     }
 
     // White ball
-    PhysicsObject white_ball(vec3(-13.0f, -6.5f, 0), vec3(2.0f));
+    PhysicsObject white_ball(vec3(-13.0f, -6.5f, 0), vec2(2.0f));
     balls.push_back(white_ball);
 
     set_ball_pos();
@@ -259,7 +263,7 @@ void draw(std::vector<Model>& models) {
         // Table
         if (i == 0) models[i].Render(vec3(0.0f, -2.0f, 0), vec3(0.0f, rotation, 0.0f));
         // Balls
-        else models[i].Render(balls[i - 1].collision_box_.position_, vec3(0.0f, rotation, 0.0f));
+        else models[i].Render(balls[i - 1].GetPosition(), vec3(0.0f, rotation, 0.0f));
     }
 }
 
@@ -269,13 +273,13 @@ void set_ball_pos() {
         for (int j = 0; j < i; j++) {
             vec3 position = vec3(4.0f + i * 1.75f /*sin(60)*/, -6.5f /*table pos*/, (i - 1.0f) - j * 2.0f);
 
-            balls.push_back(PhysicsObject(position, vec3(2.0f)));
+            balls.push_back(PhysicsObject(position, vec2(2.0f)));
         }
     }
 
-    //vec3 aux = balls[4].collision_box_.position_;
-    //balls[4].collision_box_.position_ = balls[7].collision_box_.position_;
-    //balls[7].collision_box_.position_ = aux;
+    //vec3 aux = balls[4].GetPosition();
+    //balls[4].GetPosition() = balls[7].GetPosition();
+    //balls[7].GetPosition() = aux;
 }
 
 void print_error(int error, const char* description) {

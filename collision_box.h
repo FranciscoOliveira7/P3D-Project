@@ -6,29 +6,48 @@
 
 using namespace glm;
 
+
+/// <summary>
+/// Collision detection in a 2D place (y axis ignored)
+/// </summary>
 class CollisionBox {
 public:
-	CollisionBox() : position_{ vec3(0.0f) }, width_{ 1.0f }, height_{ 1.0f }, depth_{ 1.0f } {};
+	CollisionBox() : position_{ vec3(0.0f) }, width_{ 1.0f }, depth_{ 1.0f } {};
 	
-	CollisionBox(vec3 position, vec3 size)
-		: position_{ position }, width_{ size.x }, height_{ size.y }, depth_{ size.z } {};
+	CollisionBox(vec3 position, vec2 size)
+		: position_{ position }, width_{ size.x }, depth_{ size.y } {};
 
-	bool ComputeCollision(CollisionBox& other) {
+	bool ComputeCollision(CollisionBox& other, vec3& collision_vec) {
 		float min_x = std::min<float>(position_.x - width_ / 2.0f,  other.position_.x - other.width_ / 2.0f);
 		float max_x = std::max<float>(position_.x + width_ / 2.0f,  other.position_.x + other.width_ / 2.0f);
-		float min_y = std::min<float>(position_.y - height_ / 2.0f, other.position_.y - other.height_ / 2.0f);
-		float max_y = std::max<float>(position_.y + height_ / 2.0f, other.position_.y + other.height_ / 2.0f);
 		float min_z = std::min<float>(position_.z - depth_ / 2.0f,  other.position_.z - other.depth_ / 2.0f);
 		float max_z = std::max<float>(position_.z + depth_ / 2.0f,  other.position_.z + other.depth_ / 2.0f);
 
-		return (((max_x - min_x) < (width_  + other.width_)) &&
-				((max_y - min_y) < (height_ + other.height_)) &&
-				((max_z - min_z) < (depth_  + other.depth_)));
+		if (((max_x - min_x) < (width_ + other.width_)) &&
+			((max_z - min_z) < (depth_ + other.depth_))) {
+
+			float collision_x = (width_ + other.width_) - (max_x - min_x);
+			float collision_z = (depth_ + other.depth_) - (max_z - min_z);
+
+			float collision = std::min<float>(collision_x, collision_z);
+
+			if (collision == collision_x) {
+				std::cout << "Collided from x: " << collision_x << std::endl;
+				collision_vec = vec3(-1.0f, 0.0f, 0.0f);
+			}
+			if (collision == collision_z) {
+				std::cout << "Collided from z: " << collision_z << std::endl;
+				collision_vec = vec3(0.0f, 0.0f, -1.0f);
+			}
+
+			return true;
+		}
+		return false;
+
 	}
 	vec3 position_;
 
 private:
 	float width_;
-	float height_;
 	float depth_;
 };
