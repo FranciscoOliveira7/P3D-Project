@@ -29,13 +29,11 @@ public:
 			float collision_x = (width_ + other.width_) - (max_x - min_x);
 			float collision_z = (depth_ + other.depth_) - (max_z - min_z);
 
-			float collision = std::min<float>(collision_x, collision_z);
-
-			if (collision == collision_x) {
+			if (collision_x < collision_z) {
 				std::cout << "Collided from x: " << collision_x << std::endl;
 				collision_vec = vec3(-1.0f, 0.0f, 0.0f);
 			}
-			if (collision == collision_z) {
+			else { 
 				std::cout << "Collided from z: " << collision_z << std::endl;
 				collision_vec = vec3(0.0f, 0.0f, -1.0f);
 			}

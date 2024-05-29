@@ -140,7 +140,7 @@ int main(void) {
     glfwMakeContextCurrent(window);
 
     // Uncomment to disable v-sync
-     glfwSwapInterval(0);
+     //glfwSwapInterval(0);
 
     // Inicia o gestor de extensões GLEW
     glewExperimental = GL_TRUE;
@@ -173,10 +173,10 @@ int main(void) {
         double fps = (1 / deltaTime) * 1000;
         oldTime = clock();
 
-        //for (int i = 0; i < balls.size(); i++) {
-            balls[0].Update(balls, static_cast<float>(deltaTime));
-            models[1].SetSpin(vec3(balls[0].GetRotation().x, 0.0f, balls[0].GetRotation().y));
-        //}
+        for (int i = 0; i < balls.size(); i++) {
+            balls[i].Update(balls, static_cast<float>(deltaTime));
+            models[i + 1].SetSpin(vec3(balls[i].GetRotation().x, 0.0f, balls[i].GetRotation().y));
+        }
 
         draw(models);
 

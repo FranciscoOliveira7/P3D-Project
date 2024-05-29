@@ -16,13 +16,14 @@ public:
 	void Update(std::vector<PhysicsObject>& others, float deltaTime) {
 
 		if (velocity_ != vec3(0.0f)) {
+			vec3 collision;
+			bool collided = false;
+
 			for (PhysicsObject& collider : others) {
 				if (this == &collider) continue;
-
-				vec3 collision;
 				if (collision_box_.ComputeCollision(collider.collision_box_, collision)) {
-					//velocity_ = vec3(0.0f);
-					velocity_ *= collision;
+					collider.velocity_ += velocity_ * collision;
+					collided = true;
 				}
 			}
 		}
