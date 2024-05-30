@@ -1,6 +1,5 @@
 #include "shader.h"
 
-
 namespace objr {
 
 	void Shader::Create(ShaderInfo* shaders)
@@ -11,24 +10,30 @@ namespace objr {
 		glUseProgram(program_);
 	}
 
+	// Uniform mat4
 	void Shader::SetUniformMatrix4fv(const std::string& name, glm::mat4 value) const {
 		glProgramUniformMatrix4fv(program_, GetUniformLocation(name), 1, GL_FALSE, value_ptr(value));
 	}
 
+	// Uniform mat3
 	void Shader::SetUniformMatrix3fv(const std::string& name, glm::mat3 value) const {
 		glProgramUniformMatrix3fv(program_, GetUniformLocation(name), 1, GL_FALSE, value_ptr(value));
 	}
 
+	// Uniform vec3
 	void Shader::SetUniform3fv(const std::string& name, glm::vec3 value) const {
 		glProgramUniform3fv(program_, GetUniformLocation(name), 1, value_ptr(value));
 	}
 
+	// Uniform float
 	void Shader::SetUniform1f(const std::string& name, float value) const {
 		glProgramUniform1f(program_, GetUniformLocation(name), value);
 	}
 
+	// Pegar a localização do uniform
 	unsigned int Shader::GetUniformLocation(const std::string& name) const {
 		GLint location = glGetProgramResourceLocation(program_, GL_UNIFORM, name.c_str());
+
 		if (location == -1) std::cout << "Warning: uniform '" << name << "' doesn't exist" << std::endl;
 		return location;
 	}

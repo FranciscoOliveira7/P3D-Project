@@ -24,6 +24,7 @@ void main()
 
 	// Posição final do vértice (em coordenadas de clip)
 	gl_Position = Projection * ModelView * vec4(vPosition, 1.0f);
-
+	
+	// Coordenada de textura para o CubeMap
 	textureCoord = vTextureCoords;
 }

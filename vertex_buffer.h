@@ -4,6 +4,7 @@
 
 namespace objr {
 
+	// VBO
 	class VertexBuffer {
 		unsigned int id_ = 0;
 

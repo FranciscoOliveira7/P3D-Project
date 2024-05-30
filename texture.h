@@ -10,16 +10,23 @@ namespace objr {
 		unsigned int id_ = 0;
 
 	public:
-		void Create();
+		void Create() {
+			// I'll just use the unit 0, f### it we ball
+			//glActiveTexture(GL_TEXTURE0 + unit_++);
+
+			// Create Texture Object
+			glGenTextures(1, &id_);
+			glBindTexture(GL_TEXTURE_2D, id_);
+		}
 
 		void Delete() const {
 			glDeleteTextures(1, &id_);
 		}
 
-		void Load(const std::string& path) const;
-
 		void Bind() const {
 			glBindTexture(GL_TEXTURE_2D, id_);
 		}
+
+		void Load(const std::string& path) const;
 	};
 }

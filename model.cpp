@@ -13,26 +13,30 @@ namespace objr {
 
     void Model::Render(vec3 position, vec3 orientation) {
 
-        transform_.SetPosition(position);
-        transform_.SetRotation(orientation);
-
-        shader_.SetUniformMatrix4fv("Projection", camera_->GetProjectionMatrix());
-        shader_.SetUniformMatrix4fv("View", camera_->GetViewMatrix());
-        shader_.SetUniformMatrix4fv("Model", transform_.GetMatrix());
-
         vao_.Bind();
         shader_.Bind();
         texture_.Bind();
 
-        SetUniforms();
+        transform_.SetPosition(position);
+        transform_.SetRotation(orientation);
+
+        SetUniform();
 
         glDrawArrays(GL_TRIANGLES, 0, vertices_.size());
     }
 
-    void Model::SetUniforms() {
+    void Model::SetUniform() {
 
-        shader_.SetUniformMatrix3fv("NormalMatrix", inverseTranspose(mat3(camera_->GetViewMatrix() * transform_.GetMatrix())));
+        // Matrizes Model, View e Projection (MVP)
+        shader_.SetUniformMatrix4fv("Projection", camera_->GetProjectionMatrix());
+        shader_.SetUniformMatrix4fv("View", camera_->GetViewMatrix());
+        shader_.SetUniformMatrix4fv("Model", transform_.GetMatrix());
 
+        // Matriz Normal para calcular a iluminação Phong
+        shader_.SetUniformMatrix3fv("NormalMatrix",
+            inverseTranspose(mat3(camera_->GetViewMatrix() * transform_.GetMatrix())));
+
+        // Uniform dos materiais
         shader_.SetUniform3fv("material.emissive", vec3(0.0));
         shader_.SetUniform3fv("material.ambient", material_.ambient);
         shader_.SetUniform3fv("material.specular", material_.specular);
@@ -47,8 +51,9 @@ namespace objr {
         uv_buffer_.Create(uvs_.data(), uvs_.size() * sizeof(vec2));
         normal_buffer_.Create(normals_.data(), normals_.size() * sizeof(vec3));
 
+        // Faz o VertexAttribArray
         vao_.AddBuffer(vertex_buffer_, 3, 0);
-        vao_.AddBuffer(uv_buffer_, 2, 1);
+        vao_.AddBuffer(uv_buffer_,     2, 1);
         vao_.AddBuffer(normal_buffer_, 3, 2);
     }
 

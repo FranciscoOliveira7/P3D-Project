@@ -60,9 +60,13 @@ namespace objr {
 		void Bind() const { glUseProgram(program_); }
 
 		// Uniforms used
+		// mat4
 		void SetUniformMatrix4fv(const std::string& name, glm::mat4 value) const;
+		// mat3
 		void SetUniformMatrix3fv(const std::string& name, glm::mat3 value) const;
+		// vec3
 		void SetUniform3fv(const std::string& name, glm::vec3 value) const;
+		// float
 		void SetUniform1f(const std::string& name, float value) const;
 
 		unsigned int GetUniformLocation(const std::string& name) const;

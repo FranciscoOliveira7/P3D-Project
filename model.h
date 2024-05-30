@@ -44,19 +44,21 @@ namespace objr {
 		void SetSpin(vec3 spin) { transform_.SetSpin(spin); }
 
 	private:
-		void SetUniforms();
-
 		void LoadMaterial(const std::string mtl_model_path);
+		void SetUniform();
 
-		WorldTrans transform_;
+		// Trata das transformações da matriz Model
+		Transform transform_;
 
 		Shader shader_;
 		Material material_;
 
-		// Used a pointer for the camera so it can be changed
-		// globally instead of changing for each object.
+		// É usado um apontador em vez de um objeto para puder ser
+		// reaproveitada a câmera ao inves de calcular a sua posição
+		// por Model, como também, gasta menos memória visto que só há uma câmera
 		Camera* camera_ = nullptr;
 
+		// Utilizado apenas uma texture por objeto
 		Texture texture_;
 
 		VertexArray vao_;

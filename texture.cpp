@@ -5,16 +5,6 @@
 
 namespace objr {
 
-    void Texture::Create() {
-
-        // I'll just use the unit 0, f### it we ball
-        //glActiveTexture(GL_TEXTURE0 + unit_++);
-
-        // Create Texture Object
-        glGenTextures(1, &id_);
-        glBindTexture(GL_TEXTURE_2D, id_);
-    }
-
     void Texture::Load(const std::string& path) const {
 
         int width, height, channels;
@@ -32,12 +22,14 @@ namespace objr {
         // Set texture parameters here
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         glGenerateMipmap(GL_TEXTURE_2D);
 
+        #ifdef _DEBUG
         std::cout << "Loaded texture: " << path << " with ID: " << id_ << std::endl;
         stbi_image_free(imageData);
+        #endif /* DEBUG */
     }
 }

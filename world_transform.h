@@ -7,7 +7,10 @@ using namespace glm;
 
 namespace objr {
 
-    class WorldTrans {
+    /// <summary>
+    /// Transformações da matriz modelo
+    /// </summary>
+    class Transform {
     public:
 
         void SetScale(float scale) { scale_ = vec3(scale); }
@@ -18,7 +21,7 @@ namespace objr {
 
         void SetPosition(vec3 position) { pos_ = position; }
 
-        mat4 GetMatrix(void);
+        mat4 GetMatrix(void) const;
 
     private:
         vec3 scale_ = vec3(1.0f);
