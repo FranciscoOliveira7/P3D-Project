@@ -238,8 +238,7 @@ void init(std::vector<Model>& models) {
 
     // Load Balls
     for (int i = 1; i < models.size(); i++) {
-        if (i == 1) models[i].Load("Models\\Ball1.obj");
-        else models[i].Load("Models\\Ball" + std::to_string(i - 1) + ".obj");
+        models[i].Load("Models\\Ball" + std::to_string(i - 1) + ".obj");
         models[i].Install();
         models[i].SetShader(shader);
         models[i].SetScale(0.6f);
@@ -247,7 +246,7 @@ void init(std::vector<Model>& models) {
     }
 
     // White ball
-    PhysicsObject white_ball(vec3(-13.0f, -6.5f, 0), vec2(2.0f));
+    PhysicsObject white_ball(vec3(-13.0f, -6.5f, 0));
     balls.push_back(white_ball);
 
     set_ball_pos();
@@ -275,7 +274,7 @@ void set_ball_pos() {
         for (int j = 0; j < i; j++) {
             vec3 position = vec3(4.0f + i * 1.75f /*sin(60)*/, -6.5f /*table pos*/, (i - 1.0f) - j * 2.0f);
 
-            balls.push_back(PhysicsObject(position, vec2(2.0f)));
+            balls.push_back(PhysicsObject(position));
         }
     }
 

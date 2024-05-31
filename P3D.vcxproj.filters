@@ -22,7 +22,7 @@
     <ClInclude Include="Lights\point_light.h" />
     <ClInclude Include="lights\ambient_light.h" />
     <ClInclude Include="lights\spot_light.h" />
-    <ClInclude Include="physics\collision_box.h" />
+    <ClInclude Include="physics\collision_sphere.h" />
     <ClInclude Include="physics\physic_object.h" />
   </ItemGroup>
   <ItemGroup>

@@ -141,7 +141,7 @@
     <ClInclude Include="lights\directional_light.h" />
     <ClInclude Include="lights\light_source.h" />
     <ClInclude Include="lights\point_light.h" />
-    <ClInclude Include="physics\collision_box.h" />
+    <ClInclude Include="physics\collision_sphere.h" />
     <ClInclude Include="physics\physic_object.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="model.h" />
