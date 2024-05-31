@@ -2,7 +2,7 @@
 
 void PhysicsObject::Update(std::vector<PhysicsObject>& others, float deltaTime) {
 
-	if (velocity_ != vec3(0.0f)) {
+	//if (velocity_ != vec3(0.0f)) {
 		vec3 collision_normal;
 
 		for (PhysicsObject& collider : others) {
@@ -30,7 +30,7 @@ void PhysicsObject::Update(std::vector<PhysicsObject>& others, float deltaTime) 
 			(collision_sphere_.position_.z > 6.7f && velocity_.z > 0)) {
 			velocity_.z *= -1;
 		}
-	}
+	//}
 
 	const vec3 delta_vel = velocity_ * deltaTime;
 	collision_sphere_.position_ += delta_vel;
