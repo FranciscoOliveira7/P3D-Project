@@ -8,17 +8,17 @@ namespace objr {
     public:
         SpotLight() {
             position_ = vec3(0.0f);
-            direction_ = vec3(0.894427f, -0.447214f, 0.0f);
+            direction_ = vec3(0.0f, 1.0f, 0.0f);
             ambient_ = vec3(0.2f);
             diffuse_ = vec3(1.0f);
             specular_ = vec3(1.0f);
 
             constant_ = 1.0f;
-            linear_ = 0.06f;
-            quadratic_ = 0.02f;
+            linear_ = 0.006f;
+            quadratic_ = 0.002f;
 
-            spotCutoff_ = 0.0f;
-            spotExponent_ = 0.0f;
+            spotCutoff_ = glm::radians(32.5f);
+            spotExponent_ = 10.0f;
         }
 
         void Update() {

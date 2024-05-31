@@ -109,6 +109,7 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
             case GLFW_KEY_1: ambient_light.Toggle(); break;
             case GLFW_KEY_2: directional_light.Toggle(); break;
             case GLFW_KEY_3: point_light.Toggle(); break;
+            case GLFW_KEY_4: spot_light.Toggle(); break;
             case GLFW_KEY_W: balls[0].AddVelocity(vec3(0.0f, 0.0f, -0.01f)); break;
             case GLFW_KEY_A: balls[0].AddVelocity(vec3(-0.01f, 0.0f, 0.0f)); break;
             case GLFW_KEY_S: balls[0].AddVelocity(vec3(0.0f, 0.0f, 0.01f)); break;
@@ -227,7 +228,7 @@ void init(std::vector<Model>& models) {
 
     // Fonte de luz cónica
     spot_light.SetShader(shader);
-    //spot_light.Update();
+    spot_light.Update();
 
     // Load Table
     models[0].SetShader(shader);
