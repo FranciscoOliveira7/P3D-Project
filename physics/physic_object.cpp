@@ -10,8 +10,10 @@ void PhysicsObject::Update(std::vector<PhysicsObject>& others, float deltaTime) 
 			if (this == &collider) continue;
 
 			if (collision_sphere_.ComputeCollisionCircle(collider.collision_sphere_, collision_normal)) {
-				//collider.velocity_ += velocity_ * collision;
-				velocity_ = collision_normal * length(velocity_);
+				// Para que a bola faça a tragetoria "refletiva" à normal da outra bola
+				vec3 tragectory = reflect(normalize(velocity_), collision_normal);
+
+				velocity_ = tragectory * length(velocity_);
 			}
 		}
 		// Collision with table borders
