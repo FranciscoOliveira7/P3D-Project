@@ -4,7 +4,6 @@ in vec3 vPositionEyeSpace;
 in vec3 vNormalEyeSpace;
 in vec2 textureCoord;	// Coordenada de textura do vértice
 
-uniform mat4 Model;
 uniform mat4 View;
 
 uniform sampler2D TexSampler;				// Sampler de textura

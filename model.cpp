@@ -30,11 +30,12 @@ namespace objr {
         // Matrizes Model, View e Projection (MVP)
         shader_.SetUniformMatrix4fv("Projection", camera_->GetProjectionMatrix());
         shader_.SetUniformMatrix4fv("View", camera_->GetViewMatrix());
-        shader_.SetUniformMatrix4fv("Model", transform_.GetMatrix());
+
+        mat4 model_view = camera_->GetViewMatrix() * transform_.GetMatrix();
+        shader_.SetUniformMatrix4fv("ModelView", model_view);
 
         // Matriz Normal para calcular a iluminação Phong
-        shader_.SetUniformMatrix3fv("NormalMatrix",
-            inverseTranspose(mat3(camera_->GetViewMatrix() * transform_.GetMatrix())));
+        shader_.SetUniformMatrix3fv("NormalMatrix", inverseTranspose(mat3(model_view)));
 
         // Uniform dos materiais
         shader_.SetUniform3fv("material.emissive", vec3(0.0));

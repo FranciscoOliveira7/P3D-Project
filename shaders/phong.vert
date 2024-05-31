@@ -1,8 +1,8 @@
 #version 440 core
 
 uniform mat4 Model;
-uniform mat4 View;
 uniform mat4 Projection;
+uniform mat4 ModelView;
 uniform mat3 NormalMatrix;
 
 layout( location = 0 ) in vec3 vPosition;
@@ -15,7 +15,6 @@ out vec2 textureCoord;
 
 void main()
 { 
-	mat4 ModelView = View * Model;
 	// Posição do vértice em coordenadas do olho.
 	vPositionEyeSpace = (ModelView * vec4(vPosition, 1.0f)).xyz;
 

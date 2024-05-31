@@ -17,15 +17,20 @@ public:
 
 	void ResetPosition() { collision_sphere_.position_ = initial_pos_; }
 	void Stop() { velocity_ = vec3(0.0f); }
+	void SetPosition(vec3 position) {
+		initial_pos_ = position;
+		collision_sphere_.position_ = position;
+	}
 	void SetVelocity(vec3 velocity) { velocity_ = velocity; }
 	void AddVelocity(vec3 velocity) { velocity_ += velocity; }
 	vec3 GetPosition() const { return collision_sphere_.position_; }
 	vec2 GetRotation() const { return rotation_; }
 
+	CollisionSphere collision_sphere_;
+
 private:
 	vec2 rotation_ = vec3(0.0f);
 	vec3 velocity_ = vec3(0.0f);
-	CollisionSphere collision_sphere_;
 	vec3 initial_pos_;
 
 	const float k_friction_ = 0.0005f;

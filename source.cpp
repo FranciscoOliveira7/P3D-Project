@@ -275,12 +275,13 @@ void set_ball_pos() {
             vec3 position = vec3(4.0f + i * 1.75f /*sin(60)*/, -6.5f /*table pos*/, (i - 1.0f) - j * 2.0f);
 
             balls.push_back(PhysicsObject(position));
+            //if (balls.size() == 2) return;
         }
     }
-
-    //vec3 aux = balls[4].GetPosition();
-    //balls[4].GetPosition() = balls[7].GetPosition();
-    //balls[7].GetPosition() = aux;
+    
+    vec3 aux = balls[5].GetPosition();
+    balls[5].SetPosition(balls[8].GetPosition());
+    balls[8].SetPosition(aux);
 }
 
 void print_error(int error, const char* description) {

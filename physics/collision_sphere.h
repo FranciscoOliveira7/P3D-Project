@@ -30,7 +30,7 @@ public:
 		if (distance_in >= 0) {
 			// Para evitar a bola ficar dentro do objeto e colidir novamente,
 			// ela é reposicionada para fora da bola a qual colidiu.
-			position_ += collision_normal * distance_in;
+			position_ += collision_normal * distance_in * 2.0f;
 			std::cout << "Alguem colou as bolas na mesa!" << std::endl;
 			return true;
 		}
