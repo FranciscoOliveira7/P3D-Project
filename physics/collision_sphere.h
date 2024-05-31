@@ -17,7 +17,7 @@ public:
 	CollisionSphere(vec3 position, float radius)
 		: position_{ position }, radius_{ radius } {};
 
-	bool ComputeCollisionCircle(CollisionSphere& other, vec3& collision_normal) {
+	bool ComputeCollision(CollisionSphere& other, vec3& collision_normal) {
 		// É feito a diferença dos vetores de posição para saber a distância
 		vec3 normal = position_ - other.position_;
 
