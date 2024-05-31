@@ -203,7 +203,7 @@ vec4 calcSpotLight(SpotLight light, out vec4 ambient) {
 	float dist = length(mat3(View) * light.position - vPositionEyeSpace);	// Cálculo da distância entre o ponto de luz e o vértice
 	float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 
-	// Cálculo da contribuição da fonte de luz pontual para a cor final do fragmento.
+	// Cálculo da contribuição da fonte de luz conica para a cor final do fragmento.
 	float spot = 1.0;
 	float theta = acos(dot(D, L));
 	if(theta < light.spotCutoff){
