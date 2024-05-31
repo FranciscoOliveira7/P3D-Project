@@ -210,7 +210,7 @@ vec4 calcSpotLight(SpotLight light, out vec4 ambient) {
 		for(int i = 0; i < light.spotExponent; i++){
 			spot *= max(dot(L, D), 0.0);
 		}
-        return (attenuation * (diffuse + specular) * max(dot(L, D), 0.0));
+        return (attenuation * (diffuse + specular) * spot);
     }else{
 		return vec4(0.0);
 	}

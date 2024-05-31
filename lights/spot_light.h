@@ -17,8 +17,8 @@ namespace objr {
             linear_ = 0.006f;
             quadratic_ = 0.002f;
 
-            spotCutoff_ = glm::radians(32.5f);
-            spotExponent_ = 10.0f;
+            spotCutoff_ = glm::radians(30.0f);
+            spotExponent_ = 30.0f;
         }
 
         void Update() {
