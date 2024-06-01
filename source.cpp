@@ -31,32 +31,36 @@ using namespace objr;
 
 #define WIDTH 640
 #define HEIGHT 480
+// Declaração das funções
 
-void print_error(int error, const char* description);
-void init(std::vector<Model>& models);
-void draw(std::vector<Model>& models);
-void set_ball_pos();
-void resize(int height, int width);
-float interpolate(float min, float max, float t);
+void print_error(int error, const char* description);  // Imprime uma mensagem de erro
+void init(std::vector<Model>& models);                 // Inicializa os modelos e configurações do ambiente
+void draw(std::vector<Model>& models);                 // Desenha os modelos na tela
+void set_ball_pos();                                   // Define as posições iniciais das bolas de bilhar
+void resize(int height, int width);                    // Ajusta o tamanho da janela e a proporção da câmera
+float interpolate(float min, float max, float t);      // Interpola entre dois valores usando uma função quadrática
 
+// Variáveis globais
 std::vector<PhysicsObject> balls;
 
-double deltaTime = 0.0f;
-double oldTime = 0.0f;
+
+double deltaTime = 0.0f;           // Tempo decorrido entre frames
+double oldTime = 0.0f;             // Tempo do frame anterior
 
 // Animação do taco
-float taco_position = 0.0f;
+float taco_position = 0.0f;        // Posição do taco de bilhar
+bool animation = false;            // Indicador se a animação do taco está ativa
+float elapsed_time = 0.0f;         // Tempo decorrido desde o início da animação
 
-bool animation = false;
-float elapsed_time = 0.0f;
-
+// Estrutura KeyFrame define um quadro-chave para a animação do taco
 typedef struct KeyFrame {
-    float start, end;
-    float duration;
+    float start, end;              // Valores inicial e final
+    float duration;                // Duração
 
     KeyFrame(float s, float e, float d) : start{ s }, end{ e }, duration{ d } {}
 } KeyFrame;
 
+// Vetor de quadros-chave para a animação do taco
 std::vector<KeyFrame> taco_animation = {
     KeyFrame(0.0f, -8.0f, 1500.0f),
     KeyFrame(-8.0f, 0.0f, 1000.0f),
@@ -64,33 +68,31 @@ std::vector<KeyFrame> taco_animation = {
     KeyFrame(-15.0f, 2.0f, 500.0f),
 };
 
-int current_keyframe = 0;
-// ------------------
+int current_keyframe = 0;          // Índice do quadro-chave atual na animação do taco
 
+// Fontes de luz
+AmbientLight ambient_light;        // Luz ambiente global
+PointLight point_light;            // Luz pontual
+DirectionalLight directional_light;// Luz direcional
+SpotLight spot_light;              // Luz cônica
 
-// Lights Sources
-AmbientLight ambient_light;
-PointLight point_light;
-DirectionalLight directional_light;
-SpotLight spot_light;
+Camera camera((float)WIDTH / (float)HEIGHT);  // Câmera usada para visualização
 
-Camera camera((float)WIDTH / (float)HEIGHT);
+// Variáveis de controle da câmera
+float zoom = 45.0f;                // Nível de zoom da câmera
+float camera_pos = 15.0f;          // Posição da câmera
+GLfloat rotation = 0.0f;           // Rotação da mesa de bilhar
+bool isPressing = false;           // Indica se o botão do mouse está pressionado
 
-float zoom = 45.0f;
-float camera_pos = 15.0f;
-
-// Table rotation behaviour
-
-GLfloat rotation = 0.0f;
-bool isPressing = false;
-
-double prevXpos = 0.0;
+double prevXpos = 0.0;             // Posições anteriores do mouse
 double prevYpos = 0.0;
-double xPos = 0.0;
+double xPos = 0.0;                 // Posições atuais do mouse
 double yPos = 0.0;
 
-float mouse_sensitivity = 3.0f;
+float mouse_sensitivity = 3.0f;    // Sensibilidade do mouse para a rotação
 
+
+// Callback para movimento do cursor do mouse
 void cursorCallBack(GLFWwindow* window, double xpos, double ypos) {
     xPos = xpos;
     yPos = ypos;
@@ -107,6 +109,7 @@ void cursorCallBack(GLFWwindow* window, double xpos, double ypos) {
     }
 }
 
+// Callback para clique do mouse
 void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT) {
         if (action == GLFW_PRESS) {
@@ -119,7 +122,6 @@ void mouseCallBack(GLFWwindow* window, int button, int action, int mods) {
 }
 
 // Camera zoom behaviour
-
 void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
     if (yoffset == 1) zoom -= fabs(zoom) * 0.1f;
     else if (yoffset == -1) zoom += fabs(zoom) * 0.1f;
@@ -127,7 +129,6 @@ void scrollCallBack(GLFWwindow* window, double xoffset, double yoffset) {
 }
 
 // Lights toggle
-
 void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS) {
         switch (key) {
@@ -152,8 +153,11 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
     }
 }
 
+
+// Callback para redimensionamento da janela
 void window_size_callback(GLFWwindow* window, int width, int height) { resize(height, width); }
 
+// Função principal
 int main(void) {
     GLFWwindow* window;
 
@@ -245,11 +249,13 @@ float interpolate(float min, float max, float t) {
     return (max - min) * t * t + min;
 }
 
+// Ajusta a viewport e a proporção da câmera
 void resize(int height, int width) {
     glViewport(0, 0, GLsizei(width), GLsizei(height));
     camera.SetRatio((float)width / (float)height);
 }
 
+// Inicializa os modelos e configurações do ambiente
 void init(std::vector<Model>& models) {
 
     glEnable(GL_DEPTH_TEST);
@@ -315,6 +321,7 @@ void init(std::vector<Model>& models) {
     set_ball_pos();
 }
 
+// Desenha os modelos na tela
 void draw(std::vector<Model>& models) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -333,6 +340,7 @@ void draw(std::vector<Model>& models) {
     }
 }
 
+// Define as posições iniciais das bolas de bilhar
 void set_ball_pos() {
     // Posição das bola, calculado pelo zés e o gaio
     for (int i = 1; i < 6; i++) {
@@ -349,6 +357,7 @@ void set_ball_pos() {
     balls[8].SetPosition(aux);
 }
 
+// Imprime uma mensagem de erro
 void print_error(int error, const char* description) {
     std::cout << description << std::endl;
 }

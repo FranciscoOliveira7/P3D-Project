@@ -6,6 +6,7 @@ namespace objr {
 
     class DirectionalLight : public LightSource {
     public:
+        // Construtor que inicializa os parâmetros da luz direcional
         DirectionalLight() {
             direction_ = vec3(0.894427f, -0.447214f, 0.0f);
             ambient_ = vec3(0.2f);
@@ -13,6 +14,7 @@ namespace objr {
             specular_ = vec3(1.0f);
         }
 
+        // Atualiza os parâmetros da luz direcional
         void Update() {
             enabled_ = true;
             shader_.SetUniform3fv("directionalLight.direction", direction_);
@@ -21,6 +23,7 @@ namespace objr {
             shader_.SetUniform3fv("directionalLight.specular", specular_);
         }
 
+        // Desativa a luz direcional
         void Disable() {
             enabled_ = false;
             shader_.SetUniform3fv("directionalLight.ambient", vec3(0.0f));
@@ -29,8 +32,8 @@ namespace objr {
         }
 
     private:
-        vec3 direction_;
-        vec3 diffuse_;
-        vec3 specular_;
+        vec3 direction_;  // Direção da luz direcional
+        vec3 diffuse_;    // Componente difusa da luz direcional
+        vec3 specular_;   // Componente especular da luz direcional
     };
 }

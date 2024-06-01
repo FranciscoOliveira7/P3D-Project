@@ -8,22 +8,30 @@ using namespace glm;
 
 namespace objr {
 
-	class LightSource {
-	public:
-		virtual void Update() = 0;
-		virtual void Disable() = 0;
+    class LightSource {
+    public:
+        // Atualiza os parâmetros da fonte de luz
+        virtual void Update() = 0;
 
-		void Toggle() {
-			if (enabled_) Disable();
-			else Update();
-		}
-		void SetShader(Shader shader) { shader_ = shader; }
+        // Desativa a fonte de luz
+        virtual void Disable() = 0;
 
-	protected:
-		Shader shader_;
+        // Alterna o estado da fonte de luz entre ativado e desativado
+        void Toggle() {
+            if (enabled_)
+                Disable();
+            else
+                Update();
+        }
 
-		vec3 ambient_ = vec3(0.0f, 0.0f, 0.0f);
+        // Define o shader utilizado pela fonte de luz
+        void SetShader(Shader shader) { shader_ = shader; }
 
-		bool enabled_ = true;
-	};
+    protected:
+        Shader shader_; // Shader utilizado pela fonte de luz
+
+        vec3 ambient_ = vec3(0.0f, 0.0f, 0.0f); // Componente ambiente da luz
+
+        bool enabled_ = true; // Estado de atividade da fonte de luz
+    };
 }
