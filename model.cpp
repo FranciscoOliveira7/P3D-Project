@@ -3,7 +3,7 @@
 
 namespace objr {
 
-    // Deleta os recursos associados ao modelo
+    // Apaga os recursos associados ao modelo
     void Model::Delete() const {
         vertex_buffer_.Delete();
         uv_buffer_.Delete();
@@ -12,34 +12,34 @@ namespace objr {
         vao_.Delete();
     }
 
-    // Renderiza o modelo na posição e orientação especificadas
+    // Renderiza o modelo na posiÃ§Ã£o e orientaÃ§Ã£o especificadas
     void Model::Render(vec3 position, vec3 orientation) {
         // Vincula o VAO, shader e textura
         vao_.Bind();
         shader_.Bind();
         texture_.Bind();
 
-        // Configura a transformação do modelo
+        // Configura a transformaÃ§Ã£o do modelo
         transform_.SetPosition(position);
         transform_.SetRotation(orientation);
 
-        // Define os uniformes necessários para o shader
+        // Define os uniformes necessÃ¡rios para o shader
         SetUniform();
 
-        // Desenha os vértices do modelo
+        // Desenha os vÃ©rtices do modelo
         glDrawArrays(GL_TRIANGLES, 0, vertices_.size());
     }
 
     // Define os uniformes do shader
     void Model::SetUniform() {
-        // Define as matrizes de projeção e visualização (MVP)
+        // Define as matrizes de projeÃ§Ã£o e visualizaÃ§Ã£o (MVP)
         shader_.SetUniformMatrix4fv("Projection", camera_->GetProjectionMatrix());
         shader_.SetUniformMatrix4fv("View", camera_->GetViewMatrix());
 
         mat4 model_view = camera_->GetViewMatrix() * transform_.GetMatrix();
         shader_.SetUniformMatrix4fv("ModelView", model_view);
 
-        // Define a matriz normal para calcular a iluminação Phong
+        // Define a matriz normal para calcular a iluminaÃ§Ã£o Phong
         shader_.SetUniformMatrix3fv("NormalMatrix", inverseTranspose(mat3(model_view)));
 
         // Define os uniformes dos materiais
@@ -54,7 +54,7 @@ namespace objr {
         // Cria o VAO
         vao_.Create();
 
-        // Cria os buffers de vértices, UVs e normais
+        // Cria os buffers de vÃ©rtices, UVs e normais
         vertex_buffer_.Create(vertices_.data(), vertices_.size() * sizeof(vec3));
         uv_buffer_.Create(uvs_.data(), uvs_.size() * sizeof(vec2));
         normal_buffer_.Create(normals_.data(), normals_.size() * sizeof(vec3));
@@ -85,7 +85,7 @@ namespace objr {
         constexpr int buffer_size = 128;
         char buffer[buffer_size]{};
 
-        // Lê os dados do arquivo .obj
+        // LÃª os dados do arquivo .obj
         while (fscanf_s(file, "%s", buffer, buffer_size) != EOF) {
             if (!strcmp(buffer, "v")) {
                 fscanf_s(file, "%f %f %f\n", &vec.x, &vec.y, &vec.z);
@@ -112,7 +112,7 @@ namespace objr {
                 }
             }
             else if (!strcmp(buffer, "mtllib")) {
-                // Obtém o diretório atual do arquivo .obj
+                // ObtÃ©m o diretÃ³rio atual do arquivo .obj
                 std::string dir = path.substr(0, path.find_last_of('\\'));
 
                 char mtlFile[128]{};
@@ -137,7 +137,7 @@ namespace objr {
         constexpr int buffer_size = 128;
         char buffer[buffer_size]{};
 
-        // Lê os dados do arquivo de material
+        // LÃª os dados do arquivo de material
         while (fscanf_s(file, "%s", buffer, buffer_size) != EOF) {
             if (!strcmp(buffer, "Ka")) {
                 fscanf_s(file, "%f %f %f", &material_.ambient.r, &material_.ambient.g, &material_.ambient.b);
