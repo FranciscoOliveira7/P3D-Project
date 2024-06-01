@@ -8,7 +8,7 @@ namespace objr {
     public:
         SpotLight() {
             position_ = vec3(0.0f);
-            direction_ = vec3(0.0f, 1.0f, 0.0f);
+            direction_ = vec3(1.0f, 1.0f, 0.0f);
             ambient_ = vec3(0.2f);
             diffuse_ = vec3(1.0f);
             specular_ = vec3(1.0f);

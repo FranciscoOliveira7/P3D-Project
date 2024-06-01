@@ -37,11 +37,35 @@ void init(std::vector<Model>& models);
 void draw(std::vector<Model>& models);
 void set_ball_pos();
 void resize(int height, int width);
+float lerp(float min, float max, float t);
 
 std::vector<PhysicsObject> balls;
 
 double deltaTime = 0.0f;
 double oldTime = 0.0f;
+
+// Animação do taco
+float taco_position = 0.0f;
+
+bool animation = false;
+float elapsed_time = 0.0f;
+
+typedef struct KeyFrame {
+    float start, end;
+    float duration;
+
+    KeyFrame(float s, float e, float d) : start{ s }, end{ e }, duration{ d } {}
+} KeyFrame;
+
+// Animação do taco
+std::vector<KeyFrame> taco_animation = {
+    KeyFrame(0.0f, -8.0f, 1500.0f),
+    KeyFrame(-8.0f, 0.0f, 1000.0f),
+    KeyFrame(0.0f, -15.0f, 500.0f),
+    KeyFrame(-15.0f, 2.0f, 500.0f),
+};
+
+int current_keyframe = 0;
 
 // Lights Sources
 AmbientLight ambient_light;
@@ -114,7 +138,9 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
             case GLFW_KEY_A: balls[0].AddVelocity(vec3(-0.01f, 0.0f, 0.0f)); break;
             case GLFW_KEY_S: balls[0].AddVelocity(vec3(0.0f, 0.0f, 0.01f)); break;
             case GLFW_KEY_D: balls[0].AddVelocity(vec3(0.01f, 0.0f, 0.0f)); break;
-            //case GLFW_KEY_SPACE: balls[0].AddVelocity(vec3(0.01f, 0.0f, 0.0f)); break;
+            case GLFW_KEY_SPACE:
+                animation = true;
+                break;
             case GLFW_KEY_R:
                 for (int i = 0; i < balls.size(); i++) {
                     balls[i].Stop(); balls[i].ResetPosition();
@@ -143,7 +169,7 @@ int main(void) {
     glfwMakeContextCurrent(window);
 
     // Uncomment to disable v-sync
-     glfwSwapInterval(0);
+     //glfwSwapInterval(0);
 
     // Inicia o gestor de extensões GLEW
     glewExperimental = GL_TRUE;
@@ -154,6 +180,9 @@ int main(void) {
     // Table
     Model goofy_table;
     models.push_back(goofy_table);
+
+    Model goofy_taco;
+    models.push_back(goofy_taco);
 
     // Balls
     for (int i = 0; i < 16; i++) {
@@ -176,9 +205,27 @@ int main(void) {
         double fps = (1 / deltaTime) * 1000;
         oldTime = clock();
 
+        // Taco animation
+        if (animation) {
+            elapsed_time += deltaTime;
+            if (current_keyframe == taco_animation.size()) {
+                animation = false;
+                current_keyframe = 0;
+                balls[0].SetVelocity(vec3(0.07f, 0.0f, 0.0f));
+            }
+            else {
+                if (elapsed_time > taco_animation[current_keyframe].duration) {
+                    current_keyframe++;
+                    elapsed_time = 0.0f;
+                }
+                taco_position = lerp(taco_animation[current_keyframe].start, taco_animation[current_keyframe].end, elapsed_time / taco_animation[current_keyframe].duration);
+            }
+        }
+
+        // Calulate balls physics
         for (int i = 0; i < balls.size(); i++) {
             balls[i].Update(balls, static_cast<float>(deltaTime));
-            models[i + 1].SetSpin(vec3(balls[i].GetRotation().x, 0.0f, balls[i].GetRotation().y));
+            models[i + 2].SetSpin(vec3(balls[i].GetRotation().x, 0.0f, balls[i].GetRotation().y));
         }
 
         draw(models);
@@ -189,6 +236,12 @@ int main(void) {
 
     glfwTerminate();
     return 0;
+}
+
+// Interpolação quadrática para a animação do taco (https://www.youtube.com/watch?v=6vHHlLcUPCM)
+float lerp(float min, float max, float t) {
+
+    return (max - min) * t * t + min;
 }
 
 void resize(int height, int width) {
@@ -237,9 +290,17 @@ void init(std::vector<Model>& models) {
     models[0].SetScale(2.2f);
     models[0].SetCamera(&camera);
 
+    // Load Taco
+    models[1].SetShader(shader);
+    models[1].Load("Models\\taco.obj");
+    models[1].Install();
+    models[1].SetScale(0.5f);
+    models[1].SetSpin(vec3(0.0f, radians(-90.0f), 0.0f));
+    models[1].SetCamera(&camera);
+
     // Load Balls
-    for (int i = 1; i < models.size(); i++) {
-        models[i].Load("Models\\Ball" + std::to_string(i - 1) + ".obj");
+    for (int i = 2; i < models.size(); i++) {
+        models[i].Load("Models\\Ball" + std::to_string(i - 2) + ".obj");
         models[i].Install();
         models[i].SetShader(shader);
         models[i].SetScale(0.6f);
@@ -264,8 +325,10 @@ void draw(std::vector<Model>& models) {
     for (int i = 0; i < models.size(); i++) {
         // Table
         if (i == 0) models[i].Render(vec3(0.0f, -2.0f, 0), vec3(0.0f, rotation, 0.0f));
+        // Taco
+        else if (i == 1) models[i].Render(vec3(-28.0f + taco_position, -10.0f, 0), vec3(0.0f, rotation, -0.1f));
         // Balls
-        else models[i].Render(balls[i - 1].GetPosition(), vec3(0.0f, rotation, 0.0f));
+        else models[i].Render(balls[i - 2].GetPosition(), vec3(0.0f, rotation, 0.0f));
     }
 }
 
