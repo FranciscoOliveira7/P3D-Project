@@ -13,22 +13,21 @@ void PhysicsObject::Update(std::vector<PhysicsObject>& others, float deltaTime) 
 				// Para que a bola faça a tragetoria "refletiva" à normal de colisão com a outra bola
 				vec3 tragectory = reflect(normalize(velocity_), collision_normal) * length(velocity_);
 
-				// ps,iA + ps,iB = ps,fA + ps,fB (=)
-				// mA * vAi + mB * vBi = mA * vAf + mB * vBf
-				// Ambas as massas são iguais
-				// vAi + vBi = vAf + vBf
-				collider.velocity_ -= collision_normal * 0.1f;
-				velocity_ = tragectory;
+				//collider.velocity_ -= collision_normal * 0.1f;
+				//velocity_ = tragectory;
+				velocity_ = vec3(0.0f);
 			}
 		}
 		// Collision with table borders
 		if ((collision_sphere_.position_.x < -15.9f && velocity_.x < 0) ||
 			(collision_sphere_.position_.x > 15.9f && velocity_.x > 0)) {
-			velocity_.x *= -1;
+			//velocity_.x *= -1;
+			velocity_ = vec3(0.0f);
 		}
 		if ((collision_sphere_.position_.z < -6.7f && velocity_.z < 0) ||
 			(collision_sphere_.position_.z > 6.7f && velocity_.z > 0)) {
-			velocity_.z *= -1;
+			//velocity_.z *= -1;
+			velocity_ = vec3(0.0f);
 		}
 	}
 

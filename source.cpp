@@ -211,7 +211,8 @@ int main(void) {
             if (current_keyframe == taco_animation.size()) {
                 animation = false;
                 current_keyframe = 0;
-                balls[0].SetVelocity(vec3(0.07f, 0.0f, 0.0f));
+                float nigga = ((rand() % 4) - 2) / 100.0f;
+                balls[0].SetVelocity(vec3(0.07f, 0.0f, nigga));
             }
             else {
                 if (elapsed_time > taco_animation[current_keyframe].duration) {
