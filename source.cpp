@@ -37,7 +37,7 @@ void init(std::vector<Model>& models);
 void draw(std::vector<Model>& models);
 void set_ball_pos();
 void resize(int height, int width);
-float lerp(float min, float max, float t);
+float interpolate(float min, float max, float t);
 
 std::vector<PhysicsObject> balls;
 
@@ -57,7 +57,6 @@ typedef struct KeyFrame {
     KeyFrame(float s, float e, float d) : start{ s }, end{ e }, duration{ d } {}
 } KeyFrame;
 
-// Animação do taco
 std::vector<KeyFrame> taco_animation = {
     KeyFrame(0.0f, -8.0f, 1500.0f),
     KeyFrame(-8.0f, 0.0f, 1000.0f),
@@ -66,6 +65,8 @@ std::vector<KeyFrame> taco_animation = {
 };
 
 int current_keyframe = 0;
+// ------------------
+
 
 // Lights Sources
 AmbientLight ambient_light;
@@ -134,10 +135,10 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
             case GLFW_KEY_2: directional_light.Toggle(); break;
             case GLFW_KEY_3: point_light.Toggle(); break;
             case GLFW_KEY_4: spot_light.Toggle(); break;
-            case GLFW_KEY_W: balls[0].AddVelocity(vec3(0.0f, 0.0f, -0.01f)); break;
-            case GLFW_KEY_A: balls[0].AddVelocity(vec3(-0.01f, 0.0f, 0.0f)); break;
-            case GLFW_KEY_S: balls[0].AddVelocity(vec3(0.0f, 0.0f, 0.01f)); break;
-            case GLFW_KEY_D: balls[0].AddVelocity(vec3(0.01f, 0.0f, 0.0f)); break;
+            //case GLFW_KEY_W: balls[0].AddVelocity(vec3(0.0f, 0.0f, -0.01f)); break;
+            //case GLFW_KEY_A: balls[0].AddVelocity(vec3(-0.01f, 0.0f, 0.0f)); break;
+            //case GLFW_KEY_S: balls[0].AddVelocity(vec3(0.0f, 0.0f, 0.01f)); break;
+            //case GLFW_KEY_D: balls[0].AddVelocity(vec3(0.01f, 0.0f, 0.0f)); break;
             case GLFW_KEY_SPACE:
                 animation = true;
                 break;
@@ -218,7 +219,7 @@ int main(void) {
                     current_keyframe++;
                     elapsed_time = 0.0f;
                 }
-                taco_position = lerp(taco_animation[current_keyframe].start, taco_animation[current_keyframe].end, elapsed_time / taco_animation[current_keyframe].duration);
+                taco_position = interpolate(taco_animation[current_keyframe].start, taco_animation[current_keyframe].end, elapsed_time / taco_animation[current_keyframe].duration);
             }
         }
 
@@ -239,7 +240,7 @@ int main(void) {
 }
 
 // Interpolação quadrática para a animação do taco (https://www.youtube.com/watch?v=6vHHlLcUPCM)
-float lerp(float min, float max, float t) {
+float interpolate(float min, float max, float t) {
 
     return (max - min) * t * t + min;
 }
@@ -339,10 +340,10 @@ void set_ball_pos() {
             vec3 position = vec3(4.0f + i * 1.75f /*sin(60)*/, -6.5f /*table pos*/, (i - 1.0f) - j * 2.0f);
 
             balls.push_back(PhysicsObject(position));
-            //if (balls.size() == 2) return;
         }
     }
     
+    // Troca a bola 5 com a 8
     vec3 aux = balls[5].GetPosition();
     balls[5].SetPosition(balls[8].GetPosition());
     balls[8].SetPosition(aux);
