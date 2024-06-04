@@ -14,26 +14,23 @@ void PhysicsObject::Update(std::vector<PhysicsObject>& others, float deltaTime) 
 				vec3 tragectory = reflect(normalize(velocity_), collision_normal) * length(velocity_);
 
 				//collider.velocity_ -= collision_normal * 0.1f;
-				//velocity_ = tragectory;
-				velocity_ = vec3(0.0f);
+				velocity_ = tragectory;
 			}
 		}
 		// Collision with table borders
 		if ((collision_sphere_.position_.x < -15.9f && velocity_.x < 0) ||
 			(collision_sphere_.position_.x > 15.9f && velocity_.x > 0)) {
-			//velocity_.x *= -1;
-			velocity_ = vec3(0.0f);
+			velocity_.x *= -1;
 		}
 		if ((collision_sphere_.position_.z < -6.7f && velocity_.z < 0) ||
 			(collision_sphere_.position_.z > 6.7f && velocity_.z > 0)) {
-			//velocity_.z *= -1;
-			velocity_ = vec3(0.0f);
+			velocity_.z *= -1;
 		}
-	}
 
-	const vec3 delta_vel = velocity_ * deltaTime;
-	collision_sphere_.position_ += delta_vel;
-	velocity_ -= delta_vel * k_friction_;
-	rotation_.x += delta_vel.z;
-	rotation_.y += -delta_vel.x;
+		const vec3 delta_vel = velocity_ * deltaTime;
+		collision_sphere_.position_ += delta_vel;
+		velocity_ -= delta_vel * k_friction_;
+		rotation_.x += delta_vel.z;
+		rotation_.y += -delta_vel.x;
+	}
 }

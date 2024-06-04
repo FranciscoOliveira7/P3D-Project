@@ -36,4 +36,5 @@ namespace objr {
         std::cout << "Textura carregada: " << path << " com ID: " << id_ << std::endl;
         stbi_image_free(imageData); // Libera a memória da imagem carregada
 #endif /* DEBUG */
+    }
 }
